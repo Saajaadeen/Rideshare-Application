@@ -1,7 +1,36 @@
-import LoginForm from "~/components/Pages/LoginForm";
+import {
+  redirect,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+  useActionData,
+} from "react-router";
+import { authenticateUser } from "server/queries/auth.queries.server";
+import { createUserSession, getUserId } from "server/session.server";
+import LoginForm from "~/components/Forms/LoginForm";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserId(request);
+  if (userId) return redirect("/dashboard");
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  if (!email || !password) {
+    return { error: "Email and password are required" };
+  }
+
+  const user = await authenticateUser(email, password);
+  if (!user) {
+    return { error: "Invalid credentials" };
+  }
+
+  return createUserSession(user.id, "/dashboard");
+}
 
 export default function Login() {
-    return (
-        <LoginForm />
-    )
+  const actionData = useActionData<{ error?: string }>();
+  return <LoginForm error={actionData?.error} />;
 }

@@ -5,5 +5,8 @@ export default [
     route("/login", "./routes/auth/login.tsx"),
     route("/logout", "./routes/auth/logout.tsx"),
     route("/register", "./routes/auth/register.tsx"),
+    route("/verify", "./routes/auth/twofactor.tsx"),
+    route("/dashboard", "./routes/dashboard/dashboard.tsx"),
+    route("*", './routes/notfound.tsx')
 
 ] satisfies RouteConfig;
