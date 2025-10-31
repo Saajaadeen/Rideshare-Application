@@ -39,13 +39,6 @@ export default function Logout() {
           >
             Sign In Again
           </Link>
-
-          <Link
-            to="/"
-            className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl border border-gray-200 hover:bg-gray-200 transition-all"
-          >
-            Return Home
-          </Link>
         </div>
       </div>
 

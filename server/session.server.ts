@@ -62,15 +62,16 @@ export async function requireUserId(request: Request, redirectTo = "/login") {
   return userId;
 }
 
+// Require 2fa code column to be null
 export async function requireTwoFactorCode(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { authCode: true },
+    select: { code: true },
   });
 
   if (!user) {
     return("User not found");
   }
 
-  return !!user.authCode;
+  return user.code;
 }

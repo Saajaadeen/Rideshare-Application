@@ -1,4 +1,3 @@
-import { Carriers } from "@prisma/client";
 import { prisma } from "../db.server";
 import bcrypt from "bcryptjs";
 
@@ -6,7 +5,6 @@ export async function registerUser(
   firstName: string,
   lastName: string,
   email: string,
-  phoneCarrier: Carriers,
   phoneNumber: string,
   password: string,
 ) {
@@ -23,7 +21,6 @@ export async function registerUser(
         firstName,
         lastName,
         email,
-        phoneCarrier,
         phoneNumber,
         password: hashedPassword,
         isAdmin,
@@ -71,8 +68,4 @@ export async function authenticateAdmin( userId: string ) {
     return null;
   }
   return user.isAdmin;
-}
-
-export function getCarriers(): string[] {
-  return Object.values(Carriers)
 }

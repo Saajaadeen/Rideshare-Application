@@ -12,7 +12,7 @@ interface FormData {
   password: string;
 }
 
-export default function Register({ carriers }: any) {
+export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -123,52 +123,6 @@ export default function Register({ carriers }: any) {
               />
             </div>
           ))}
-
-          <div>
-            <label
-              htmlFor="carrier"
-              className="block text-sm font-semibold text-gray-700 mb-2"
-            >
-              Mobile Carrier
-            </label>
-            <div className="relative">
-              <select
-                id="carrier"
-                name="carrier"
-                value={formData.carrier}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3.5 rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900 appearance-none cursor-pointer"
-              >
-                <option value="">Select a carrier</option>
-                {carriers && carriers.length > 0 ? (
-                  carriers.map((carrierStr) => (
-                    <option key={carrierStr} value={carrierStr}>
-                      {carrierStr}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled>
-                    No carriers available
-                  </option>
-                )}
-              </select>
-
-              <svg
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </div>
-          </div>
 
           <div>
             <label

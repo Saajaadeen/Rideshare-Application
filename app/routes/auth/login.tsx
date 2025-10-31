@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (userId) return redirect("/dashboard");
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export const action = async({ request }: { request: Request }) => {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
