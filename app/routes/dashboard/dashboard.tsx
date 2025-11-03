@@ -1,11 +1,16 @@
-import { type LoaderFunctionArgs } from "react-router";
+import { useLoaderData, type LoaderFunctionArgs } from "react-router";
+import { getUserInfo } from "server/queries/user.queries.server";
 import { requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await requireUserId(request);
+  const userId = await requireUserId(request);
+  const userName = await getUserInfo('dashboard', userId);
+  
+  return(userName);
 }
 
 export default function Dashboard() {
-  return <DashboardForm />;
+  const userName = useLoaderData<typeof loader>();
+  return <DashboardForm userName={userName}/>;
 }
