@@ -1,96 +1,60 @@
-import { useState, useRef, useEffect } from "react";
-import { useDevice } from "~/hooks/DeviceProvider";
-import LocationSelect from "./LocationSelect";
+import { useEffect, useRef } from "react";
+import type { Map as LeafletMap, LatLngBoundsExpression } from "leaflet";
+import RightSideUserPanelForm from "./RightSideUserPanelForm";
+import LeftSideRidePanelForm from "./LeftSideRidePanelForm";
 
-export default function RideshareDashboard() {
-  const { isMobile } = useDevice();
-  const [zoom, setZoom] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({});
-  const [pickupPoint, setPickupPoint] = useState(null); 
-  const [hideMenu, setHideMenu] = useState(false);
-
-  const containerRef = useRef(null);
-  const imageRef = useRef(null);
-
-  const constrainPosition = (newPosition: any, currentZoom: any) => {
-    if (!containerRef.current || !imageRef.current) return newPosition;
-
-    const container = containerRef.current.getBoundingClientRect();
-    const image = imageRef.current;
-    const imageWidth = image.naturalWidth * currentZoom;
-    const imageHeight = image.naturalHeight * currentZoom;
-
-    const maxX = Math.max(0, (imageWidth - container.width) / 2);
-    const maxY = Math.max(0, (imageHeight - container.height) / 2);
-
-    return {
-      x: Math.min(Math.max(newPosition.x, -maxX), maxX),
-      y: Math.min(Math.max(newPosition.y, -maxY), maxY),
-    };
-  };
-
-
-
-  const handleWheel = (e) => {
-    e.preventDefault();
-    const delta = e.deltaY * -0.001;
-    const newZoom = Math.min(Math.max(1, zoom + delta), 5);
-    setZoom(newZoom);
-    setPosition(constrainPosition(position, newZoom));
-  };
-
-  const handleMouseDown = (e) => {
-    setIsDragging(false);
-    setDragStart({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-      startX: e.clientX,
-      startY: e.clientY,
-    });
-  };
-
-  const handleMouseMove = (e) => {
-    if (!dragStart.startX) return;
-    const distance = Math.hypot(
-      e.clientX - dragStart.startX,
-      e.clientY - dragStart.startY
-    );
-    if (distance > 5) setIsDragging(true);
-    if (isDragging || distance > 5) {
-      const newPosition = {
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y,
-      };
-      setPosition(constrainPosition(newPosition, zoom));
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (!isDragging && dragStart.startX) handleMapClick(e);
-    setIsDragging(false);
-    setDragStart({});
-  };
-
-  const handleMapClick = (e) => {
-    if (!containerRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - container.left;
-    const y = e.clientY - container.top;
-    setPickupPoint({ x, y });
-  };
-
-  const resetZoom = () => {
-    setZoom(1);
-    setPosition({ x: 0, y: 0 });
-  };
-
-  const clearPickup = () => setPickupPoint(null);
+export default function Dashboard(userName: any) {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
-    setPosition(constrainPosition(position, zoom));
-  }, [zoom]);
+    if (mapInstanceRef.current) return;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css";
+    document.head.appendChild(link);
+
+    const script = document.createElement("script");
+    script.src =
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js";
+    script.onload = () => {
+      if (!mapRef.current || !window.L) return;
+
+      const travisAFB: [number, number] = [38.2627, -121.9272];
+      const bounds: LatLngBoundsExpression = [
+        [38.23508, -121.97875],
+        [38.28997, -121.88825],
+      ];
+
+      const map = window.L.map(mapRef.current, {
+        center: travisAFB,
+        zoom: 15,
+        zoomControl: false,
+        maxBounds: bounds,
+        maxBoundsViscosity: 1.0,
+        minZoom: 14,
+        maxZoom: 18,
+      });
+
+      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 19,
+      }).addTo(map);
+
+      map.fitBounds(bounds);
+      mapInstanceRef.current = map;
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+      }
+    };
+  }, []);
 
   if(!isMobile){
     return (

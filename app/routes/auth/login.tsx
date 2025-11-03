@@ -1,7 +1,6 @@
 import {
   redirect,
   type LoaderFunctionArgs,
-  type ActionFunctionArgs,
   useActionData,
 } from "react-router";
 import { authenticateUser } from "server/queries/auth.queries.server";
