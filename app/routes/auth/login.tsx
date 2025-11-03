@@ -32,5 +32,5 @@ export const action = async({ request }: { request: Request }) => {
 
 export default function Login() {
   const actionData = useActionData<{ error?: string }>();
-  return <LoginForm error={actionData?.error} />;
+  return <LoginForm error={actionData?.error} />
 }
