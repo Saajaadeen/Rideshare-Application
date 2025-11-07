@@ -17,15 +17,15 @@ import UserProfileForm from "../Pages/User/UserProfileForm";
 export default function UserSettingsModal({ user, base, vehicles }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
-  const [selectedTab, setSelectedTab] = useState(tabParam || "Profile");
+  const [selectedTab, setSelectedTab] = useState(tabParam || "profile");
 
   const tabs = [
-    { name: "Profile", icon: <UserIcon className="size-6" /> },
-    { name: "Permissions", icon: <LockIcon className="size-6" /> },
-    { name: "Base", icon: <BaseIcon className="size-6" /> },
-    { name: "Vehicles", icon: <VehicleIcon className="size-6" /> },
-    { name: "Security", icon: <ShieldIcon className="size-6" /> },
-    { name: "Deactivation", icon: <WarningIcon className="size-6" /> },
+    { label: "Profile",      name: "profile",      icon: <UserIcon className="size-6" /> },
+    { label: "Permissions",  name: "permissions",  icon: <LockIcon className="size-6" /> },
+    { label: "Base",         name: "base",         icon: <BaseIcon className="size-6" /> },
+    { label: "Vehicles",     name: "vehicles",     icon: <VehicleIcon className="size-6" /> },
+    { label: "Security",     name: "security",     icon: <ShieldIcon className="size-6" /> },
+    { label: "Deactivation", name: "deactivation", icon: <WarningIcon className="size-6" /> },
   ];
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
                   }`}
                 >
                   <span className="text-xl">{tab.icon}</span>
-                  <span>{tab.name}</span>
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -78,12 +78,12 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
             <XMarkIcon className="size-6" />
           </Link>
 
-          {selectedTab === "Profile" && <UserProfileForm user={user} />}
-          {selectedTab === "Permissions" && <UserPermissionForm user={user} />}
-          {selectedTab === "Base" && <UserBaseForm user={user} base={base} />}
-          {selectedTab === "Vehicles" && <UserVehicleForm user={user} vehicles={vehicles} />}
-          {selectedTab === "Security" && <UserSecurityForm user={user} />}
-          {selectedTab === "Deactivation" && <UserDeleteForm user={user} />}
+          {selectedTab === "profile"      && <UserProfileForm user={user} />}
+          {selectedTab === "permissions"  && <UserPermissionForm user={user} />}
+          {selectedTab === "base"         && <UserBaseForm user={user} base={base} />}
+          {selectedTab === "vehicles"     && <UserVehicleForm user={user} vehicles={vehicles} />}
+          {selectedTab === "security"     && <UserSecurityForm user={user} />}
+          {selectedTab === "deactivation" && <UserDeleteForm user={user} />}
         </div>
       </div>
     </div>

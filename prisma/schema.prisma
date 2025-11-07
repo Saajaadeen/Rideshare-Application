@@ -13,13 +13,14 @@ model User {
   base        Base?      @relation(fields: [baseId], references: [id])
   firstName   String
   lastName    String
-  phoneNumber String     @unique
+  phoneNumber String     
   email       String     @unique
   password    String
-  code        String?
   isAdmin     Boolean    @default(false)
   isDriver    Boolean    @default(false)
   isPassenger Boolean    @default(true)
+  isReset     Boolean    @default(false)
+  resetCode   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -29,7 +30,7 @@ model User {
 
 model Vehicle {
   id        String   @id @default(uuid())
-  userId    String?
+  userId    String?  @unique
   year      String
   make      String
   model     String

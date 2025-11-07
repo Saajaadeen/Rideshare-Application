@@ -1,12 +1,20 @@
 import { prisma } from "../db.server";
 
+export async function enableVehicle(userId: string, isDriver: boolean) {
+  const vehicle = await prisma.user.update({
+    where: { id: userId},
+    data: { isDriver },
+  });
+  return vehicle;
+}
+
 export async function createVehicle(
   userId: string,
   year: string,
   make: string,
   model: string,
   color: string,
-  plate: string
+  plate: string,
 ) {
   const vehicle = await prisma.vehicle.create({
     data: {
@@ -19,7 +27,7 @@ export async function createVehicle(
     },
   });
 
-  return { vehicle };
+  return vehicle;
 }
 
 export async function getVehicles(userId: string) {

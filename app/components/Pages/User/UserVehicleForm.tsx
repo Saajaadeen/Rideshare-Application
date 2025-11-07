@@ -3,8 +3,8 @@ import { XMarkIcon } from "~/components/Icons/XMarkIcon";
 export default function UserVehicleForm({ user, vehicles }: any) {
   return (
     <div className="space-y-8">
-      <form method="post" action="/dashboard/settings?tab=Vehicles" className="space-y-6">
-        <input type="hidden" name="intent" value="user" />
+      <form method="post" action="/dashboard/settings?tab=vehicles" className="space-y-6">
+        <input type="hidden" name="intent" value="vehicle-enable" />
 
         <div className="border-l-4 border-indigo-500 pl-6">
           <h3 className="text-3xl font-bold text-gray-900 mb-1">
@@ -52,7 +52,7 @@ export default function UserVehicleForm({ user, vehicles }: any) {
           </h4>
           <div className="space-y-4">
             {vehicles.map((vehicle: any) => (
-              <form method="post" action="/dashboard/settings?tab=Vehicles">
+              <form method="post" action="/dashboard/settings?tab=vehicles">
                 <input type="hidden" name="intent" value="vehicle-delete" />
                 <input type="hidden" name="id" value={vehicle.id} />
                 <div
@@ -98,7 +98,7 @@ export default function UserVehicleForm({ user, vehicles }: any) {
       )}
 
       {user?.isDriver && vehicles.length === 0 && (
-        <form method="post" action="/dashboard/settings?tab=Vehicles" className="space-y-4">
+        <form method="post" action="/dashboard/settings?tab=vehicles" className="space-y-4">
           <input type="hidden" name="intent" value="vehicle" />
           <h4 className="text-xl font-semibold text-gray-900">
             Add New Vehicle

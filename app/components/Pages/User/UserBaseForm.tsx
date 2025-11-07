@@ -12,7 +12,7 @@ export default function UserBaseForm({ user, base }: any) {
         </p>
       </div>
 
-      <form method="post" action="/dashboard/settings?tab=Base" className="flex flex-col flex-1">
+      <form method="post" action="/dashboard/settings?tab=base" className="flex flex-col flex-1">
         <input type="hidden" name="intent" value="user" />
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-2">

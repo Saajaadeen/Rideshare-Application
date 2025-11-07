@@ -11,7 +11,7 @@ export default function CreateUserForm() {
       </div>
 
       <form method="post" action="/dashboard/admin?page=users">
-        <input type="hidden" name="intent" value="user" />
+        <input type="hidden" name="intent" value="createUser" />
         <div className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -46,6 +46,18 @@ export default function CreateUserForm() {
               type="email"
               name="email"
               placeholder="jane.smith@domain.com"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••••••••••"
               className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
             />
           </div>

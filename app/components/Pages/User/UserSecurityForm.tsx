@@ -9,7 +9,7 @@ export default function UserSecurityForm({ user }: any) {
   const passwordsMatch = password === confirmPassword && password.length > 0;
 
   return (
-    <form method="post" action="/dashboard/settings?tab=Security">
+    <form method="post" action="/dashboard/settings?tab=security">
       <input type="hidden" name="intent" value="user" />
       <div className="flex flex-col min-h-full space-y-6">
         <div className="border-l-4 border-indigo-500 pl-6">
