@@ -22,6 +22,8 @@ export async function getUserInfo(intent: string, userId: string) {
       isAdmin: true,
       isDriver: true,
       isPassenger: true,
+      isReset: true,
+      baseId: true,
       base: {
         select: {
           id: true,
@@ -37,10 +39,13 @@ export async function getUserInfo(intent: string, userId: string) {
   switch (intent) {
     case "dashboard":
       return {
+        id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         isAdmin: user.isAdmin,
+        isReset: user.isReset,
+        baseId: user.baseId,
       };
     case "settings":
       return {
@@ -146,7 +151,7 @@ export async function updateUserInfoAdmin({
 
   if (isReset) {
     const resetCode = generateRandomCode(10);
-    data.password = await bcrypt.hash(resetCode, 20);
+    data.password = await bcrypt.hash(resetCode, 10);
     data.resetCode = resetCode;
   }
 

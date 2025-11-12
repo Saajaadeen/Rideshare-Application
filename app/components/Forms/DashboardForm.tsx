@@ -3,8 +3,9 @@ import type { Map as LeafletMap, LatLngBoundsExpression } from "leaflet";
 import RightSideUserPanelForm from "./RightSideUserPanelForm";
 import LeftSideRidePanelForm from "./LeftSideRidePanelForm";
 import { Outlet } from "react-router";
+import MiddlePanelForm from "./MiddlePanelForm";
 
-export default function Dashboard({user}: any) {
+export default function Dashboard({ user, station, requestInfo }: any) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
 
@@ -59,10 +60,20 @@ export default function Dashboard({user}: any) {
 
   return (
     <div className="relative w-full h-screen">
-      <div ref={mapRef} className="absolute inset-0 z-0 w-full h-full"></div>
-      <LeftSideRidePanelForm />
-      <RightSideUserPanelForm user={user}/>
-      <Outlet/>
+      <div ref={mapRef} className="absolute inset-0 w-full h-full z-0" />
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20 w-[90%] max-w-4xl">
+        <MiddlePanelForm user={user}/>
+      </div>
+
+      <div className="absolute top-0 left-0 h-full z-10">
+        <LeftSideRidePanelForm user={user} station={station} requestInfo={requestInfo}/>
+      </div>
+
+      <div className="absolute top-0 right-0 h-full z-10">
+        <RightSideUserPanelForm user={user} />
+      </div>
+      <Outlet />
     </div>
   );
 }
+

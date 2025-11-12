@@ -60,10 +60,15 @@ model Station {
 model Request {
   id         String   @id @default(uuid())
   userId     String?
+  status     String?  
   pickupId   String?
+  pickedupAt DateTime?
   dropoffId  String?
+  droppedOffAt String?
+  driverId   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  
 
   user       User?    @relation(fields: [userId], references: [id])
   pickup     Station? @relation("PickupStation", fields: [pickupId], references: [id])

@@ -26,7 +26,6 @@ export default function UserSecurityForm({ user }: any) {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Change Password
             </label>
-
             <div className="relative mb-4">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <LockIcon className="size-6" />
@@ -40,9 +39,8 @@ export default function UserSecurityForm({ user }: any) {
                 className="w-full rounded-xl border-2 border-gray-200 pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
               />
             </div>
-
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute left-4 top-3.5 text-gray-400">
                 <LockIcon className="size-6" />
               </span>
               <input
@@ -58,12 +56,12 @@ export default function UserSecurityForm({ user }: any) {
                     : "border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
                 }`}
               />
-              {confirmPassword.length > 0 && !passwordsMatch && (
-                <p className="text-red-500 text-sm mt-1">
-                  Passwords do not match
-                </p>
-              )}
             </div>
+            {confirmPassword.length > 0 && !passwordsMatch && (
+              <p className="text-red-500 text-sm mt-1">
+                Passwords do not match
+              </p>
+            )}
           </div>
 
           <div className="pt-4 border-t border-gray-200">
@@ -91,3 +89,10 @@ export default function UserSecurityForm({ user }: any) {
     </form>
   );
 }
+
+
+
+
+
+
+

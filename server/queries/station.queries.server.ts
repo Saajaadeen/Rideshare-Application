@@ -20,8 +20,11 @@ export async function createStop(
   return stop;
 }
 
-export async function getStop() {
+export async function getStop(baseId: string) {
   const stop = await prisma.station.findMany({
+    where: {
+      baseId,
+    },
     select: {
       id: true,
       baseId: true,
