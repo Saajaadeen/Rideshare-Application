@@ -41,39 +41,42 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 md:p-6 relative overflow-hidden">
       <div className="absolute inset-0 opacity-40 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl " />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100 p-10 w-full max-w-[550px]">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 rounded-t-3xl" />
+      <div className="relative bg-white rounded-b-3xl shadow-xl border-l border-b border-r border-gray-100 p-10 w-full max-w-[550px]">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 " />
 
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-blue-500/30">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5.121 17.804A9 9 0 1118.88 6.195M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
+        <div className="mb-8 md:text-center">
+          <div className="flex items-start md:items-center md:justify-center gap-4 md:gap-0 md:flex-col">
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl md:mb-4 shadow-lg shadow-blue-500/30 flex-shrink-0">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5.121 17.804A9 9 0 1118.88 6.195M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-xl md:text-3xl font-bold text-gray-900 md:mb-2">
+                Create Account
+              </h1>
+              <p className="text-gray-500 text-sm">
+                Join Base Bound to start your secure rides
+              </p>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Create Account
-          </h1>
-          <p className="text-gray-500 text-sm">
-            Join Base Bound to start your secure rides
-          </p>
         </div>
-
         {/* Form */}
         <form method="POST" action="/register" className="space-y-5">
           {[
@@ -165,7 +168,7 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-600 mt-8">
+        <p className="text-sm text-center text-gray-600 mt-4 md:mt-8">
           Already have an account?{" "}
           <Link
             to="/login"

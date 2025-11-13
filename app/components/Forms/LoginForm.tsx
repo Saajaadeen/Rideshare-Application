@@ -7,15 +7,15 @@ export default function Login({ error }: { error?: string }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 md:p-6 relative overflow-hidden">
 
       <div className="absolute inset-0 overflow-hidden opacity-40">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100 p-10 w-full max-w-[550px]">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 rounded-t-3xl" />
+      <div className="relative bg-white md:rounded-b-3xl h-screen md:h-fit shadow-xl border-l border-b border-r border-gray-100 p-6 md:p-10 w-full max-w-[550px] flex flex-col justify-center md:justify-start">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 " />
 
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-blue-500/30">
