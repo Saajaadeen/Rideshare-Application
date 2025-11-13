@@ -47,7 +47,7 @@ export default function Register() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative bg-white rounded-b-3xl shadow-xl border-l border-b border-r border-gray-100 p-10 w-full max-w-[550px]">
+      <div className="relative bg-white rounded-b-3xl h-screen md:h-fit shadow-xl md:border-l md:border-b md:border-r border-gray-100 p-10 w-full max-w-[550px]">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 " />
 
         <div className="mb-8 md:text-center">

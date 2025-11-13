@@ -14,7 +14,7 @@ export default function Login({ error }: { error?: string }) {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative bg-white md:rounded-b-3xl h-screen md:h-fit shadow-xl border-l border-b border-r border-gray-100 p-6 md:p-10 w-full max-w-[550px] flex flex-col justify-center md:justify-start">
+      <div className="relative bg-white md:rounded-b-3xl h-screen md:h-fit shadow-xl md:border-l md:border-b md:border-r border-gray-100 p-6 md:p-10 w-full max-w-[550px] flex flex-col justify-center md:justify-start">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 " />
 
         <div className="text-center mb-8">
