@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap, LatLngBoundsExpression } from "leaflet";
 import RightSideUserPanelForm from "./RightSideUserPanelForm";
-import LeftSideRidePanelForm from "./LeftSideRidePanelForm";
+import LeftSideRidePanelForm from "./LeftRidePanelForm";
 import { Outlet } from "react-router";
 import MiddlePanelForm from "./MiddlePanelForm";
 
-export default function Dashboard({ user, station, requestInfo }: any) {
+export default function Dashboard({ user, station, accepted, activeRequests, requestInfo }: any) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
 
@@ -66,7 +66,13 @@ export default function Dashboard({ user, station, requestInfo }: any) {
       </div> */}
 
       <div className="absolute top-0 left-0 h-full z-10">
-        <LeftSideRidePanelForm user={user} station={station} requestInfo={requestInfo}/>
+        <LeftSideRidePanelForm 
+          user={user} 
+          station={station}
+          accepted={accepted}
+          activeRequests={activeRequests} 
+          requestInfo={requestInfo}
+        />
       </div>
 
       <div className="hidden md:block absolute top-0 right-0 h-full z-10">

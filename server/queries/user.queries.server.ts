@@ -22,6 +22,7 @@ export async function getUserInfo(intent: string, userId: string) {
           email: true,
           isAdmin: true,
           isReset: true,
+          isDriver: true,
           baseId: true,
         },
       });

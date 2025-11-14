@@ -23,9 +23,9 @@ model User {
   resetCode   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-
-  requests    Request[]
-  vehicles    Vehicle[]
+  requests    Request[]  @relation("PassengerRelation")
+  driver      Request[]  @relation("DriverRelation")
+  vehicles    Vehicle[]  
 }
 
 model Vehicle {
@@ -58,21 +58,26 @@ model Station {
 }
 
 model Request {
-  id           String         @id @default(uuid())
+  id           String       @id @default(uuid())
+  baseId       String?
   userId       String?
   driverId     String?
   pickupId     String?
   dropoffId    String?
-  status       String?        
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  status       String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  acceptedAt   DateTime?
   pickedUpAt   DateTime?
   droppedOffAt DateTime?
 
-  user     User?    @relation(fields: [userId], references: [id])
+  base     Base?    @relation("BaseRelation", fields: [baseId], references: [id])
+  user     User?    @relation("PassengerRelation", fields: [userId], references: [id])
+  driver   User?    @relation("DriverRelation", fields: [driverId], references: [id])
   pickup   Station? @relation("PickupStation", fields: [pickupId], references: [id])
   dropoff  Station? @relation("DropoffStation", fields: [dropoffId], references: [id])
 }
+
 
 model Base {
   id            String    @id @default(uuid())
@@ -84,6 +89,7 @@ model Base {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  requests      Request[] @relation("BaseRelation")
   users         User[]
   stations      Station[]
 }
