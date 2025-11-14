@@ -39,7 +39,7 @@ export default function LeftSideRidePanelForm({
             </div>
           </div>
 
-          {user.isDriver && (
+          {user?.isDriver && (
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-white">
                 {isDriverMode ? "Driver" : "Passenger"}
@@ -65,7 +65,7 @@ export default function LeftSideRidePanelForm({
           {!isDriverMode ? (
             <LeftPanelPassengerForm user={user} station={station} />
           ) : (
-            user.isDriver && (
+            user?.isDriver && (
               <LeftPanelDriverForm
                 user={user}
                 activeRequests={activeRequests}
@@ -80,7 +80,7 @@ export default function LeftSideRidePanelForm({
           <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />
         </div>
       ) : (
-        user.isDriver && (
+        user?.isDriver && (
           <div className="absolute bottom-0">
             <LeftPanelDriverRequestForm accepted={accepted} />
           </div>

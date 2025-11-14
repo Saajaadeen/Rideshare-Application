@@ -38,7 +38,7 @@ export default function ManageStopForm({ station, base }: any) {
   return (
     <section className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
       <div className="mb-8">
-        <h3 className="text-3xl font-bold text-gray-900 mb-2">
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">
           Manage Stop Locations
         </h3>
         <p className="text-gray-600">

@@ -241,6 +241,7 @@ export default function ManageUserForm({ accounts }: any) {
             <div className="bg-gray-50 px-6 py-4 flex gap-3 justify-end">
               <button
                 type="button"
+                onClick={() => setDeletingUser(null)}
                 className="px-5 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition"
               >
                 Cancel
