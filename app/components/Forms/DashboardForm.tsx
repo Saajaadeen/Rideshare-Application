@@ -8,6 +8,7 @@ import MiddlePanelForm from "./MiddlePanelForm";
 export default function Dashboard({ user, station, accepted, activeRequests, requestInfo }: any) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
 
   console.log(station)
 
@@ -49,16 +50,27 @@ export default function Dashboard({ user, station, accepted, activeRequests, req
 
       map.fitBounds(bounds);
       mapInstanceRef.current = map;
+
+      station.forEach((location) => {
+        const marker = window.L.marker([location.latitude, location.longitude])
+          .addTo(map)
+          .bindPopup(`<b>${location.name}</b>`);
+
+        markersRef.current.push(marker);
+      });
     };
 
     document.body.appendChild(script);
 
     return () => {
+      markersRef.current.forEach(marker => marker.remove());
+      markersRef.current = [];
+
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
       }
     };
-  }, []);
+  }, [station]);
 
   return (
     <div className="relative w-full h-screen">
