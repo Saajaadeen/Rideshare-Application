@@ -41,11 +41,12 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
   const handleTabChange = (tabName: string) => {
     setSelectedTab(tabName);
   };
-
+  let temp1 = ''
+  let temp2 = 'bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl md:w-[1000px] h-[700px] flex overflow-hidden relative border border-gray-200/50'
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 to-black/50 backdrop-blur-lg p-4">
-      <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-[1000px] h-[700px] flex overflow-hidden relative border border-gray-200/50">
-        <aside className="w-80 bg-gradient-to-b from-indigo-50 via-white to-indigo-50/50 p-8 flex flex-col gap-2 border-r border-indigo-100/50 relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex md:items-center md:justify-center bg-black/50 to-black/50 backdrop-blur-lg md:p-4 w-screen">
+      <div className="bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl md:w-[1000px] md:h-[700px] flex overflow-hidden relative border border-gray-200/50">
+        <aside className="hidden md:block w-80 bg-gradient-to-b from-indigo-50 via-white to-indigo-50/50 p-8 flex-col gap-2 border-r border-indigo-100/50 relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
               Settings
@@ -70,7 +71,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
           </div>
         </aside>
 
-        <div className="flex-1 p-10 overflow-y-auto max-h-[85vh] relative bg-gradient-to-br from-white via-indigo-50/10 to-white">
+        <div className="flex-1 p-10 overflow-y-auto h-[95vh] md:max-h-[85vh] relative bg-gradient-to-br from-white via-indigo-50/10 to-white">
           <Link
             to="/dashboard"
             className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 hover:bg-red-500 transition-all duration-300 hover:rotate-90"

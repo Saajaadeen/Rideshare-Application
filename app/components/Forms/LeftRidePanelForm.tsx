@@ -26,7 +26,7 @@ export default function LeftSideRidePanelForm({
     }
   }, [searchParams, setSearchParams]);
 
-  console.log(isDriverMode)
+  console.log(user)
 
   return (
     <>
