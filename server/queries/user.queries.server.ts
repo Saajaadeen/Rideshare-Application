@@ -58,6 +58,7 @@ export async function getUserInfo(intent: string, userId: string) {
           email: true,
           phoneNumber: true,
           isAdmin: true,
+          baseId: true,
         },
       });
 

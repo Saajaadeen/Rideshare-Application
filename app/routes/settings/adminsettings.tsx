@@ -10,7 +10,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const userId   = await requireUserId(request);
   const user     = await getUserInfo('admin', userId);
   const base     = await getBase();
-  const station  = await getStop();
+  const station  = await getStop(user?.baseId);
   const accounts = await getAccounts();
 
   return { user, base, station, accounts };
@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const phoneNumber   = formData.get("phoneNumber") as string || undefined;
   const password      = formData.get("password") as string || undefined;
   const isAdmin       = formData.get("isAdmin") === "true";
-  const isDriver      = formData.get ("isDriver") === "true";
+  const isDriver      = formData.get("isDriver") === "true";
   const isPassenger   = formData.get("isPassenger") === "true";
   const isReset       = formData.get("isReset") === "true";
   
