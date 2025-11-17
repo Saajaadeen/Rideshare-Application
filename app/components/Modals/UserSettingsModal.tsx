@@ -71,7 +71,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
           </div>
         </aside>
 
-        <div className="flex-1 p-10 overflow-y-auto h-[95vh] md:max-h-[85vh] relative bg-gradient-to-br from-white via-indigo-50/10 to-white">
+        <div className="flex-1 p-10 overflow-y-auto max-h-[95vh] md:max-h-[85vh] relative bg-gradient-to-br from-white via-indigo-50/10 to-white">
           <Link
             to="/dashboard"
             className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 hover:bg-red-500 transition-all duration-300 hover:rotate-90"

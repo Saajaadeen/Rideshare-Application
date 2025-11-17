@@ -43,7 +43,7 @@ export default function UserBaseForm({ user, base }: any) {
 )}
 
 
-        <div className="absolute bottom-0 right-10">
+        <div className="absolute bottom-0 md:bottom-10 right-10">
           <ButtonControls />
         </div>
       </form>
