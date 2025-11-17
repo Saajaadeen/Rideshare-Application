@@ -1,5 +1,6 @@
 import React, { type SetStateAction } from "react";
 import { MagnifyIcon } from "../Icons/MagnifyIcon";
+import { useSearchParams } from "react-router";
 
 interface Option {
   id: string;
@@ -26,8 +27,17 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   excludeId,
   icon: Icon,
   name,
-  setShowMain,
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function setPickUp(){
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set("showmap", "true");
+      return params;
+    });
+  }
+
   return (
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -39,7 +49,10 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <Icon className="w-5 h-5" />
           </div>
-          <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" onClick={() => setShowMain(false)}>
+          <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPickUp()}}>
             <MagnifyIcon className="w-5 h-5" />
           </div>
         </>

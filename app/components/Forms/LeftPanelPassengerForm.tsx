@@ -40,7 +40,6 @@ export default function LeftSidePassengerForm({ user, station, setShowMain }: an
             excludeId=""
             icon={MapPinIcon}
             name="pickupId"
-            setShowMain={setShowMain}
           />
 
           <LocationSelect
@@ -51,7 +50,6 @@ export default function LeftSidePassengerForm({ user, station, setShowMain }: an
             excludeId={fromLocation}
             icon={NavigationIcon}
             name="dropoffId"
-            setShowMain={setShowMain}
           />
         </div>
 

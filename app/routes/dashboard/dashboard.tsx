@@ -1,7 +1,9 @@
+import { useEffect, useRef } from "react";
 import {
   useLoaderData,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
+  useSearchParams,
 } from "react-router";
 import {
   cancelRequest,
@@ -17,6 +19,7 @@ import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo } from "server/queries/user.queries.server";
 import { requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
+import MapDisplay from "~/components/Maps/MapDisplay";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -40,6 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const pickupId = (formData.get("pickupId") as string) || undefined;
   const dropoffId = (formData.get("dropoffId") as string) || undefined;
 
+
   if (intent === "requestPickup") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
   }
@@ -57,10 +61,16 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
+
+
 export default function Dashboard() {
+  
   const { user, station, accepted, activeRequests, requestInfo } = useLoaderData<typeof loader>();
+
+
   return (
     <div>
+      <MapDisplay user={user} station={station}/>
       <DashboardForm
         user={user}
         station={station}

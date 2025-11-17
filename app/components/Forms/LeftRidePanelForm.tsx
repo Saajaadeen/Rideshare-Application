@@ -16,7 +16,8 @@ export default function LeftSideRidePanelForm({
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "passenger";
   const isDriverMode = mode === "driver";
-  const [showMain, setShowMain] = useState(true);
+  console.log(!searchParams.get("pickup"))
+  const showMain = !searchParams.get("showmap")
   const toggleMode = () => {
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
@@ -33,7 +34,13 @@ export default function LeftSideRidePanelForm({
     {!showMain && 
       <div className="absolute top-7 left-6 rounded-xl">
         <div className="bg-linear-to-br from-blue-600 to-indigo-700 text-white flex rounded-xl items-center gap-3">
-          <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl" onClick={() => setShowMain(true)}>
+          <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl" onClick={() => 
+            setSearchParams((prev) => {
+              const params = new URLSearchParams(prev);
+              params.delete("showmap");
+              return params
+            })
+          }>
             <BaseBoundIcon className="w-6 h-6"/>
           </div>
         </div>
@@ -75,7 +82,7 @@ export default function LeftSideRidePanelForm({
 
         <div className="p-6 bg-white">
           {!isDriverMode ? (
-            <LeftPanelPassengerForm user={user} station={station} setShowMain={setShowMain}/>
+            <LeftPanelPassengerForm user={user} station={station}/>
           ) : (
             user?.isDriver && (
               <LeftPanelDriverForm

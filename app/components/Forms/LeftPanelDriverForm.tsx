@@ -57,7 +57,7 @@ export default function LeftPanelDriverForm({ user, activeRequests }: any) {
               <input type="hidden" name="driverId" value={user.id}/>
               <div
                 key={request.id}
-                className="bg-gray-50 rounded-xl p-4 shadow-sm hover:shadow-md transition"
+                className="bg-gray-50 rounded-xl p-4 mb-4 shadow-md hover:shadow-md transition"
               >
                 <div className="grid grid-cols-2 gap-4 items-start">
                   <div>
