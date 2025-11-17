@@ -1,6 +1,7 @@
 import React, { type SetStateAction } from "react";
 import { MagnifyIcon } from "../Icons/MagnifyIcon";
 import { useSearchParams } from "react-router";
+import { XMarkIcon } from "../Icons/XMarkIcon";
 
 interface Option {
   id: string;
@@ -16,7 +17,6 @@ interface LocationSelectProps {
   excludeId?: string;
   icon?: React.ElementType;
   name: string;
-  setShowMain: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
@@ -29,13 +29,24 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   name,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const pickupSet = !!searchParams.get("pickupId")
+  const dropoffSet = !!searchParams.get("dropoffId")
+  console.log('passed value', value)
 
-  function setPickUp(){
+  function selectPin(){
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
-      params.set("showmap", "true");
+      params.set("showmap", name === "pickupId" ? "pickup" : "dropoff");
       return params;
     });
+  }
+  function remove(name: string){
+    console.log('test')
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.delete(name)
+      return params;
+    })
   }
 
   return (
@@ -52,8 +63,8 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
           <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setPickUp()}}>
-            <MagnifyIcon className="w-5 h-5" />
+            selectPin()}}>
+            {((name === 'pickupId' && pickupSet) || (name === 'dropoffId' && dropoffSet) || value !== "") ? <XMarkIcon className="w-5 h-5" onClick={(e) => {e.preventDefault(); e.stopPropagation(); remove(name)}}/> : <MagnifyIcon className="w-5 h-5" />}
           </div>
         </>
         )}

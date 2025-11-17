@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocationSelect from "../Input/LocationSelect";
 import { MapPinIcon } from "../Icons/MapPinIcon";
 import { NavigationIcon } from "../Icons/NavigationIcon";
+import { useSearchParams } from "react-router";
 
-export default function LeftSidePassengerForm({ user, station, setShowMain }: any) {
-  const [fromLocation, setFromLocation] = useState("");
-  const [toLocation, setToLocation] = useState("");
+export default function LeftSidePassengerForm({ user, station, params}: any) {
+  const from = params.get('pickupId') ?? ''
+  const to = params.get('dropoffId') ?? ''
+  const [fromLocation, setFromLocation] = useState(from);
+  const [toLocation, setToLocation] = useState(to);
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log('from: ', fromLocation, ' to: ', toLocation)
 
   const isButtonEnabled =
     !user?.isReset &&
@@ -23,6 +28,14 @@ export default function LeftSidePassengerForm({ user, station, setShowMain }: an
       return "Pickup and dropoff cannot be the same.";
     return "";
   };
+  useEffect(() => {
+    if(!from){
+      setFromLocation('')
+    }
+    if(!to){
+      setToLocation('')
+    }
+  }, [params])
 
   return (
     <>
@@ -35,7 +48,13 @@ export default function LeftSidePassengerForm({ user, station, setShowMain }: an
           <LocationSelect
             label="Pickup Location"
             value={fromLocation}
-            onChange={(e) => setFromLocation(e.target.value)}
+            onChange={(e) => {
+              setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                params.set("pickupId", e.currentTarget.value);
+                return params
+              })
+              setFromLocation(e.target.value)}}
             options={station}
             excludeId=""
             icon={MapPinIcon}
@@ -45,7 +64,13 @@ export default function LeftSidePassengerForm({ user, station, setShowMain }: an
           <LocationSelect
             label="Dropoff Location"
             value={toLocation}
-            onChange={(e) => setToLocation(e.target.value)}
+            onChange={(e) => {
+              setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                params.set("dropoffId", e.currentTarget.value);
+                return params
+              })
+              setToLocation(e.target.value)}}
             options={station}
             excludeId={fromLocation}
             icon={NavigationIcon}

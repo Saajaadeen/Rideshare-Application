@@ -61,19 +61,16 @@ export default function MapDisplay({ user, station }: any) {
 
   // Update markers ONLY when station changes
   // Update markers ONLY when station changes
+// Update markers ONLY when station changes
 useEffect(() => {
       if (!mapInstanceRef.current || !window.L) return;
-    
-      console.log("Station array:", station);
-      console.log("Station length:", station?.length);
     
       // Clear existing markers
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
     
       // Add new markers
-      station.forEach((location, index) => {
-        console.log(`Processing marker ${index}:`, location);
+      station.filter(loc => loc.id !== (searchParams.get("dropoffId") || searchParams.get('pickupId'))).forEach((location, index) => {
         
         const marker = window.L.marker([
           location.latitude,
@@ -83,34 +80,35 @@ useEffect(() => {
         // Create a DOM element for the popup
         const popupDiv = document.createElement("div");
         popupDiv.style.cursor = "pointer";
-        popupDiv.style.padding = "4px";
-        popupDiv.innerHTML = `<b>${location.name}</b>`;
-        
-        console.log(`About to add click listener for ${location.name}`);
+        popupDiv.style.padding = "8px";
+        popupDiv.style.minWidth = "100px";
+        popupDiv.style.textAlign = "center";
+        popupDiv.innerHTML = `<b>${location.name}</b><br/><small>${location.description}</small>`;
         
         // Add click handler directly to the div
-        popupDiv.addEventListener("click", () => {
-          console.log("Popup clicked for location:", location.id);
+        popupDiv.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent event bubbling
+          
           setSearchParams((prev) => {
             const params = new URLSearchParams(prev);
-            params.set("locationId", location.id);
+            const dest = params.get("showmap")
+            params.set(dest === "pickup" ? "pickupId" : "dropoffId", location.id);
+            params.delete("showmap")
             return params;
           });
         });
     
         // Bind the popup with the DOM element
         marker.bindPopup(popupDiv);
-    
+
         markersRef.current.push(marker);
       });
-    
-      console.log("Total markers created:", markersRef.current.length);
     }, [station, setSearchParams]);
 
   return (
     <>
       {user.baseId ? (
-        <div ref={mapRef} className="absolute inset-0 w-full h-full z-0" />
+        <div ref={mapRef} className="absolute inset-0 w-full h-full z-1" />
       ) : (
         <div className="absolute inset-0 w-full h-full z-0 bg-white"></div>
       )}

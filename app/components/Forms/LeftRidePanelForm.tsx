@@ -17,7 +17,8 @@ export default function LeftSideRidePanelForm({
   const mode = searchParams.get("mode") || "passenger";
   const isDriverMode = mode === "driver";
   console.log(!searchParams.get("pickup"))
-  const showMain = !searchParams.get("showmap")
+  const showMain = 
+  !searchParams.get("showmap")
   const toggleMode = () => {
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
@@ -82,7 +83,7 @@ export default function LeftSideRidePanelForm({
 
         <div className="p-6 bg-white">
           {!isDriverMode ? (
-            <LeftPanelPassengerForm user={user} station={station}/>
+            <LeftPanelPassengerForm user={user} station={station} params={searchParams}/>
           ) : (
             user?.isDriver && (
               <LeftPanelDriverForm
