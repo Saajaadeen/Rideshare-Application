@@ -240,9 +240,9 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
   };
 
   return (
-    <div className={`fixed md:absolute transition-all bottom-0 left-0 md:bottom-10 md:left-8 z-51 md:z-40 ${showRequests ? 'max-h-80' : ' '} w-full md:w-96 bg-white md:rounded-2xl shadow-xl border border-gray-100 overflow-hidden`}>
-      <div className="p-4 border-2 border-y-gray-200 md:border-b md:border-gray-100 flex items-center justify-between bg-gray-100" onClick={() => setShowRequests(!showRequests)}>
-        <h3 className="text-sm font-semibold text-gray-700">Requests</h3>
+    <div className={`fixed md:absolute transition-all bottom-0 left-0 md:bottom-10 md:left-8 z-51 md:z-40 ${showRequests ? 'max-h-80' : ' '} w-full md:w-96 bg-white md:rounded-2xl shadow-xl md:border border-gray-100 overflow-hidden`}>
+      <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-4 text-white" onClick={() => setShowRequests(!showRequests)}>
+        <h3 className="text-lg font-semibold ">Requests</h3>
         {requestInfo.length > 0 && (
           <>
             {requestInfo.some(
