@@ -2,8 +2,6 @@ import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 
 export default function MapDisplay({ user, station }: any) {
-  console.log("User Info: ", user);
-  console.log("Station Info: ", station);
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

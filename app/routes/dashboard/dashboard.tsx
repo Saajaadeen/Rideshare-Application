@@ -27,6 +27,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const accepted = await getDriverRequest(userId);
   const activeRequests = await getActiveRequest(user?.baseId);
 
+  console.log('',station)
+
   return { user, station, accepted, activeRequests, requestInfo: passenger };
 }
 
