@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import LeftPanelPassengerRequestsForm from "./LeftPanelPassengerRequestsForm";
 import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
@@ -12,90 +12,150 @@ export default function LeftSideRidePanelForm({
   accepted,
   activeRequests,
   requestInfo,
+  onLogout, // Add this prop
 }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
   const isDriverMode = mode === "driver";
-  console.log(!searchParams.get("pickup"))
-  const showMain = 
-  !searchParams.get("showmap")
+  
+  const showMain = !searchParams.get("showmap");
+
   const toggleMode = () => {
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
+
   useEffect(() => {
     if (!searchParams.get("mode")) {
       setSearchParams({ mode: "passenger" });
     }
   }, [searchParams, setSearchParams]);
 
-  console.log(user)
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setShowMobileMenu(false);
+    if (onLogout) {
+      onLogout();
+    }
+  };
 
   return (
     <>
-    {!showMain && 
-      <div className="absolute top-7 left-6 rounded-xl">
-        <div className="bg-linear-to-br from-blue-600 to-indigo-700 text-white flex rounded-xl items-center gap-3">
-          <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl" onClick={() => 
-            setSearchParams((prev) => {
-              const params = new URLSearchParams(prev);
-              params.delete("showmap");
-              return params
-            })
-          }>
-            <BaseBoundIcon className="w-6 h-6"/>
-          </div>
-        </div>
-      </div>
-    }
-    {showMain && <div className="absolute top-0 left-0 md:top-8 md:left-8 z-50 w-screen md:w-96 h-screen md:h-fit bg-white md:rounded-2xl shadow-2xl md:border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
+      {!showMain && (
+        <div className="absolute top-7 left-6 rounded-xl">
+          <div className="bg-linear-to-br from-blue-600 to-indigo-700 text-white flex rounded-xl items-center gap-3">
+            <div
+              className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer"
+              onClick={() =>
+                setSearchParams((prev) => {
+                  const params = new URLSearchParams(prev);
+                  params.delete("showmap");
+                  return params;
+                })
+              }
+            >
               <BaseBoundIcon className="w-6 h-6" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">Base Bound</h1>
-              <p className="text-blue-100 text-sm">Request Your Ride</p>
+          </div>
+        </div>
+      )}
+      
+      {showMain && (
+        <div className="absolute top-0 left-0 md:top-8 md:left-8 z-50 w-screen md:w-96 h-screen md:h-fit bg-white md:rounded-2xl shadow-2xl md:border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div 
+                  className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl md:cursor-default cursor-pointer"
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                >
+                  <BaseBoundIcon className="w-6 h-6" />
+                </div>
+
+                {/* Mobile dropdown menu */}
+                {showMobileMenu && (
+                  <>
+                    {/* Backdrop */}
+                    <div
+                      className="fixed inset-0 z-40 md:hidden"
+                      onClick={() => setShowMobileMenu(false)}
+                    />
+                    
+                    {/* Menu */}
+                    <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 md:hidden">
+                      <div className="p-4 bg-gray-50 border-b border-gray-200">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {user?.email}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {user?.isDriver ? "Driver Account" : "Passenger Account"}
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Base Bound</h1>
+                <p className="text-blue-100 text-sm">Request Your Ride</p>
+              </div>
             </div>
+
+            {user?.isDriver && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-white hidden sm:inline">
+                  {isDriverMode ? "Driver" : "Passenger"}
+                </span>
+                <button
+                  type="button"
+                  onClick={toggleMode}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
+                    isDriverMode ? "bg-indigo-600" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                      isDriverMode ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            )}
           </div>
 
-          {user?.isDriver && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-white">
-                {isDriverMode ? "Driver" : "Passenger"}
-              </span>
-              <button
-                type="button"
-                onClick={toggleMode}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-                  isDriverMode ? "bg-indigo-600" : "bg-gray-300"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
-                    isDriverMode ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          )}
+          <div className="p-6 bg-white">
+            {!isDriverMode ? (
+              <LeftPanelPassengerForm user={user} station={station} params={searchParams} />
+            ) : (
+              user?.isDriver && (
+                <LeftPanelDriverForm user={user} activeRequests={activeRequests} />
+              )
+            )}
+          </div>
         </div>
-
-        <div className="p-6 bg-white">
-          {!isDriverMode ? (
-            <LeftPanelPassengerForm user={user} station={station} params={searchParams}/>
-          ) : (
-            user?.isDriver && (
-              <LeftPanelDriverForm
-                user={user}
-                activeRequests={activeRequests}
-              />
-            )
-          )}
-        </div>
-      </div>
-    }
-
+      )}
+      
       {!isDriverMode ? (
         <div className="absolute bottom-0">
           <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />

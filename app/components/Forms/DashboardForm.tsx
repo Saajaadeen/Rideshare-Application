@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import type { Map as LeafletMap, LatLngBoundsExpression } from "leaflet";
 import RightSideUserPanelForm from "./RightSideUserPanelForm";
 import LeftSideRidePanelForm from "./LeftRidePanelForm";
-import { Outlet, useSearchParams } from "react-router";
+import { Outlet, useNavigate, useSearchParams } from "react-router";
 import MiddlePanelForm from "./MiddlePanelForm";
 
 export default function Dashboard({ user, station, accepted, activeRequests, requestInfo }: any) {
-
+  const navigate = useNavigate();
 
   console.log(station)
 
@@ -26,10 +26,11 @@ export default function Dashboard({ user, station, accepted, activeRequests, req
           accepted={accepted}
           activeRequests={activeRequests} 
           requestInfo={requestInfo}
+          onLogout={() => navigate("/logout")}
         />
       </div>
 
-      <div className="hidden md:block absolute top-0 right-0 h-full z-10">
+      <div className="hidden md:block absolute top-0 right-0 h-full md:z-10">
         <RightSideUserPanelForm user={user} />
       </div>
       <Outlet />

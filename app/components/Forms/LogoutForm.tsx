@@ -8,8 +8,8 @@ export default function Logout() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100 p-10 w-[550px] text-center">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 rounded-t-3xl"></div>
+      <div className="relative bg-white md:rounded-3xl shadow-xl border border-gray-100 p-10 w-screen md:w-[550px] text-center">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 "></div>
 
         <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-6 shadow-lg shadow-blue-500/30">
           <svg
