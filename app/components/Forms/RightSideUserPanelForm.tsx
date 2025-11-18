@@ -10,7 +10,7 @@ export default function RightSideUserPanelForm({user}: any) {
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   return (
-    <div className="absolute top-8 w-[350px] max-w-400 right-8 z-50 w-72 bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+    <div className="w-[350px] max-w-[400px] bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
       <button
         onClick={toggleDropdown}
         className="flex items-center w-full justify-between px-4 py-1.5 hover:bg-gray-50 transition-colors"

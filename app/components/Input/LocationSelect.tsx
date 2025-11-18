@@ -31,7 +31,6 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const pickupSet = !!searchParams.get("pickupId")
   const dropoffSet = !!searchParams.get("dropoffId")
-  console.log('passed value', value)
 
   function selectPin(){
     setSearchParams((prev) => {
@@ -41,7 +40,6 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     });
   }
   function remove(name: string){
-    console.log('test')
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.delete(name)

@@ -1,8 +1,7 @@
-import { useEffect, useRef } from "react";
-import type { Map as LeafletMap, LatLngBoundsExpression } from "leaflet";
 import RightSideUserPanelForm from "./RightSideUserPanelForm";
 import LeftSideRidePanelForm from "./LeftRidePanelForm";
 import { Outlet, useNavigate, useSearchParams } from "react-router";
+import { Outlet } from "react-router";
 import MiddlePanelForm from "./MiddlePanelForm";
 
 export default function Dashboard({ user, station, accepted, activeRequests, requestInfo }: any) {
@@ -13,7 +12,7 @@ export default function Dashboard({ user, station, accepted, activeRequests, req
   
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="w-full h-screen">
       
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20 w-[90%] max-w-4xl">
         <MiddlePanelForm user={user}/>
@@ -30,6 +29,7 @@ export default function Dashboard({ user, station, accepted, activeRequests, req
         />
       </div>
 
+      <div className="absolute top-8 right-8 z-50 ">
       <div className="hidden md:block absolute top-0 right-0 h-full md:z-10">
         <RightSideUserPanelForm user={user} />
       </div>

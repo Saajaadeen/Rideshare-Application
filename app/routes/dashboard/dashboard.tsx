@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react";
 import {
   useLoaderData,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
-  useSearchParams,
 } from "react-router";
 import {
   cancelRequest,
@@ -24,8 +22,7 @@ import MapDisplay from "~/components/Maps/MapDisplay";
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
   const user = await getUserInfo("dashboard", userId);
-  console.log(user)
-  const station = await getStop(user?.baseId || "");
+  const station = await getStop(user?.baseId);
   const passenger = await getPassengerRequest(userId);
   const accepted = await getDriverRequest(userId);
   const activeRequests = await getActiveRequest(user?.baseId);
@@ -42,7 +39,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const baseId = (formData.get("baseId") as string) || undefined;
   const pickupId = (formData.get("pickupId") as string) || undefined;
   const dropoffId = (formData.get("dropoffId") as string) || undefined;
-
 
   if (intent === "requestPickup") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
@@ -61,16 +57,12 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-
-
 export default function Dashboard() {
-  
-  const { user, station, accepted, activeRequests, requestInfo } = useLoaderData<typeof loader>();
-
-
+  const { user, station, accepted, activeRequests, requestInfo } =
+    useLoaderData<typeof loader>();
   return (
     <div>
-      <MapDisplay user={user} station={station}/>
+      <MapDisplay user={user} station={station} />
       <DashboardForm
         user={user}
         station={station}

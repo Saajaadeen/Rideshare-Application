@@ -10,7 +10,6 @@ export default function LeftSidePassengerForm({ user, station, params}: any) {
   const [fromLocation, setFromLocation] = useState(from);
   const [toLocation, setToLocation] = useState(to);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log('from: ', fromLocation, ' to: ', toLocation)
 
   const isButtonEnabled =
     !user?.isReset &&

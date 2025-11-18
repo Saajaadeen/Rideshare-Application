@@ -18,9 +18,8 @@ export default function LeftSideRidePanelForm({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
   const isDriverMode = mode === "driver";
-  
-  const showMain = !searchParams.get("showmap");
-
+  const showMain = 
+  !searchParams.get("showmap")
   const toggleMode = () => {
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
@@ -30,15 +29,6 @@ export default function LeftSideRidePanelForm({
       setSearchParams({ mode: "passenger" });
     }
   }, [searchParams, setSearchParams]);
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    setShowMobileMenu(false);
-    if (onLogout) {
-      onLogout();
-    }
-  };
 
   return (
     <>

@@ -23,7 +23,14 @@ export async function getUserInfo(intent: string, userId: string) {
           isAdmin: true,
           isReset: true,
           isDriver: true,
-          baseId: true,
+          base: {
+            select: {
+              id: true,
+              name: true,
+              long: true,
+              lat: true,
+            }
+          }
         },
       });
 

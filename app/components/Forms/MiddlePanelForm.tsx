@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { WarningIcon } from "../Icons/WarningIcon";
 
 export default function MiddlePanelForm({ user }: any) {
-  const hasBase = !!user?.baseId;
+  const hasBase = !!user?.base.id;
   const isReset = !!user?.isReset;
   const noErrors = hasBase && !isReset;
 
