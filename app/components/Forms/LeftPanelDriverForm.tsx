@@ -1,3 +1,5 @@
+import { Form } from "react-router";
+
 export default function LeftPanelDriverForm({ user, activeRequests }: any) {
 
   return (
@@ -51,7 +53,7 @@ export default function LeftPanelDriverForm({ user, activeRequests }: any) {
           };
 
           return (
-            <form method="post" action="/dashboard?mode=driver">
+            <Form method="post" action="/dashboard?mode=driver">
               <input type="hidden" name="intent" value="acceptRequest" />
               <input type="hidden" name="requestId" value={request.id} />
               <input type="hidden" name="driverId" value={user.id}/>
@@ -84,7 +86,7 @@ export default function LeftPanelDriverForm({ user, activeRequests }: any) {
                   {request.pickup.name} → {request.dropoff.name}
                 </p>
               </div>
-            </form>
+            </Form>
           );
         })
       )}

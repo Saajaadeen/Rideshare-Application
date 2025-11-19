@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ClockIcon } from "../Icons/ClockIcon";
 import { UserIcon } from "../Icons/UserIcon";
+import { Form } from "react-router";
 
 export default function LeftPanelRequestsForm({ requestInfo }: any) {
   if (!requestInfo) requestInfo = [];
@@ -115,16 +116,11 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
             <div className="flex items-center gap-2">{getStatusBadge()}</div>
           </div>
         ) : (
-          <form
-            method="post"
-            action="/dashboard?mode=passenger"
-            key={request.id}
-            className="bg-white p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
-          >
+          <Form method="post" action="/dashboard?mode=passenger" key={request.id}
+            className="bg-white p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow">
             <input type="hidden" name="intent" value="cancelRequest" />
             <input type="hidden" name="requestId" value={request.id} />
 
-            {/* Rider Info */}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                 <UserIcon className="w-4 h-4 text-white" />
@@ -160,7 +156,6 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
               )}
             </div>
 
-            {/* Pickup / Dropoff */}
             <div className="space-y-2">
               {["pickup", "dropoff"].map((type) => (
                 <div key={type} className="flex items-start gap-2">
@@ -233,7 +228,7 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
                 )
               ) : null}
             </div>
-          </form>
+          </Form>
         )}
       </div>
     );

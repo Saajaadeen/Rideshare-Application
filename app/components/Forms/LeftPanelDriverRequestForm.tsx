@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Form } from "react-router";
 
 export default function LeftPanelDriverRequestForm({ accepted }: any) {
   const [showRequests, setShowRequests] = useState(false);
@@ -96,7 +97,7 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
 
               <div className="flex gap-2">
                 {!ride.pickedUpAt && (
-                  <form method="post" action="/dashboard?mode=driver" className="flex-1">
+                  <Form method="post" action="/dashboard?mode=driver" className="flex-1">
                     <input type="hidden" name="intent" value="pickupRequest" />
                     <input type="hidden" name="requestId" value={ride.id} />
                     <button
@@ -105,10 +106,10 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                     >
                       Confirm Pickup
                     </button>
-                  </form>
+                  </Form>
                 )}
                 {ride.pickedUpAt && !ride.droppedOffAt && (
-                  <form method="post" action="/dashboard?mode=driver" className="flex-1">
+                  <Form method="post" action="/dashboard?mode=driver" className="flex-1">
                     <input type="hidden" name="intent" value="dropOffRequest" />
                     <input type="hidden" name="requestId" value={ride.id} />
                     <button
@@ -117,7 +118,7 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                     >
                       Complete Drop Off
                     </button>
-                  </form>
+                  </Form>
                 )}
               </div>
             </div>

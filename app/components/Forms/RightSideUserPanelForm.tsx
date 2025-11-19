@@ -1,16 +1,34 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SettingsIcon } from "../Icons/SettingsIcon";
 import { AdminIcon } from "../Icons/AdminIcon";
 import { LogoutIcon } from "../Icons/LogoutIcon";
 import { Link } from "react-router";
 
-export default function RightSideUserPanelForm({user}: any) {
+export default function RightSideUserPanelForm({ user }: any) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="w-[350px] max-w-[400px] bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+    <div
+      ref={dropdownRef}
+      className="w-[350px] max-w-[400px] bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 overflow-hidden"
+    >
       <button
         onClick={toggleDropdown}
         className="flex items-center w-full justify-between px-4 py-1.5 hover:bg-gray-50 transition-colors"
@@ -32,27 +50,30 @@ export default function RightSideUserPanelForm({user}: any) {
 
       {isDropdownOpen && (
         <div className="w-full p-3 space-y-2 bg-white border-t border-gray-100">
-            {user?.isAdmin ? (
-              <Link
+          {user?.isAdmin && (
+            <Link
               to="/dashboard/admin"
+              onClick={() => setIsDropdownOpen(false)}
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors font-medium text-gray-800"
             >
               <AdminIcon className="size-6" />
               Admin
             </Link>
-            ): ''}
+          )}
 
-            <Link
-              to="/dashboard/settings"
-              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors font-medium text-gray-800"
-            >
-              <SettingsIcon className="size-6" />
-              Settings
-            </Link>
+          <Link
+            to="/dashboard/settings"
+            onClick={() => setIsDropdownOpen(false)}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors font-medium text-gray-800"
+          >
+            <SettingsIcon className="size-6" />
+            Settings
+          </Link>
 
           <form method="post" action="/logout">
             <button
               type="submit"
+              onClick={() => setIsDropdownOpen(false)}
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium text-red-600"
             >
               <LogoutIcon className="size-6" />
