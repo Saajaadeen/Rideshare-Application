@@ -3,31 +3,16 @@ import { MagnifyIcon } from "../Icons/MagnifyIcon";
 import { useSearchParams } from "react-router";
 import { XMarkIcon } from "../Icons/XMarkIcon";
 
-interface Option {
-  id: string;
-  name: string;
-  [key: string]: any;
-}
 
-interface LocationSelectProps {
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: Option[];
-  excludeId?: string;
-  icon?: React.ElementType;
-  name: string;
-}
-
-const LocationSelect: React.FC<LocationSelectProps> = ({
+const LocationSelect = ({
   label,
   value,
   onChange,
-  options = [], // <-- default to empty array
+  options = [],
   excludeId,
   icon: Icon,
   name,
-}) => {
+}: any) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pickupSet = !!searchParams.get("pickupId")
   const dropoffSet = !!searchParams.get("dropoffId")
@@ -76,10 +61,10 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         >
           <option value="">Select {label.toLowerCase()}...</option>
           {options
-            .filter((opt) => opt.id !== excludeId)
-            .map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.name}
+            .filter((opt: any) => opt?.id !== excludeId)
+            .map((opt: any) => (
+              <option key={opt?.id} value={opt?.id}>
+                {opt?.name}
               </option>
             ))}
         </select>

@@ -20,7 +20,7 @@ export default function LeftSidePassengerForm({ user, station, params}: any) {
 
   const getDisabledReason = () => {
     if (user?.isReset) return "Please create a new password to continue.";
-    if (!user?.baseId) return "Please choose a base to continue.";
+    if (!user?.base?.id) return "Please choose a base to continue.";
     if (!fromLocation || !toLocation)
       return "Select both pickup and dropoff locations.";
     if (fromLocation === toLocation)

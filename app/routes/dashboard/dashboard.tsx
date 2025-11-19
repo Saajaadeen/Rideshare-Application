@@ -22,12 +22,10 @@ import MapDisplay from "~/components/Maps/MapDisplay";
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
   const user = await getUserInfo("dashboard", userId);
-  const station = await getStop(user?.baseId);
+  const station = await getStop(user?.base?.id);
   const passenger = await getPassengerRequest(userId);
   const accepted = await getDriverRequest(userId);
-  const activeRequests = await getActiveRequest(user?.baseId);
-
-  console.log('',station)
+  const activeRequests = await getActiveRequest(user?.base?.id);
 
   return { user, station, accepted, activeRequests, requestInfo: passenger };
 }
@@ -64,7 +62,10 @@ export default function Dashboard() {
     useLoaderData<typeof loader>();
   return (
     <div>
-      <MapDisplay user={user} station={station} />
+      <MapDisplay
+        user={user} 
+        station={station} 
+      />
       <DashboardForm
         user={user}
         station={station}

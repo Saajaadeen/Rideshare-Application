@@ -7,6 +7,10 @@ export default function MapDisplay({ user, station }: any) {
   const mapInstanceRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
 
+  const longitude = user?.base?.long ? parseFloat(user.base.long) : 0;
+  const latitude = user?.base?.lat ? parseFloat(user.base.lat) : 0;
+  const zoom = longitude === 0 && latitude === 0 ? 1 : 12;
+
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -30,13 +34,13 @@ export default function MapDisplay({ user, station }: any) {
           },
         ],
       },
-      center: [parseFloat(user.base.long), parseFloat(user.base.lat)],
-      zoom: 14,
+      center: [longitude, latitude],
+      zoom: zoom,
     });
 
     mapInstanceRef.current = map;
 
-    map.on("click", (e) => {
+    map.on("click", () => {
       markersRef.current.forEach((marker) => {
         const popup = marker.getPopup();
         if (popup && popup.isOpen()) {
@@ -49,7 +53,7 @@ export default function MapDisplay({ user, station }: any) {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, [user.base.long, user.base.lat]);
+  }, [user?.base?.long, user?.base?.lat]);
 
   useEffect(() => {
     if (!mapInstanceRef.current || !station) return;
@@ -58,11 +62,15 @@ export default function MapDisplay({ user, station }: any) {
     markersRef.current = [];
 
     station.forEach((loc: any) => {
-      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
+      const popup = new maplibregl.Popup({ 
+        offset: 25,
+        closeButton: false,
+        closeOnClick: false,
+       }).setHTML(
         `
         <div class="text-center p-2 text-black">
-          <h3 class="text-lg font-bold">${loc.name}</h3>
-          <p class="max-w-40 text-md">${loc.description || ""}</p>
+          <h3 class="text-lg font-bold">${loc?.name || ""}</h3>
+          <p class="max-w-40 text-md">${loc?.description || ""}</p>
         </div>
         `
       );
@@ -81,5 +89,6 @@ export default function MapDisplay({ user, station }: any) {
     };
   }, [station]);
 
-  return <div ref={mapRef} className="relative w-screen h-screen" />;
+  return <div ref={mapRef} className="w-screen h-screen overflow-hidden" />;
+
 }

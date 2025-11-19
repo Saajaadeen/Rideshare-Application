@@ -1,11 +1,11 @@
 import RightSideUserPanelForm from "./RightSideUserPanelForm";
 import LeftSideRidePanelForm from "./LeftRidePanelForm";
-import { Outlet, useNavigate, useSearchParams } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import MiddlePanelForm from "./MiddlePanelForm";
 
 export default function Dashboard({ user, station, accepted, activeRequests, requestInfo }: any) {
   const navigate = useNavigate();
-  
+
   return (
     <div className="w-full h-screen">
       

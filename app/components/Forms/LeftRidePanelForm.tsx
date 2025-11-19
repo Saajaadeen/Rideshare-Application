@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import LeftPanelPassengerRequestsForm from "./LeftPanelPassengerRequestsForm";
 import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
 import LeftPanelDriverForm from "./LeftPanelDriverForm";
 import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
+import { LogoutIcon } from "../Icons/LogoutIcon";
 
 export default function LeftSideRidePanelForm({
   user,
@@ -12,7 +13,6 @@ export default function LeftSideRidePanelForm({
   accepted,
   activeRequests,
   requestInfo,
-  onLogout, // Add this prop
 }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -63,16 +63,13 @@ export default function LeftSideRidePanelForm({
                   <BaseBoundIcon className="w-6 h-6" />
                 </div>
 
-                {/* Mobile dropdown menu */}
                 {showMobileMenu && (
                   <>
-                    {/* Backdrop */}
                     <div
                       className="fixed inset-0 z-40 md:hidden"
                       onClick={() => setShowMobileMenu(false)}
                     />
                     
-                    {/* Menu */}
                     <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 md:hidden">
                       <div className="p-4 bg-gray-50 border-b border-gray-200">
                         <p className="text-sm font-medium text-gray-900 truncate">
@@ -82,25 +79,13 @@ export default function LeftSideRidePanelForm({
                           {user?.isDriver ? "Driver Account" : "Passenger Account"}
                         </p>
                       </div>
-                      <button
-                        onClick={handleLogout}
+                      <Link
+                        to="/logout"
                         className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                       >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
+                        <LogoutIcon className="size-6"/>
                         Sign Out
-                      </button>
+                      </Link>
                     </div>
                   </>
                 )}

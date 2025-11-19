@@ -21,6 +21,11 @@ export async function createStop(
 }
 
 export async function getStop(baseId: string) {
+  console.log("baseId received:", baseId);
+  if (!baseId) {
+    return [];
+  }
+
   const stop = await prisma.station.findMany({
     where: {
       baseId,
