@@ -23,9 +23,23 @@ model User {
   resetCode   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  inviteId    String?
   requests    Request[]  @relation("PassengerRelation")
   driver      Request[]  @relation("DriverRelation")
+  invite      Invite[]   @relation("InviteRelation")
   vehicles    Vehicle[]  
+}
+
+model Invite {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  userId      String
+  code        String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  isActive      Boolean    @default(true)
+
+  user     User?    @relation("InviteRelation", fields: [userId], references: [id])
 }
 
 model Vehicle {

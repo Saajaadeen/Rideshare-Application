@@ -13,8 +13,10 @@ import UserVehicleForm from "../Pages/User/UserVehicleForm";
 import UserBaseForm from "../Pages/User/UserBaseForm";
 import UserPermissionForm from "../Pages/User/UserPermissionForm";
 import UserProfileForm from "../Pages/User/UserProfileForm";
+import UserInviteForm from "../Pages/User/UserInviteForm";
+import { KeyIcon } from "../Icons/KeyIcon";
 
-export default function UserSettingsModal({ user, base, vehicles }: any) {
+export default function UserSettingsModal({ user, base, vehicles, invite }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [selectedTab, setSelectedTab] = useState(tabParam || "profile");
@@ -25,6 +27,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
     { label: "Base",         name: "base",         icon: <BaseIcon className="size-6" /> },
     { label: "Vehicles",     name: "vehicles",     icon: <VehicleIcon className="size-6" /> },
     { label: "Security",     name: "security",     icon: <ShieldIcon className="size-6" /> },
+    { label: "Invites",      name: "invites",      icon: <KeyIcon className="size-6" /> },
     { label: "Deactivation", name: "deactivation", icon: <WarningIcon className="size-6" /> },
   ];
 
@@ -41,8 +44,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
   const handleTabChange = (tabName: string) => {
     setSelectedTab(tabName);
   };
-  let temp1 = ''
-  let temp2 = 'bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl md:w-[1000px] h-[700px] flex overflow-hidden relative border border-gray-200/50'
+
   return (
     <div className="fixed inset-0 z-50 flex md:items-center md:justify-center bg-black/50 to-black/50 backdrop-blur-lg md:p-4 w-screen">
       <div className="bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl md:w-[1000px] md:h-[700px] flex overflow-hidden relative border border-gray-200/50">
@@ -84,6 +86,7 @@ export default function UserSettingsModal({ user, base, vehicles }: any) {
           {selectedTab === "base"         && <UserBaseForm user={user} base={base} />}
           {selectedTab === "vehicles"     && <UserVehicleForm user={user} vehicles={vehicles} />}
           {selectedTab === "security"     && <UserSecurityForm user={user} />}
+          {selectedTab === "invites"      && <UserInviteForm user={user} invite={invite} />}
           {selectedTab === "deactivation" && <UserDeleteForm user={user} />}
         </div>
       </div>

@@ -14,34 +14,6 @@ export default function LeftSidePassengerForm({ user, station, params }: any) {
     toLocation &&
     fromLocation !== toLocation;
 
-  const getDisabledReason = () => {
-    if (user?.isReset)
-      return (
-        <p className="rounded-full border border-1 border-red-500 bg-red-200 hover:bg-red-300 select-none py-1.5 px-2 transition duration-300 ease-in-out">
-          Please create a new password to continue.
-        </p>
-      );
-    if (!user?.base?.id)
-      return (
-        <p className="rounded-full border border-1 border-red-500 bg-red-200 hover:bg-red-300 select-none py-1.5 px-2 transition duration-300 ease-in-out">
-          Please choose a base to continue.
-        </p>
-      );
-    if (!fromLocation || !toLocation)
-      return (
-        <p className="rounded-full border border-1 border-yellow-500 bg-yellow-200 hover:bg-yellow-300 select-none py-1.5 px-2 transition duration-300 ease-in-out">
-          Select both pickup and dropoff locations.
-        </p>
-      );
-    if (fromLocation === toLocation)
-      return (
-        <p className="rounded-full border border-1 border-red-500 bg-red-200 hover:bg-red-300 select-none py-1.5 px-2 transition duration-300 ease-in-out">
-          Pickup and dropoff cannot be the same.
-        </p>
-      );
-    return "";
-  };
-
   return (
     <Form method="post" action="/dashboard?mode=passenger">
       <input type="hidden" name="intent" value="requestPickup" />
@@ -139,8 +111,7 @@ export default function LeftSidePassengerForm({ user, station, params }: any) {
       </button>
 
       {!isButtonEnabled && (
-        <div className="text-sm text-gray-800 mt-5 text-center">
-          {getDisabledReason()}
+        <div className="text-sm text-gray-800 text-center">
         </div>
       )}
     </Form>

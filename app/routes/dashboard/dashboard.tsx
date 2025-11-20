@@ -16,7 +16,6 @@ import {
 import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo } from "server/queries/user.queries.server";
 import { requireUserId } from "server/session.server";
-import Banner from "~/components/Banner/Banner";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
 
@@ -63,7 +62,6 @@ export default function Dashboard() {
     useLoaderData<typeof loader>();
   return (
     <div>
-      <Banner />
       <MapDisplay
         user={user} 
         station={station} 

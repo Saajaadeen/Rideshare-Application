@@ -1,3 +1,4 @@
+import { Form } from "react-router";
 import ButtonControls from "~/components/Buttons/ButtonControls";
 
 export default function UserBaseForm({ user, base }: any) {
@@ -12,7 +13,11 @@ export default function UserBaseForm({ user, base }: any) {
         </p>
       </div>
 
-      <form method="post" action="/dashboard/settings?tab=base" className="flex flex-col flex-1">
+      <Form
+        method="post"
+        action="/dashboard/settings?tab=base"
+        className="flex flex-col flex-1"
+      >
         <input type="hidden" name="intent" value="user" />
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -32,21 +37,20 @@ export default function UserBaseForm({ user, base }: any) {
         </div>
 
         {user?.base?.id && (
-  <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm">
-    <span className="block text-sm text-gray-500 font-semibold mb-1">
-      Current Assigned Base
-    </span>
-    <span className="block text-gray-800 font-medium text-lg">
-      {user.base.name} ({user.base.state})
-    </span>
-  </div>
-)}
-
+          <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm">
+            <span className="block text-sm text-gray-500 font-semibold mb-1">
+              Current Assigned Base
+            </span>
+            <span className="block text-gray-800 font-medium text-lg">
+              {user.base.name} ({user.base.state})
+            </span>
+          </div>
+        )}
 
         <div className="absolute bottom-0 md:bottom-10 right-10">
           <ButtonControls />
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

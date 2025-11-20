@@ -1,4 +1,5 @@
 import { useLoaderData, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router";
+import { createInvite, deleteInvite, disableInvite, enableInvite, getInvites, updateInvite } from "server/queries/invite.queries.server";
 import { deleteUserAccount, getBaseInfo, getUserInfo, updateUserInfo } from "server/queries/user.queries.server";
 import { createVehicle, deleteVehicle, enableVehicle, getVehicles } from "server/queries/vehicle.queries.server";
 import { requireUserId } from "server/session.server";
@@ -9,8 +10,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUserInfo('settings', userId);
   const vehicles = await getVehicles(userId);
   const base = await getBaseInfo();
+  const invite = await getInvites(userId);
   
-  return{ user, base, vehicles };
+  return{ user, base, vehicles, invite };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -35,22 +37,28 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (intent === "user") {
     return updateUserInfo(userId, firstName, lastName, email, phoneNumber, password, baseId);
-  }
-  if (intent === "user-delete") {
-    return deleteUserAccount(userId)
-  }
-  if (intent === "vehicle") {
-    return createVehicle(userId, year!, make!, model!, color!, plate!)
-  }
-  if (intent === "vehicle-enable") {
-    return enableVehicle(userId, isDriver)
-  }
-  if (intent === "vehicle-delete") {
-    return deleteVehicle(id!)
+  } else if (intent === "user-delete") {
+    return deleteUserAccount(userId);
+  } else if (intent === "vehicle") {
+    return createVehicle(userId, year!, make!, model!, color!, plate!);
+  } else if (intent === "vehicle-enable") {
+    return enableVehicle(userId, isDriver);
+  } else if (intent === "vehicle-delete") {
+    return deleteVehicle(id!);
+  } else if (intent === "create-invite") {
+    return createInvite(email!, userId)
+  } else if (intent === "regenerate-invite") {
+    return updateInvite(id!)
+  } else if (intent === "disable-invite") {
+    return disableInvite(id!)
+  } else if (intent === "enable-invite") {
+    return enableInvite(id!)
+  } else if (intent === "delete-invite") {
+    return deleteInvite(id!)
   }
 }
 
 export default function UserSettings() {
-    const { user, base, vehicles } = useLoaderData<typeof loader>();
-    return <UserSettingsModal user={user} base={base} vehicles={vehicles} />
+    const { user, base, vehicles, invite } = useLoaderData<typeof loader>();
+    return <UserSettingsModal user={user} base={base} vehicles={vehicles} invite={invite} />
 }

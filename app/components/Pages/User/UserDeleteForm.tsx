@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { Form } from "react-router";
 import { WarningIcon } from "~/components/Icons/WarningIcon";
 
 export default function UserDeleteForm({ user }: any) {
@@ -9,7 +10,7 @@ export default function UserDeleteForm({ user }: any) {
   
   const modal = (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50">
-      <form method="post" action="/dashboard/settings">
+      <Form method="post" action="/dashboard/settings">
         <input type="hidden" name="userId" value={user?.id} />
         <input type="hidden" name="intent" value="user-delete" />
         <div className="bg-white rounded-3xl shadow-2xl max-w-md w-[500px] p-8 border border-gray-200">
@@ -60,7 +61,7 @@ export default function UserDeleteForm({ user }: any) {
             </button>
           </div>
         </div>
-      </form>
+      </Form>
     </div>
   );
   

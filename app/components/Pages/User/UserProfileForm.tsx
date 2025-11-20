@@ -1,3 +1,4 @@
+import { Form } from "react-router";
 import ButtonControls from "~/components/Buttons/ButtonControls";
 import { MailIcon } from "~/components/Icons/MailIcon";
 import { PhoneIcon } from "~/components/Icons/PhoneIcon";
@@ -15,7 +16,7 @@ export default function UserProfileForm({ user }: any) {
         </p>
       </div>
 
-      <form method="post" action="/dashboard/settings?tab=profile">
+      <Form method="post" action="/dashboard/settings?tab=profile">
         <input type="hidden" name="intent" value="user" />
         <div className="flex flex-col min-h-full space-y-5">
           <div className="grid grid-cols-2 gap-5">
@@ -99,7 +100,7 @@ export default function UserProfileForm({ user }: any) {
             <ButtonControls />
           </div>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }
