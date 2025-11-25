@@ -5,6 +5,7 @@ import {
   type ActionFunctionArgs,
   useRevalidator,
 } from "react-router";
+import { toast } from "react-toastify";
 // import { notifyDriversOfNewRide } from "server";
 import {
   cancelRequest,
@@ -23,6 +24,7 @@ import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
 import { useRideNotifications } from "~/hooks/useRideNotifications";
 import { useWebSocket } from "~/hooks/useWebSocket";
+import type { Route } from "../../+types/root";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -47,9 +49,11 @@ export async function action({ request }: ActionFunctionArgs) {
   console.log('form_data: ',formData)
   if (intent === "createRequest") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
+    return { success: true, message: "Ride Requested!"}
   }
   if (intent === "cancelRequest") {
     cancelRequest(requestId!, driverId!);
+    return { success: false, message: "Ride Cancelled!"}
   }
   if (intent === "acceptRequest") {
     acceptRequest(requestId!, driverId! , userId!);
@@ -62,9 +66,10 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function Dashboard() {
+export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
   const { user, station, accepted, activeRequests, requestInfo } =
-  useLoaderData<typeof loader>();
+  loaderData;
+
 const revalidate = useRevalidator();
 const { isConnected, messages, sendMessage } = useWebSocket(user?.id);
 const { rideData } = useRideNotifications(user?.id);
@@ -73,6 +78,7 @@ const processedAcceptedRides = useRef(new Set<string>());
 const processedCancelledRides = useRef(new Set<string>());
 const processedPickedUpRides = useRef(new Set<string>());
 const processedDroppedOffRides = useRef(new Set<string>());
+const processedRideAcceptedRides = useRef(new Set<string>());
 
 useEffect(() => {
   const newRideMessages = messages.filter(
@@ -93,6 +99,9 @@ useEffect(() => {
 
   const droppedOffMessages = messages.filter(
     m => m.type === "user_dropped_off" && !processedDroppedOffRides.current.has(m.rideId)
+  );
+  const rideAcceptedMessages = messages.filter(
+    m => m.type === "ride_accepted" && !processedRideAcceptedRides.current.has(m.rideId)
   );
 
   console.log('after filter - new:', newRideMessages.length, 'accepted:', acceptMessages.length);
@@ -122,7 +131,21 @@ useEffect(() => {
     droppedOffMessages.forEach(m => processedDroppedOffRides.current.add(m.rideId));
     revalidate.revalidate();
   }
+  if( rideAcceptedMessages.length > 0){
+    rideAcceptedMessages.forEach(m => processedRideAcceptedRides.current.add(m.rideId));
+    revalidate.revalidate();
+  }
 }, [messages, rideData, revalidate]);
+
+useEffect(() => {
+  console.log(actionData)
+  if(actionData?.success){
+    toast.success(actionData.message)
+  }
+  if(actionData && !actionData?.success){
+    toast.error(actionData.message)
+  }
+},[actionData])
 
   return (
     <div>

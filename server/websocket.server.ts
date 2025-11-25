@@ -134,6 +134,7 @@ export function notifyDriversOfNewRide(rideId: string, pickupLocation: string) {
 
 export function notifyRiderOfConfirmation(rideId: string, userId: string){
   broadcastToUser(userId, {rideId: rideId, confirm: true, type: "accept_ride_request"})
+  broadcastToAll({type: "ride_accepted", rideId: rideId})
 }
 
 export function notifyDriverOfCancelation(rideId: string, userId: string){

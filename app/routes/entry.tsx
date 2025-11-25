@@ -1,3 +1,4 @@
+import { toast, ToastContainer } from "react-toastify";
 import type { Route } from "./+types/entry";
 import Login from "./auth/login";
 
@@ -9,8 +10,10 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Entry() {
+  // const notify = () => toast("test", {autoClose: 1000});
   return (
     <div>
+
       <Login />
     </div>
   );
