@@ -16,10 +16,8 @@ export function useWebSocket(userId: string | null) {
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
-        console.log("WebSocket connected");
         setIsConnected(true);
         
-        // Authenticate with userId
         ws.current?.send(JSON.stringify({ type: "auth", userId }));
       };
 
@@ -29,12 +27,9 @@ export function useWebSocket(userId: string | null) {
       };
 
       ws.current.onclose = () => {
-        console.log("WebSocket disconnected");
         setIsConnected(false);
         
-        // Attempt reconnect after 3 seconds
         reconnectTimeout.current = setTimeout(() => {
-          console.log("Attempting to reconnect...");
           connect();
         }, 3000);
       };

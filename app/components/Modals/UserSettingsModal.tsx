@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useState } from "react";
+import { Link } from "react-router";
 import { UserIcon } from "../Icons/UserIcon";
 import { LockIcon } from "../Icons/LockIcon";
 import { VehicleIcon } from "../Icons/VehicleIcon";
@@ -22,9 +22,7 @@ export default function UserSettingsModal({
   vehicles,
   invite,
 }: any) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabParam = searchParams.get("tab");
-  const [selectedTab, setSelectedTab] = useState(tabParam || "profile");
+  const [selectedTab, setSelectedTab] = useState("profile");
 
   const tabs = [
     {
@@ -61,26 +59,6 @@ export default function UserSettingsModal({
     },
   ].filter((tab) => !tab.hide);
 
-  useEffect(() => {
-    if (user?.isInvite && selectedTab === "invites") {
-      setSelectedTab("profile");
-    }
-  }, [user?.isInvite, selectedTab]);
-
-  useEffect(() => {
-    setSearchParams({ tab: selectedTab }, { replace: true });
-  }, [selectedTab, setSearchParams]);
-
-  useEffect(() => {
-    if (tabParam && tabParam !== selectedTab) {
-      setSelectedTab(tabParam);
-    }
-  }, [tabParam]);
-
-  const handleTabChange = (tabName: string) => {
-    setSelectedTab(tabName);
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex md:items-center md:justify-center bg-black/50 to-black/50 backdrop-blur-lg md:p-4 w-screen">
       <div className="bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl md:w-[1000px] md:h-[700px] flex overflow-hidden relative border border-gray-200/50">
@@ -94,7 +72,7 @@ export default function UserSettingsModal({
                 <button
                   key={tab.name}
                   type="button"
-                  onClick={() => handleTabChange(tab.name)}
+                  onClick={() => setSelectedTab(tab.name)}
                   className={`w-full text-left px-5 py-3.5 rounded-2xl font-medium transition-all duration-300 flex items-center gap-3 group ${
                     selectedTab === tab.name
                       ? "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/30 scale-105"
@@ -120,13 +98,9 @@ export default function UserSettingsModal({
           {selectedTab === "profile" && <UserProfileForm user={user} />}
           {selectedTab === "permissions" && <UserPermissionForm user={user} />}
           {selectedTab === "base" && <UserBaseForm user={user} base={base} />}
-          {selectedTab === "vehicles" && (
-            <UserVehicleForm user={user} vehicles={vehicles} />
-          )}
+          {selectedTab === "vehicles" && ( <UserVehicleForm user={user} vehicles={vehicles} /> )}
           {selectedTab === "security" && <UserSecurityForm user={user} />}
-          {!user?.isInvite && selectedTab === "invites" && (
-            <UserInviteForm user={user} invite={invite} />
-          )}
+          {!user?.isInvite && selectedTab === "invites" && ( <UserInviteForm user={user} invite={invite} /> )}
           {selectedTab === "deactivation" && <UserDeleteForm user={user} />}
         </div>
       </div>

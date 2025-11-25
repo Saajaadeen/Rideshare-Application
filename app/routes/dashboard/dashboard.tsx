@@ -46,7 +46,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const baseId = (formData.get("baseId") as string) || undefined;
   const pickupId = (formData.get("pickupId") as string) || undefined;
   const dropoffId = (formData.get("dropoffId") as string) || undefined;
-  console.log('form_data: ',formData)
   if (intent === "createRequest") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
     return { success: true, message: "Ride Requested!"}
@@ -103,18 +102,13 @@ useEffect(() => {
   const rideAcceptedMessages = messages.filter(
     m => m.type === "ride_accepted" && !processedRideAcceptedRides.current.has(m.rideId)
   );
-
-  console.log('after filter - new:', newRideMessages.length, 'accepted:', acceptMessages.length);
-  console.log('all messages ', messages)
   
   if (newRideMessages.length > 0 && rideData) {
-    console.log('New rides detected:', newRideMessages.length);
     newRideMessages.forEach(m => processedRideIds.current.add(m.rideId));
     revalidate.revalidate();
   }
   
   if (acceptMessages.length > 0) {
-    console.log('Accepted rides:', acceptMessages.length);
     acceptMessages.forEach(m => processedAcceptedRides.current.add(m.rideId));
     revalidate.revalidate();
   }
@@ -138,7 +132,6 @@ useEffect(() => {
 }, [messages, rideData, revalidate]);
 
 useEffect(() => {
-  console.log(actionData)
   if(actionData?.success){
     toast.success(actionData.message)
   }
@@ -149,13 +142,6 @@ useEffect(() => {
 
   return (
     <div>
-      {/* <div className="absolute bg-red-500 z-60">
-        <div>Status: {isConnected ? 'Connected': 'Disconnected'}</div>
-        <button className="hover:bg-red-300" onClick={() => {console.log('sent'); sendMessage({ type: 'ping'})}} >Send Message</button>
-        <div>Messages:
-          {messages && messages.length > 0 && <>{messages.map(message =><p>{message.type}: {message.timestamp}</p>)}</>}
-        </div>
-      </div> */}
       <MapDisplay
         user={user} 
         station={station} 

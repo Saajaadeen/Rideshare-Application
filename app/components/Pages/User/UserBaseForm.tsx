@@ -15,7 +15,7 @@ export default function UserBaseForm({ user, base }: any) {
 
       <Form
         method="post"
-        action="/dashboard/settings?tab=base"
+        action="/dashboard/settings"
         className="flex flex-col flex-1"
       >
         <input type="hidden" name="intent" value="user" />

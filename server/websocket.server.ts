@@ -16,16 +16,13 @@ const getClients = () => {
 };
 
 export function initializeWebSocket(websocketServer: WebSocketServer) {
-  console.log("🟢 initializeWebSocket called");
   global.__wss = websocketServer;
   
   websocketServer.on("connection", (ws) => {
-    console.log("WebSocket client connected");
     
     let userId: string | null = null;
 
     ws.on("message", async (message) => {
-      console.log("message", message);
       try {
         const data = JSON.parse(message.toString());
         
@@ -39,7 +36,6 @@ export function initializeWebSocket(websocketServer: WebSocketServer) {
           clients.get(userId)!.add(ws);
           
           ws.send(JSON.stringify({ type: "auth", status: "success" }));
-          console.log(`User ${userId} authenticated via WebSocket`);
         }
         
         if (data.type === "ping") {
@@ -52,7 +48,6 @@ export function initializeWebSocket(websocketServer: WebSocketServer) {
     });
 
     ws.on("close", () => {
-      console.log("WebSocket client disconnected");
       
       if (userId) {
         const clients = getClients();
@@ -67,7 +62,6 @@ export function initializeWebSocket(websocketServer: WebSocketServer) {
     });
 
     ws.on("error", (error) => {
-      console.error("WebSocket error:", error);
     });
   });
 }
@@ -77,14 +71,12 @@ export function broadcastToUser(userId: string, data: any) {
   const clients = getClients();
   
   if (!wss) {
-    console.warn("⚠️ WebSocket server not available, skipping broadcast");
     return;
   }
   
   const userClients = clients.get(userId);
   if (userClients) {
     const message = JSON.stringify(data);
-    console.log('message: ', message)
     userClients.forEach((client) => {
       if (client.readyState === 1) {
         try {
@@ -100,13 +92,7 @@ export function broadcastToUser(userId: string, data: any) {
 export function broadcastToAll(data: any) {
   const wss = getWss();
   
-  // console.log("data: ", data);
-  // console.log("wss: ", wss);
-  // console.log("🔴 broadcastToAll called, wss is:", wss ? "SET" : "NULL");
-  // console.log("🔴 wss.clients count:", wss?.clients?.size || 0);
-  
   if (!wss) {
-    console.warn("⚠️ WebSocket server not available, skipping broadcast");
     return;
   }
   
@@ -115,7 +101,6 @@ export function broadcastToAll(data: any) {
     if (client.readyState === 1) {
       try {
         client.send(message);
-        console.log("✅ Message sent to client");
       } catch (error) {
         console.error("Error sending to client:", error);
       }
@@ -124,7 +109,6 @@ export function broadcastToAll(data: any) {
 }
 
 export function notifyDriversOfNewRide(rideId: string, pickupLocation: string) {
-  console.log("🟣 notifyDriversOfNewRide called");
   broadcastToAll({
     type: "new_ride_request",
     rideId: rideId,
@@ -138,7 +122,6 @@ export function notifyRiderOfConfirmation(rideId: string, userId: string){
 }
 
 export function notifyDriverOfCancelation(rideId: string, userId: string){
-  console.log('driverId: ', userId)
   broadcastToUser(userId, {
     type: "user_cancelled_request",
     rideId: rideId,
@@ -146,7 +129,6 @@ export function notifyDriverOfCancelation(rideId: string, userId: string){
 }
 
 export function notifyPassengerOfPickup(requestId: string, userId: string){
-  console.log('request: ', requestId, ' userId: ', userId);
   broadcastToUser(userId, {type: "user_picked_up", rideId: requestId})
 }
 

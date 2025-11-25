@@ -19,7 +19,7 @@ export default function UserProfileForm({ user }: any) {
         </p>
       </div>
 
-      <Form method="post" action="/dashboard/settings?tab=profile">
+      <Form method="post" action="/dashboard/settings">
         <input type="hidden" name="intent" value="user" />
         <div className="flex flex-col min-h-full space-y-5">
           

@@ -6,8 +6,6 @@ export default function LeftPanelDriverForm({ user, activeRequests }: any) {
   const isSubmitting = navigation.state === "submitting";
   const submittingRequestId = navigation.formData?.get("requestId");
 
-  console.log(activeRequests)
-
   return (
     <div className="max-h-[500px] overflow-y-auto">
       {activeRequests.length === 0 ? (

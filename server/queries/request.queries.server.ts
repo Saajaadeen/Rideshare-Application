@@ -173,7 +173,6 @@ export async function cancelRequest(id: string, driverId: string) {
       status: "Cancelled",
     },
   });
-  console.log('id: ', id, ' driverId; ', driverId)
   notifyDriverOfCancelation(id, driverId);
   return request;
 }
@@ -189,14 +188,11 @@ export async function acceptRequest(requestId: string, driverId: string, userId:
     },
   });
 
-  console.log('paged: ', userId)
-
   notifyRiderOfConfirmation(requestId, userId)
   return request;
 }
 
 export async function pickupRequest(requestId: string, userId: string) {
-  console.log(requestId, userId)
   const request = await prisma.request.updateMany({
     where: { id: requestId },
     data: {

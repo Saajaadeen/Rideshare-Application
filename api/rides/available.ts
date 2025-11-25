@@ -3,7 +3,6 @@ import { prisma } from "server/db.server";
 import { requireUserId } from "server/session.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-      console.log('test loader')
       const userId = await requireUserId(request)
       const availableRides = await prisma.request.findMany({
             where: {

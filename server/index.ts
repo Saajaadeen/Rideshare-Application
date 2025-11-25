@@ -16,7 +16,6 @@ const viteDevServer =
 const app = express();
 const httpServer = createServer(app);
 
-// Vite dev middleware
 if (viteDevServer) {
   app.use(viteDevServer.middlewares);
 } else {
@@ -30,11 +29,9 @@ if (viteDevServer) {
   app.use(express.static("build/client", { maxAge: "1h" }));
 }
 
-// WebSocket Server Setup
 const wss = new WebSocketServer({ server: httpServer });
 initializeWebSocket(wss);
 
-// React Router request handler
 app.all(
   "*",
   createRequestHandler({
@@ -46,6 +43,4 @@ app.all(
 
 const port = process.env.PORT || 3000;
 httpServer.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
-  console.log(`WebSocket server ready`);
 });

@@ -39,9 +39,6 @@ export function useRideNotifications(userId: string | null) {
       m => m && m.type === 'ride_accepted' && m.rideId && !processedMessageIds.current.has(m.rideId)
     );
 
-    console.log('newRideMessages: ', newRideMessages);
-    console.log('accepted', messages);
-
     if (newRideMessages.length > 0) {
       // Mark these as processed
       newRideMessages.forEach(msg => {

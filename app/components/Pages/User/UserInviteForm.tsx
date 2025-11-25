@@ -41,7 +41,7 @@ export default function UserInviteForm({ invite }: any) {
 
         <Form
           method="post"
-          action="/dashboard/settings?tab=invites"
+          action="/dashboard/settings"
           className="space-y-5"
         >
           <input type="hidden" name="intent" value="create-invite" />
@@ -157,7 +157,7 @@ export default function UserInviteForm({ invite }: any) {
                     {inv.isActive && (
                       <Form
                         method="post"
-                        action="/dashboard/settings?tab=invites"
+                        action="/dashboard/settings"
                       >
                         <input
                           type="hidden"
@@ -188,7 +188,7 @@ export default function UserInviteForm({ invite }: any) {
 
                     <Form
                       method="post"
-                      action="/dashboard/settings?tab=invites"
+                      action="/dashboard/settings"
                     >
                       <input
                         type="hidden"
@@ -217,7 +217,7 @@ export default function UserInviteForm({ invite }: any) {
 
                     <Form
                       method="post"
-                      action="/dashboard/settings?tab=invites"
+                      action="/dashboard/settings"
                     >
                       <input
                         type="hidden"
