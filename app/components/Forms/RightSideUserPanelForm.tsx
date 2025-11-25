@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { SettingsIcon } from "../Icons/SettingsIcon";
 import { AdminIcon } from "../Icons/AdminIcon";
 import { LogoutIcon } from "../Icons/LogoutIcon";
-import { Link } from "react-router";
+import { Form, Link } from "react-router";
 
 export default function RightSideUserPanelForm({ user }: any) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -70,7 +70,7 @@ export default function RightSideUserPanelForm({ user }: any) {
             Settings
           </Link>
 
-          <form method="post" action="/logout">
+          <Form method="post" action="/logout">
             <button
               type="submit"
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium text-red-600"
@@ -78,7 +78,7 @@ export default function RightSideUserPanelForm({ user }: any) {
               <LogoutIcon className="size-6" />
               Logout
             </button>
-          </form>
+          </Form>
         </div>
       )}
     </div>

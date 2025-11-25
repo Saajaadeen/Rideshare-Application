@@ -15,8 +15,8 @@ export default function LeftSidePassengerForm({ user, station, params }: any) {
     fromLocation !== toLocation;
 
   return (
-    <Form method="post" action="/dashboard?mode=passenger">
-      <input type="hidden" name="intent" value="requestPickup" />
+    <Form method="post" >
+      <input type="hidden" name="intent" value="createRequest" />
       <input type="hidden" name="userId" value={user?.id} />
       <input type="hidden" name="baseId" value={user?.base?.id} />
 

@@ -1,7 +1,9 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Add this line
 import type { Route } from "./+types/root";
 import "./app.css";
+import { useEffect } from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,6 +37,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <div>
+      <ToastContainer position="top-center" />
+      <Outlet />
+    </div>
+)
 }
 
