@@ -232,4 +232,5 @@ export async function cancelAcceptedRide(requestId: string, userId: string, pick
   })
   notifyDriversOfNewRide(requestId, pickupId);
   notifyRiderOfCancellation(requestId, userId);
+  return request;
 }

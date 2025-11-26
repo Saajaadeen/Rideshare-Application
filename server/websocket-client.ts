@@ -41,7 +41,7 @@ export async function notifyRiderOfCancellation(rideId: string, userId: string) 
         });
         
         await axios.post(`${WS_API_URL}/broadcast`, {
-          type: "new_ride_requested",
+          type: "new_ride_request",
           rideId: rideId
         });
       } catch (error) {

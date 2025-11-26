@@ -72,96 +72,96 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
-  const { user, station, accepted, activeRequests, requestInfo } =
-  loaderData;
+  const { user, station, accepted, activeRequests, requestInfo } = loaderData;
 
-const revalidate = useRevalidator();
-const { isConnected, messages, sendMessage } = useWebSocket(user?.id);
-const { rideData } = useRideNotifications(user?.id);
-const processedRideIds = useRef(new Set<string>());
-const processedAcceptedRides = useRef(new Set<string>());
-const processedCancelledRides = useRef(new Set<string>());
-const processedPickedUpRides = useRef(new Set<string>());
-const processedDroppedOffRides = useRef(new Set<string>());
-const processedRideAcceptedRides = useRef(new Set<string>());
-const processedDriverCancelledRides = useRef(new Set<string>());
-
-useEffect(() => {
-  console.log('messages: ', messages)
-  const newRideMessages = messages.filter(
-    m => m.type === "new_ride_request" && !processedRideIds.current.has(m.rideId)
-  );
+  const revalidate = useRevalidator();
+  const { isConnected, messages, sendMessage } = useWebSocket(user?.id);
+  const { rideData } = useRideNotifications(user?.id);
   
-  const acceptMessages = messages.filter(
-    m => m.type === "accept_ride_request" && !processedAcceptedRides.current.has(m.rideId)
-  );
-  
-  const cancelledMessages = messages.filter(
-    m => m.type === "user_cancelled_request" && !processedCancelledRides.current.has(m.rideId)
-  );
+  // Track which messages we've already processed
+  const lastProcessedIndex = useRef(0);
+  const processedAcceptedRides = useRef(new Set<string>());
 
-  const pickedUpMessages = messages.filter(
-    m => m.type === "user_picked_up" && !processedPickedUpRides.current.has(m.rideId)
-  );
+  useEffect(() => {
+    if (!messages || messages.length === 0) return;
+    
+    // Only look at NEW messages since last check
+    const newMessages = messages.slice(lastProcessedIndex.current);
+    
+    if (newMessages.length === 0) return;
+    
+    console.log(`Processing ${newMessages.length} new messages`);
+    
+    // Update the index BEFORE processing to avoid reprocessing
+    lastProcessedIndex.current = messages.length;
 
-  const droppedOffMessages = messages.filter(
-    m => m.type === "user_dropped_off" && !processedDroppedOffRides.current.has(m.rideId)
-  );
-  const rideAcceptedMessages = messages.filter(
-    m => m.type === "ride_accepted" && !processedRideAcceptedRides.current.has(m.rideId)
-  );
+    let shouldRevalidate = false;
 
-  const rideCancelledMessages = messages.filter(
-    m => m.type === "driver_cancelled_ride" && !processedDriverCancelledRides.current.has(m.rideId)
-  );
-  
-  if (newRideMessages.length > 0 && rideData) {
-    newRideMessages.forEach(m => processedRideIds.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-  
-  if (acceptMessages.length > 0) {
-    acceptMessages.forEach(m => processedAcceptedRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
+    // Process each new message
+    newMessages.forEach(message => {
+      console.log('Processing message:', message);
+      
+      switch (message.type) {
+        case "new_ride_request":
+          console.log('New ride request:', message.rideId);
+          shouldRevalidate = true;
+          break;
+          
+        case "accept_ride_request":
+          if (!processedAcceptedRides.current.has(message.rideId)) {
+            console.log('Ride accepted:', message.rideId);
+            processedAcceptedRides.current.add(message.rideId);
+            shouldRevalidate = true;
+          }
+          break;
+          
+        case "user_cancelled_request":
+          console.log('User cancelled request:', message.rideId);
+          shouldRevalidate = true;
+          break;
+          
+        case "driver_cancelled_ride":
+          console.log('Driver cancelled ride:', message.rideId);
+          // CRITICAL: Remove from processed so it can be re-accepted
+          processedAcceptedRides.current.delete(message.rideId);
+          shouldRevalidate = true;
+          break;
+          
+        case "user_picked_up":
+          console.log('User picked up:', message.rideId);
+          shouldRevalidate = true;
+          break;
+          
+        case "user_dropped_off":
+          console.log('User dropped off:', message.rideId);
+          shouldRevalidate = true;
+          break;
+          
+        case "ride_accepted":
+          console.log('Ride accepted (broadcast):', message.rideId);
+          shouldRevalidate = true;
+          break;
+      }
+    });
 
-  if( cancelledMessages.length > 0){
-    cancelledMessages.forEach(m => processedCancelledRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-  if( pickedUpMessages.length > 0){
-    pickedUpMessages.forEach(m => processedPickedUpRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-  if( droppedOffMessages.length > 0){
-    droppedOffMessages.forEach(m => processedDroppedOffRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-  if( rideAcceptedMessages.length > 0){
-    rideAcceptedMessages.forEach(m => processedRideAcceptedRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-  if( rideCancelledMessages.length > 0){
-    rideCancelledMessages.forEach(m => processedDriverCancelledRides.current.add(m.rideId));
-    revalidate.revalidate();
-  }
-}, [messages, rideData, revalidate]);
+    if (shouldRevalidate) {
+      console.log('Revalidating...');
+      revalidate.revalidate();
+    }
+  }, [messages, revalidate]);
 
-useEffect(() => {
-  if(actionData?.success){
-    toast.success(actionData.message)
-  }
-  if(actionData && !actionData?.success){
-    toast.error(actionData.message)
-  }
-},[actionData])
+  useEffect(() => {
+    if (actionData?.success) {
+      toast.success(actionData.message);
+    }
+    if (actionData && !actionData?.success) {
+      toast.error(actionData.message);
+    }
+  }, [actionData]);
 
   return (
     <div>
-      <MapDisplay
-        user={user} 
-        station={station} 
-      />
+      <MapDisplay user={user} station={station} />
       <DashboardForm
         user={user}
         station={station}
