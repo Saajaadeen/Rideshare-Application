@@ -1,5 +1,5 @@
 
-import { notifyDriverOfCancelation, notifyDriversOfNewRide, notifyPassengerOfDropoff, notifyPassengerOfPickup, notifyRiderOfConfirmation } from "server/websocket-client";
+import { notifyDriverOfCancelation, notifyDriversOfNewRide, notifyPassengerOfDropoff, notifyPassengerOfPickup, notifyRiderOfCancellation, notifyRiderOfConfirmation } from "server/websocket-client";
 import { prisma } from "../db.server";
 
 export async function createRequest(
@@ -178,6 +178,7 @@ export async function cancelRequest(id: string, driverId: string) {
 }
 
 export async function acceptRequest(requestId: string, driverId: string, userId: string) {
+  console.log(requestId, driverId, userId)
   const request = await prisma.request.updateMany({
     where: { id: requestId, driverId: null },
     data: {
@@ -217,4 +218,18 @@ export async function dropOffRequest(requestId: string, userId: string) {
   });
   notifyPassengerOfDropoff(requestId, userId)
   return request;
+}
+
+export async function cancelAcceptedRide(requestId: string, userId: string, pickupId: string){
+  const request = await prisma.request.updateMany({
+    where: {id: requestId},
+    data: {
+      status: 'Pending',
+      updatedAt: new Date(Date.now()),
+      acceptedAt: null,
+      driverId: null,
+    }
+  })
+  notifyDriversOfNewRide(requestId, pickupId);
+  notifyRiderOfCancellation(requestId, userId);
 }

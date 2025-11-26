@@ -16,6 +16,7 @@ import {
   acceptRequest,
   pickupRequest,
   dropOffRequest,
+  cancelAcceptedRide,
 } from "server/queries/request.queries.server";
 import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo } from "server/queries/user.queries.server";
@@ -46,6 +47,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const baseId = (formData.get("baseId") as string) || undefined;
   const pickupId = (formData.get("pickupId") as string) || undefined;
   const dropoffId = (formData.get("dropoffId") as string) || undefined;
+  const rideConfirmOrCancel = (formData.get("submit") as string) || undefined
+
   if (intent === "createRequest") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
     return { success: true, message: "Ride Requested!"}
@@ -58,7 +61,10 @@ export async function action({ request }: ActionFunctionArgs) {
     acceptRequest(requestId!, driverId! , userId!);
   }
   if (intent === "pickupRequest") {
-    pickupRequest(requestId!, userId!);
+    if(rideConfirmOrCancel === "confirm")   
+      pickupRequest(requestId!, userId!);
+    else
+      cancelAcceptedRide(requestId!, userId!, pickupId!);
   }
   if (intent === "dropOffRequest") {
     dropOffRequest(requestId!, userId!);
@@ -78,6 +84,7 @@ const processedCancelledRides = useRef(new Set<string>());
 const processedPickedUpRides = useRef(new Set<string>());
 const processedDroppedOffRides = useRef(new Set<string>());
 const processedRideAcceptedRides = useRef(new Set<string>());
+const processedDriverCancelledRides = useRef(new Set<string>());
 
 useEffect(() => {
   console.log('messages: ', messages)
@@ -102,6 +109,10 @@ useEffect(() => {
   );
   const rideAcceptedMessages = messages.filter(
     m => m.type === "ride_accepted" && !processedRideAcceptedRides.current.has(m.rideId)
+  );
+
+  const rideCancelledMessages = messages.filter(
+    m => m.type === "driver_cancelled_ride" && !processedDriverCancelledRides.current.has(m.rideId)
   );
   
   if (newRideMessages.length > 0 && rideData) {
@@ -128,6 +139,10 @@ useEffect(() => {
   }
   if( rideAcceptedMessages.length > 0){
     rideAcceptedMessages.forEach(m => processedRideAcceptedRides.current.add(m.rideId));
+    revalidate.revalidate();
+  }
+  if( rideCancelledMessages.length > 0){
+    rideCancelledMessages.forEach(m => processedDriverCancelledRides.current.add(m.rideId));
     revalidate.revalidate();
   }
 }, [messages, rideData, revalidate]);

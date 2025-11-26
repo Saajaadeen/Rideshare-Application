@@ -32,6 +32,23 @@ export async function notifyRiderOfConfirmation(rideId: string, userId: string) 
   }
 }
 
+export async function notifyRiderOfCancellation(rideId: string, userId: string) {
+      try {
+        await axios.post(`${WS_API_URL}/notify/${userId}`, {
+          rideId: rideId,
+          confirm: true,
+          type: "driver_cancelled_ride"
+        });
+        
+        await axios.post(`${WS_API_URL}/broadcast`, {
+          type: "new_ride_requested",
+          rideId: rideId
+        });
+      } catch (error) {
+        console.error("Failed to notify rider:", error);
+      }
+    }
+
 export async function notifyDriverOfCancelation(rideId: string, userId: string) {
   try {
     await axios.post(`${WS_API_URL}/notify/${userId}`, {

@@ -39,6 +39,10 @@ export function useRideNotifications(userId: string | null) {
       m => m && m.type === 'ride_accepted' && m.rideId && !processedMessageIds.current.has(m.rideId)
     );
 
+    const rideCancelledMessages = messages.filter(
+      m => m && m.type === 'ride_accepted' && m.rideId && !processedMessageIds.current.has(m.rideId)
+    );
+
     if (newRideMessages.length > 0) {
       // Mark these as processed
       newRideMessages.forEach(msg => {
@@ -80,6 +84,12 @@ export function useRideNotifications(userId: string | null) {
 
     if (rideAcceptedMessages.length > 0) {
       rideAcceptedMessages.forEach(msg => {
+        processedMessageIds.current.add(msg.rideId);
+      });
+    }
+
+    if (rideCancelledMessages.length > 0) {
+      rideCancelledMessages.forEach(msg => {
         processedMessageIds.current.add(msg.rideId);
       });
     }
