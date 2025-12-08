@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { Form, Link, useSearchParams } from "react-router";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import LeftPanelPassengerRequestsForm from "./LeftPanelPassengerRequestsForm";
 import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
@@ -80,13 +80,15 @@ export default function LeftSideRidePanelForm({
                           {user?.isDriver ? "Driver Account" : "Passenger Account"}
                         </p>
                       </div>
-                      <Link
-                        to="/logout"
-                        className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
-                      >
-                        <LogoutIcon className="size-6"/>
-                        Sign Out
-                      </Link>
+                      <Form method="post" action="/logout">
+                        <button
+                          type="submit"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium text-red-600"
+                        >
+                          <LogoutIcon className="size-6" />
+                          Logout
+                        </button>
+                      </Form>
                     </div>
                   </>
                 )}

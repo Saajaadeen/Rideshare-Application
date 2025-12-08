@@ -24,7 +24,7 @@ import { requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
 import { useRideNotifications } from "~/hooks/useRideNotifications";
-import { useWebSocket } from "~/hooks/useWebSocket";
+import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
 import type { Route } from "../../+types/root";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -79,73 +79,23 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
   const { rideData } = useRideNotifications(user?.id);
   
   // Track which messages we've already processed
-  const lastProcessedIndex = useRef(0);
-  const processedAcceptedRides = useRef(new Set<string>());
+  // const lastProcessedIndex = useRef(0);
+  // const processedAcceptedRides = useRef(new Set<string>());
+  const previousMessagesRef = useRef<RideMessage[]>([]);
 
   useEffect(() => {
     if (!messages || messages.length === 0) return;
-    
-    // Only look at NEW messages since last check
-    const newMessages = messages.slice(lastProcessedIndex.current);
-    
-    if (newMessages.length === 0) return;
-    
-    console.log(`Processing ${newMessages.length} new messages`);
-    
-    // Update the index BEFORE processing to avoid reprocessing
-    lastProcessedIndex.current = messages.length;
 
-    let shouldRevalidate = false;
+    // Check if messages changed
+    const hasChanged = JSON.stringify(messages) !== JSON.stringify(previousMessagesRef.current);
+    
+    if (hasChanged) {
+      console.log("📊 Active rides:", messages.length);
+      messages.forEach(msg => {
+        console.log(`  - Ride ${msg.rideId}: ${msg.status}`);
+      });
 
-    // Process each new message
-    newMessages.forEach(message => {
-      console.log('Processing message:', message);
-      
-      switch (message.type) {
-        case "new_ride_request":
-          console.log('New ride request:', message.rideId);
-          shouldRevalidate = true;
-          break;
-          
-        case "accept_ride_request":
-          if (!processedAcceptedRides.current.has(message.rideId)) {
-            console.log('Ride accepted:', message.rideId);
-            processedAcceptedRides.current.add(message.rideId);
-            shouldRevalidate = true;
-          }
-          break;
-          
-        case "user_cancelled_request":
-          console.log('User cancelled request:', message.rideId);
-          shouldRevalidate = true;
-          break;
-          
-        case "driver_cancelled_ride":
-          console.log('Driver cancelled ride:', message.rideId);
-          // CRITICAL: Remove from processed so it can be re-accepted
-          processedAcceptedRides.current.delete(message.rideId);
-          shouldRevalidate = true;
-          break;
-          
-        case "user_picked_up":
-          console.log('User picked up:', message.rideId);
-          shouldRevalidate = true;
-          break;
-          
-        case "user_dropped_off":
-          console.log('User dropped off:', message.rideId);
-          shouldRevalidate = true;
-          break;
-          
-        case "ride_accepted":
-          console.log('Ride accepted (broadcast):', message.rideId);
-          shouldRevalidate = true;
-          break;
-      }
-    });
-
-    if (shouldRevalidate) {
-      console.log('Revalidating...');
+      previousMessagesRef.current = messages;
       revalidate.revalidate();
     }
   }, [messages, revalidate]);
@@ -158,6 +108,37 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
       toast.error(actionData.message);
     }
   }, [actionData]);
+
+  useEffect(() => {
+    messages.forEach(message => {
+      const previous = previousMessagesRef.current.find(m => m.rideId === message.rideId);
+      
+      if (!previous) {
+        // New ride appeared
+        if (message.status === "requested") {
+          toast.info("New ride request!");
+        }
+      } else if (previous.status !== message.status) {
+        // Status changed
+        if (message.status === "accepted") {
+          toast.success("Ride accepted!");
+        }
+        if (message.status === "picked_up") {
+          toast.info("Passenger picked up!");
+        }
+        if (message.status === "completed") {
+          toast.success("Ride completed!");
+        }
+      }
+    });
+    
+    previousMessagesRef.current = messages;
+  }, [messages]);
+
+  // You can now easily access ride status
+  const myActiveRide = messages.find(m => m.userId === user?.id);
+  const myAcceptedRide = messages.find(m => m.driverId === user?.id && m.status === "accepted");
+
 
   return (
     <div>
