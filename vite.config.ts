@@ -5,5 +5,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { reactRouterDevTools } from "react-router-devtools"
 
 export default defineConfig({
-  plugins: [reactRouterDevTools(), tailwindcss(), reactRouter(), tsconfigPaths()],
+  plugins: [
+    reactRouterDevTools(), 
+    tailwindcss(), 
+    reactRouter(), 
+    tsconfigPaths()
+  ],
 });

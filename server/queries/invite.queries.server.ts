@@ -1,13 +1,18 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../db.server";
+import crypto from "crypto";
 
 function generateInviteCode(length = 15): string {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const charsLength = chars.length;
     let code = "";
+
+    const randomBytes = crypto.randomBytes(length);
+
     for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * chars.length);
-        code += chars[randomIndex];
+        code += chars[randomBytes[i] % charsLength];
     }
+
     return code;
 }
 
