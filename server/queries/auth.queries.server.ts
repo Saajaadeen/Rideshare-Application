@@ -5,10 +5,14 @@ export async function registerUser(
   inviteCode: string | null,
   firstName: string,
   lastName: string,
+  name: string,
   email: string,
   phoneNumber: string,
   password: string,
 ) {
+  console.log('test from register')
+  const nameSplit = name.split(" ");
+  console.log(firstName, lastName, name, nameSplit)
   const existingEmail = await prisma.user.findFirst({
     where: {
       email: email.toLowerCase(),
@@ -67,8 +71,8 @@ export async function registerUser(
 
   const user = await prisma.user.create({
     data: {
-      firstName,
-      lastName,
+      firstName: nameSplit[0],
+      lastName: nameSplit[1],
       email: email.toLowerCase(),
       phoneNumber,
       password: hashedPassword,
@@ -86,13 +90,19 @@ export async function authenticateUser( email: string, password: string ) {
     select: {
       id: true,
       email: true,
-      password: true,
+      accounts: {
+        select: {
+          password: true,
+        }
+      },
     }
   });
 
-  if (!user || !user.password) { return null; }
+  console.log(user)
 
-  const isValid = await bcrypt.compare(password, user.password);
+  if (!user || !user.accounts[0].password) { return null; }
+  console.log(await bcrypt.hash(password, 10))
+  const isValid = await bcrypt.compare(password, user.accounts[0].password);
   if (!isValid) { return null; }
   
   return {

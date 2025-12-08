@@ -3,9 +3,10 @@ import {
   type LoaderFunctionArgs,
   useActionData,
 } from "react-router";
-import { authenticateUser } from "server/queries/auth.queries.server";
+// import { authenticateUser } from "server/queries/auth.queries.server";
 import { createUserSession, getUserId } from "server/session.server";
 import LoginForm from "~/components/Forms/LoginForm";
+import { auth } from "~/lib/auth-server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -21,12 +22,18 @@ export const action = async({ request }: { request: Request }) => {
     return { error: "Email and password are required" };
   }
 
-  const user = await authenticateUser(email, password);
-  if (!user) {
-    return { error: "Invalid credentials" };
-  }
+  // const user = await authenticateUser(email, password);
+  // if (!user) {
+  //   return { error: "Invalid credentials" };
+  // }
+  const result = await auth.api.signInEmail({
+    body: {
+      email,
+      password
+    }
+  })
 
-  return createUserSession(user.id, "/dashboard");
+  return createUserSession(result.user.id, "/dashboard");
 }
 
 export default function Login() {

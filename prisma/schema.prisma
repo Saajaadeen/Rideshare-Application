@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,41 +9,48 @@ datasource db {
 }
 
 model User {
-  id          String     @id @default(uuid())
-  baseId      String?    
-  base        Base?      @relation(fields: [baseId], references: [id])
-  firstName   String
-  lastName    String
-  phoneNumber String     
-  email       String     @unique
-  password    String
-  isAdmin     Boolean    @default(false)
-  isDriver    Boolean    @default(false)
-  isPassenger Boolean    @default(true)
-  isReset     Boolean    @default(false)
-  resetCode   String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  isInvite    Boolean    @default(false)
-  inviteId    String?    @unique
-  invite      Invite?    @relation("UserInviteRelation", fields: [inviteId], references: [id])
-  inviteCode  String?
-  requests    Request[]  @relation("PassengerRelation")
-  driver      Request[]  @relation("DriverRelation")
-  invites     Invite[]   @relation("InviteRelation")
-  vehicles    Vehicle[]  
+  id            String    @id @default(uuid())
+  baseId        String?
+  base          Base?     @relation(fields: [baseId], references: [id])
+  firstName     String?
+  lastName      String?
+  phoneNumber   String?
+  email         String    @unique
+  password      String?
+  isAdmin       Boolean   @default(false)
+  isDriver      Boolean   @default(false)
+  isPassenger   Boolean   @default(true)
+  isReset       Boolean   @default(false)
+  resetCode     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isInvite      Boolean   @default(false)
+  inviteId      String?   @unique
+  invite        Invite?   @relation("UserInviteRelation", fields: [inviteId], references: [id])
+  inviteCode    String?
+  requests      Request[] @relation("PassengerRelation")
+  driver        Request[] @relation("DriverRelation")
+  invites       Invite[]  @relation("InviteRelation")
+  vehicles      Vehicle[]
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
 }
 
 model Invite {
-  id          String      @id @default(uuid())
-  email       String      @unique
-  userId      String
-  code        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  isActive    Boolean    @default(true)
-  user        User?    @relation("InviteRelation", fields: [userId], references: [id])
-  usedBy      User?    @relation("UserInviteRelation")
+  id        String   @id @default(uuid())
+  email     String   @unique
+  userId    String
+  code      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  user      User?    @relation("InviteRelation", fields: [userId], references: [id])
+  usedBy    User?    @relation("UserInviteRelation")
 }
 
 model Vehicle {
@@ -56,57 +64,104 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user      User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }
 
 model Station {
-  id          String     @id @default(uuid())
+  id          String   @id @default(uuid())
   baseId      String
-  base        Base       @relation(fields: [baseId], references: [id])
+  base        Base     @relation(fields: [baseId], references: [id])
   name        String
   longitude   String
   latitude    String
   description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   pickupRequests  Request[] @relation("PickupStation")
   dropoffRequests Request[] @relation("DropoffStation")
 }
 
 model Request {
-  id           String       @id @default(uuid())
+  id           String    @id @default(uuid())
   baseId       String?
   userId       String?
   driverId     String?
   pickupId     String?
   dropoffId    String?
   status       String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   acceptedAt   DateTime?
   pickedUpAt   DateTime?
   droppedOffAt DateTime?
 
-  base     Base?    @relation("BaseRelation", fields: [baseId], references: [id])
-  user     User?    @relation("PassengerRelation", fields: [userId], references: [id])
-  driver   User?    @relation("DriverRelation", fields: [driverId], references: [id])
-  pickup   Station? @relation("PickupStation", fields: [pickupId], references: [id])
-  dropoff  Station? @relation("DropoffStation", fields: [dropoffId], references: [id])
+  base    Base?    @relation("BaseRelation", fields: [baseId], references: [id])
+  user    User?    @relation("PassengerRelation", fields: [userId], references: [id])
+  driver  User?    @relation("DriverRelation", fields: [driverId], references: [id])
+  pickup  Station? @relation("PickupStation", fields: [pickupId], references: [id])
+  dropoff Station? @relation("DropoffStation", fields: [dropoffId], references: [id])
 }
 
-
 model Base {
-  id            String    @id @default(uuid())
-  name          String
-  abbreviation  String?
-  state         String
-  long          String
-  lat           String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  abbreviation String?
+  state        String
+  long         String
+  lat          String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  requests      Request[] @relation("BaseRelation")
-  users         User[]
-  stations      Station[]
+  requests Request[] @relation("BaseRelation")
+  users    User[]
+  stations Station[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
