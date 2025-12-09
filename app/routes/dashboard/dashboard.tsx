@@ -26,6 +26,7 @@ import MapDisplay from "~/components/Maps/MapDisplay";
 import { useRideNotifications } from "~/hooks/useRideNotifications";
 import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
 import type { Route } from "../../+types/root";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -153,3 +154,5 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
     </div>
   );
 }
+
+export { ErrorBoundary };

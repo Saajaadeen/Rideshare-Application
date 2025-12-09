@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { logoutUser, requireUserId } from "server/session.server";
 import LogoutForm from "~/components/Forms/LogoutForm";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
@@ -15,3 +16,5 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Logout() {
     return <LogoutForm />;
 }
+
+export { ErrorBoundary };

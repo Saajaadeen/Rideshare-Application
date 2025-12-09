@@ -4,6 +4,7 @@ import { deleteUserAccount, getBaseInfo, getUserInfo, updateUserInfo } from "ser
 import { createVehicle, deleteVehicle, enableVehicle, getVehicles } from "server/queries/vehicle.queries.server";
 import { requireUserId } from "server/session.server";
 import UserSettingsModal from "~/components/Modals/UserSettingsModal";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -62,3 +63,5 @@ export default function UserSettings() {
     const { user, base, vehicles, invite } = useLoaderData<typeof loader>();
     return <UserSettingsModal user={user} base={base} vehicles={vehicles} invite={invite} />
 }
+
+export { ErrorBoundary };

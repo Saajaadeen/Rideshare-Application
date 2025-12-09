@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export default function NotFound() {
   return (
@@ -46,3 +47,5 @@ export default function NotFound() {
     </div>
   );
 }
+
+export { ErrorBoundary };

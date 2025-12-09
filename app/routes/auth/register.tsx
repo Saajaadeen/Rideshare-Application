@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import { registerUser } from "server/queries/auth.queries.server";
 import RegisterForm from "~/components/Forms/RegisterForm";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
@@ -30,3 +31,5 @@ export const action = async ({ request }: { request: Request }) => {
 export default function Register() {
   return <RegisterForm />;
 }
+
+export { ErrorBoundary };

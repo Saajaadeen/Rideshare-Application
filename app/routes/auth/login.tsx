@@ -6,6 +6,7 @@ import {
 import { authenticateUser } from "server/queries/auth.queries.server";
 import { createUserSession, getUserId } from "server/session.server";
 import LoginForm from "~/components/Forms/LoginForm";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -33,3 +34,5 @@ export default function Login() {
   const actionData = useActionData<{ error?: string }>();
   return <LoginForm error={actionData?.error} />;
 }
+
+export { ErrorBoundary };

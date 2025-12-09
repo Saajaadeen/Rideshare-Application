@@ -5,6 +5,7 @@ import { createStop, deleteStop, getStop, updateStop } from "server/queries/stat
 import { deleteUserAccount, getAccounts, getUserInfo, updateUserInfoAdmin } from "server/queries/user.queries.server";
 import { requireAdminId, requireUserId } from "server/session.server";
 import AdminSettingsModal from "~/components/Modals/AdminSettingsModal";
+import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId   = await requireUserId(request);
@@ -77,3 +78,5 @@ export default function AdminSettings() {
     const { user, base, station, accounts } = useLoaderData<typeof loader>();
     return <AdminSettingsModal user={user} base={base} station={station} accounts={accounts} />
 }
+
+export { ErrorBoundary };
