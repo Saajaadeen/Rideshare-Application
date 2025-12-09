@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../db.server";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 function generateInviteCode(length = 15): string {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
