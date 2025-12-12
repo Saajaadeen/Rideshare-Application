@@ -57,6 +57,11 @@ export async function notifyDriverOfCancelation(rideId: string, userId?: string)
       type: "user_cancelled_request",
       rideId: rideId,
     });
+    }else{
+      await axios.post(`${WS_API_URL}/broadcast`, {
+        type: "user_cancelled_request_no_notification",
+        rideId,
+      })
     }
   } catch (error) {
     console.error("Failed to notify driver:", error);

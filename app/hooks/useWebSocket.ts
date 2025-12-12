@@ -49,6 +49,7 @@ export function useWebSocket(userId: string | null) {
             if (data.type === "accept_ride_request") status = "accepted";
             if (data.type === "ride_accepted") status = "accepted";
             if (data.type === "user_cancelled_request") status = "cancelled";
+            if (data.type === "user_cancelled_request_no_notification") status = "cancelled_no_notification"
             if (data.type === "driver_cancelled_ride") status = "requested"; // Reset to requested
             if (data.type === "user_picked_up") status = "picked_up";
             if (data.type === "user_dropped_off") status = "completed";

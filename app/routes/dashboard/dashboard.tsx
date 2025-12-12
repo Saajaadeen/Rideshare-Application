@@ -49,21 +49,27 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (intent === "createRequest") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
+    return {success: true, message: "Ride requested!"}
   }
   if (intent === "cancelRequest") {
     cancelRequest(requestId!, driverId!);
+    return {success: true, message: "Ride cancelled!"}
   }
   if (intent === "acceptRequest") {
     acceptRequest(requestId!, driverId! , userId!);
   }
   if (intent === "pickupRequest") {
-    if(rideConfirmOrCancel === "confirm")   
+    if(rideConfirmOrCancel === "confirm"){
       pickupRequest(requestId!, userId!);
-    else
+      return {success: true, message: "Picked up passenger!"}
+    } else{
       cancelAcceptedRide(requestId!, userId!, pickupId!);
+      return {success: true, message: ""}
+    }
   }
   if (intent === "dropOffRequest") {
     dropOffRequest(requestId!, userId!);
+    return {success: true, message: "Ride completed!"}
   }
 }
 
@@ -92,7 +98,7 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
           toast.success("Ride accepted!");
         }
         if (message.status === "picked_up") {
-          toast.info("Passenger picked up!");
+          toast.info("You've been picked up!");
         }
         if (message.status === "completed") {
           toast.success("Ride completed!");

@@ -10,6 +10,7 @@ export default function ManageStopForm({ station, base }: any) {
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [selectedBase, setSelectedBase] = useState("");
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -39,9 +40,14 @@ export default function ManageStopForm({ station, base }: any) {
   return (
     <section className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">
-          Manage Stop Locations
-        </h3>
+        <div className="inline-flex w-full items-center justify-between">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            Manage Stop Locations
+          </h3>
+          <select className="rounded-lg p-2 -mt-3 mr-2 border border-gray-200 text-black w-[300px]" onChange={(e) => setSelectedBase(e.currentTarget.value)}>
+           {base.map(b => <option value={b.id}>{b.name}</option>)}
+          </select>
+        </div>
         <p className="text-gray-600">
           View, update, or remove stop locations from the system.
         </p>
@@ -49,7 +55,7 @@ export default function ManageStopForm({ station, base }: any) {
 
       {station && station.length > 0 ? (
         <div className="space-y-3 max-h-[370px] h-[370px] overflow-y-auto pr-2">
-          {station.map((s: any) => (
+          {station.filter(loc => loc.baseId === selectedBase).map((s: any) => (
             <div
               key={s.id}
               className="border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 hover:shadow-md transition-all bg-white relative"

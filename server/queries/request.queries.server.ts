@@ -17,7 +17,6 @@ export async function createRequest(
       status: "Pending",
     },
   });
-  console.log('here')
   notifyDriversOfNewRide(request.id, pickupId)
   return request;
 }
