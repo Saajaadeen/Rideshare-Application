@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding database...');
 
   // Create Travis Air Force Base
   const travisBase = await prisma.base.upsert({
@@ -20,7 +19,6 @@ async function main() {
     },
   });
 
-  console.log('✅ Created base:', travisBase.name);
 
   // Create Stations
   const stations = [
@@ -72,10 +70,8 @@ async function main() {
       update: {},
       create: station,
     });
-    console.log('✅ Created station:', createdStation.name);
   }
 
-  console.log('🎉 Seeding complete!');
 }
 
 main()

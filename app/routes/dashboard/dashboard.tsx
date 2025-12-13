@@ -18,7 +18,7 @@ import {
 } from "server/queries/request.queries.server";
 import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo } from "server/queries/user.queries.server";
-import { requireUserId } from "server/session.server";
+import { checkEmailVerification, requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
 import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
@@ -28,12 +28,13 @@ import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
   const user = await getUserInfo("dashboard", userId);
+  const verified = await checkEmailVerification(userId, request);
   const station = await getStop(user?.base?.id);
   const passenger = await getPassengerRequest(userId);
   const accepted = await getDriverRequest(userId);
   const activeRequests = await getActiveRequest(user?.base?.id);
 
-  return { user, station, accepted, activeRequests, requestInfo: passenger };
+  return { user, verified, station, accepted, activeRequests, requestInfo: passenger };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -93,7 +94,11 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
     console.log(messages)
     messages.forEach(message => {
       const previous = previousMessagesRef.current.find(m => m.rideId === message.rideId);
-      if (previous?.status !== message.status) {
+      if (!previous) {
+        if (message.status === "requested") {
+          toast.info("New ride request!");
+        }
+      } else if (previous.status !== message.status) {
         if (message.status === "accepted") {
           toast.success("Ride accepted!");
         }

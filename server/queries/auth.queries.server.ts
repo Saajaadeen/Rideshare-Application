@@ -7,7 +7,7 @@ export async function registerUser(
   lastName: string,
   email: string,
   phoneNumber: string,
-  password: string,
+  password: string
 ) {
   const existingEmail = await prisma.user.findFirst({
     where: {
@@ -52,18 +52,27 @@ export async function registerUser(
       "@spaceforce.mil",
     ];
     const emailLower = email.toLowerCase();
-    const isMilitaryEmail = allowedDomains.some(domain => emailLower.endsWith(domain));
+    const isMilitaryEmail = allowedDomains.some((domain) =>
+      emailLower.endsWith(domain)
+    );
     if (!isMilitaryEmail) {
-      return { error: "Only U.S. military email addresses are allowed without a valid invite code" };
+      return {
+        error:
+          "Only U.S. military email addresses are allowed without a valid invite code",
+      };
     }
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  
   const existingAdmin = await prisma.user.findFirst({
-    where: { isAdmin: true },
+    where: {
+      isAdmin: true,
+      emailVerified: true,
+    },
   });
-  const isAdmin = existingAdmin ? false : true;
+
+  const isAdmin = existingAdmin?.isAdmin ? false : true;
+  const emailVerified = existingAdmin?.emailVerified ? false : true;
 
   const user = await prisma.user.create({
     data: {
@@ -74,39 +83,43 @@ export async function registerUser(
       password: hashedPassword,
       isAdmin,
       inviteId,
-      // name: `${firstName} ${lastName}`,
+      emailVerified,
     },
   });
 
   return { success: true, user };
 }
 
-export async function authenticateUser( email: string, password: string ) {
+export async function authenticateUser(email: string, password: string) {
   const user = await prisma.user.findUnique({
     where: { email },
     select: {
       id: true,
       email: true,
       password: true,
-    }
+    },
   });
 
-  if (!user || !user.password) { return null; }
+  if (!user || !user.password) {
+    return null;
+  }
 
   const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) { return null; }
-  
+  if (!isValid) {
+    return null;
+  }
+
   return {
-    id: user.id, 
-    email: user.email
+    id: user.id,
+    email: user.email,
   };
 }
 
-export async function authenticateAdmin( userId: string ) {
+export async function authenticateAdmin(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      isAdmin: true
+      isAdmin: true,
     },
   });
 

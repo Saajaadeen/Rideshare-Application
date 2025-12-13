@@ -2,12 +2,13 @@ import { useLoaderData, type LoaderFunctionArgs, type ActionFunctionArgs } from 
 import { createInvite, deleteInvite, disableInvite, enableInvite, getInvites, updateInvite } from "server/queries/invite.queries.server";
 import { deleteUserAccount, getBaseInfo, getUserInfo, updateUserInfo } from "server/queries/user.queries.server";
 import { createVehicle, deleteVehicle, enableVehicle, getVehicles } from "server/queries/vehicle.queries.server";
-import { requireUserId } from "server/session.server";
+import { checkEmailVerification, requireUserId } from "server/session.server";
 import UserSettingsModal from "~/components/Modals/UserSettingsModal";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
+  await checkEmailVerification(userId, request)
   const user = await getUserInfo('settings', userId);
   const vehicles = await getVehicles(userId);
   const base = await getBaseInfo();

@@ -70,6 +70,15 @@ export async function getUserInfo(intent: string, userId: string) {
           baseId: true,
         },
       });
+    
+    case "verify":
+      return await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
 
     case "requests":
       return await prisma.user.findUnique({

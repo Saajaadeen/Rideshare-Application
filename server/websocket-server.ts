@@ -52,7 +52,6 @@ app.post("/notify/:userId", (req, res) => {
 app.post("/broadcast", (req, res) => {
   const data = req.body;
   const message = JSON.stringify(data);
-  console.log('data;', data)
   let sentCount = 0;
   wsClients.forEach((clients) => {
     clients.forEach((client) => {
@@ -74,13 +73,11 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {
-  console.log("Client connected");
   let userId: string | null = null;
 
   ws.on("message", async (message) => {
     try {
       const data = JSON.parse(message.toString());
-      console.log('data: ', data)
       
       if (data.type === "auth" && data.userId) {
         userId = data.userId;
@@ -90,7 +87,6 @@ wss.on("connection", (ws) => {
         }
         wsClients.get(userId)!.add(ws);
         
-        console.log(`User ${userId} authenticated. Total connections: ${wsClients.get(userId)!.size}`);
         ws.send(JSON.stringify({ type: "auth", status: "success" }));
       }
       
@@ -104,14 +100,12 @@ wss.on("connection", (ws) => {
   });
 
   ws.on("close", () => {
-    console.log("Client disconnected");
     if (userId) {
       const userClients = wsClients.get(userId);
       if (userClients) {
         userClients.delete(ws);
         if (userClients.size === 0) {
           wsClients.delete(userId);
-          console.log(`User ${userId} fully disconnected`);
         }
       }
     }

@@ -62,6 +62,40 @@ export async function requireUserId(request: Request, redirectTo = "/login") {
   return userId;
 }
 
+// Require userId be verified before accessing account
+export async function checkEmailVerification(userId: string, request: Request) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      emailVerified: true,
+      emailVerificationCode: true,
+      emailVerificationCodeExpiration: true,
+      emailVerificationAttempts: true,
+    },
+  });
+
+  const verificationCode = user?.emailVerificationCode;
+  const expirationDate = user?.emailVerificationCodeExpiration;
+  const emailVerified = user?.emailVerified;
+  const currentUrl = new URL(request.url);
+  const currentPath = currentUrl.pathname;
+
+  if (emailVerified) {
+    if (currentPath === "/send" || currentPath === "/verify") {
+      throw redirect("/dashboard");
+    }
+    return;
+  }
+
+  if (!verificationCode && !expirationDate && currentPath !== "/send") {
+    throw redirect("/send");
+  }
+
+  if (verificationCode && expirationDate && currentPath !== "/verify") {
+    throw redirect("/verify");
+  }
+}
+
 // Require admin userId for protected routes
 export async function requireAdminId(userId: string) {
   const user = await prisma.user.findUnique({

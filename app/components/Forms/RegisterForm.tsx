@@ -11,7 +11,7 @@ export default function Register() {
   const fields = [
     { label: "First Name", name: "firstName", type: "text", placeholder: "John" },
     { label: "Last Name", name: "lastName", type: "text", placeholder: "Doe" },
-    { label: "Email Address", name: "email", type: "email", placeholder: "you@example.com" },
+    { label: "Email Address", name: "email", type: "email", placeholder: "john.doe@us.af.mil" },
     { label: "Phone Number", name: "phoneNumber", type: "tel", placeholder: "(123) 456-7890", maxLength: 14 },
   ];
 

@@ -3,7 +3,6 @@ import axios from "axios";
 const WS_API_URL = process.env.WS_API_URL || "http://localhost:3001";
 
 export async function notifyDriversOfNewRide(rideId: string, pickupLocation: string) {
-      console.log('test from ndon')
   try {
     await axios.post(`${WS_API_URL}/broadcast`, {
       type: "new_ride_request",

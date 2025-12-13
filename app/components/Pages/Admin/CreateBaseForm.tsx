@@ -12,7 +12,7 @@ export default function CreateBaseForm() {
         </p>
       </div>
 
-      <Form method="post" action="/dashboard/admin?page=bases">
+      <Form method="post" action="/dashboard/admin">
         <input type="hidden" name="intent" value="createBase" />
 
         <div className="space-y-5">

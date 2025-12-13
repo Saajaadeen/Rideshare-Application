@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useState } from "react";
+import { Link } from "react-router";
 import CreateBaseForm from "../Pages/Admin/CreateBaseForm";
 import ManageBaseForm from "../Pages/Admin/ManageBaseForm";
 import CreateStopForm from "../Pages/Admin/CreateStopForm";
@@ -11,19 +11,7 @@ import { MapPinIcon } from "../Icons/MapPinIcon";
 import { UserIcon } from "../Icons/UserIcon";
 
 export default function AdminSettingsModal({ user, base, station, accounts }: any) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pageParam = searchParams.get("page");
-  const [activeTab, setActiveTab] = useState(pageParam || "bases");
-
-  useEffect(() => {
-    setSearchParams({ page: activeTab }, { replace: true });
-  }, [activeTab, setSearchParams]);
-
-  useEffect(() => {
-    if (pageParam && pageParam !== activeTab) {
-      setActiveTab(pageParam);
-    }
-  }, [pageParam]);
+  const [activeTab, setActiveTab] = useState("bases");
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -38,7 +26,6 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
             <ManageBaseForm base={base} />
           </div>
         );
-
       case "stops":
         return (
           <div className="space-y-8">
@@ -46,7 +33,6 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
             <ManageStopForm station={station} base={base} />
           </div>
         );
-
       case "users":
         return (
           <div className="space-y-8">
@@ -54,7 +40,6 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
             <ManageUserForm accounts={accounts} base={base}/>
           </div>
         );
-
       default:
         return (
           <div className="space-y-8">
@@ -94,9 +79,7 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
-              <span className="text-xl">
-                <AdminIcon className="size-6"/>
-              </span>
+              <AdminIcon className="size-6" />
               <span>Manage Bases</span>
             </button>
 
@@ -108,9 +91,7 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
-              <span className="text-xl">
-                <MapPinIcon className="size-6" />
-              </span>
+              <MapPinIcon className="size-6" />
               <span>Manage Stops</span>
             </button>
 
@@ -122,9 +103,7 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
-              <span className="text-xl">
-                <UserIcon className="size-6" />
-              </span>
+              <UserIcon className="size-6" />
               <span>Manage Users</span>
             </button>
           </nav>
@@ -143,7 +122,6 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
           </div>
         </div>
 
-        
         <div className="flex-1 overflow-y-auto p-8">
           {renderContent()}
         </div>

@@ -22,12 +22,9 @@ export function useWebSocket(userId: string | null) {
     const connect = () => {
       // Connect to external WebSocket server
       const wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:3001";
-      
-      console.log(`Connecting to WebSocket server at ${wsUrl}`);
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
-        console.log("Connected to WebSocket server");
         setIsConnected(true);
         ws.current?.send(JSON.stringify({ type: "auth", userId }));
       };
@@ -35,7 +32,6 @@ export function useWebSocket(userId: string | null) {
       ws.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log("📨 Received:", data);
 
           // Ignore auth and ping/pong messages
           if (data.type === "auth" || data.type === "pong") return;
@@ -61,8 +57,6 @@ export function useWebSocket(userId: string | null) {
             };
 
             if (existingIndex !== -1) {
-              // Update existing ride
-              console.log(`🔄 Updating ride ${data.rideId} to status: ${status}`);
               const updated = [...prev];
               updated[existingIndex] = {
                 ...updated[existingIndex],
@@ -73,14 +67,11 @@ export function useWebSocket(userId: string | null) {
               if (status === "completed" || status === "cancelled") {
                 setTimeout(() => {
                   setMessages(current => current.filter(m => m.rideId !== data.rideId));
-                  console.log(`🗑️ Removed ${status} ride ${data.rideId}`);
                 }, 2000); // Give 2 seconds for UI to show final state
               }
 
               return updated;
             } else {
-              // Add new ride
-              console.log(`➕ Adding new ride ${data.rideId} with status: ${status}`);
               return [...prev, updatedMessage];
             }
           });
@@ -90,10 +81,8 @@ export function useWebSocket(userId: string | null) {
       };
 
       ws.current.onclose = () => {
-        console.log("Disconnected from WebSocket server");
         setIsConnected(false);
         reconnectTimeout.current = setTimeout(() => {
-          console.log("Attempting to reconnect...");
           connect();
         }, 3000);
       };

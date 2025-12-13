@@ -5,7 +5,8 @@ export default [
     route("/login", "./routes/auth/login.tsx"),
     route("/logout", "./routes/auth/logout.tsx"),
     route("/register", "./routes/auth/register.tsx"),
-    route("/verify", "./routes/auth/twofactor.tsx"),
+    route("/send", "./routes/auth/send.tsx"),
+    route("/verify", "./routes/auth/verify.tsx"),
     route("/dashboard", "./routes/dashboard/dashboard.tsx", [
         route("settings", "./routes/settings/usersettings.tsx"),
         route("admin", "./routes/settings/adminsettings.tsx"),

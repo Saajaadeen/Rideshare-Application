@@ -177,7 +177,6 @@ export async function cancelRequest(id: string, driverId: string | null) {
 }
 
 export async function acceptRequest(requestId: string, driverId: string, userId: string) {
-  console.log(requestId, driverId, userId)
   const request = await prisma.request.updateMany({
     where: { id: requestId, driverId: null },
     data: {
