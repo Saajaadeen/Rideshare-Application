@@ -83,7 +83,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
-      {/* Navigation */}
       <nav className="fixed top-0 w-full bg-gradient-to-br from-blue-600 to-indigo-700 backdrop-blur-md z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -96,7 +95,7 @@ export default function LandingPage() {
               </Link>
               <div className="hidden sm:flex items-center gap-3 pl-6 border-l-2 border-slate-200">
                 <span className="text-xs text-white font-medium">Powered by</span>
-                <a href="http://www.travisspark.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                <a href="https://www.travisspark.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                   <img 
                     width={85} 
                     src="https://lh3.googleusercontent.com/sitesv/AAzXCkeBZ4CnadObHjNht4DayPeK1IQ_TdzUFMAas3I4x-0g1d8A2DItFK6FhY8Q9FL_b_VixsM6cOJ9fWFG714yfHHPtKCHIEeXLQHtaHlzpR1NHF2fPwQvLAYpLlsgCyGK9ABLDNFRJZ7bSVLFNrm0hT6HU60DDAo1vA13QrG3bzxxD2xyXyQyzWaHN2U=w16383" 
@@ -118,10 +117,9 @@ export default function LandingPage() {
             </div>
           </div>
           
-          {/* Mobile Phoenix Spark Logo */}
           <div className="sm:hidden pb-3 flex items-center justify-center gap-2">
             <span className="text-xs text-slate-500 font-medium">Powered by</span>
-            <a href="http://www.travisspark.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+            <a href="https://www.travisspark.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
               <img 
                 width={75} 
                 src="https://lh3.googleusercontent.com/sitesv/AAzXCkeBZ4CnadObHjNht4DayPeK1IQ_TdzUFMAas3I4x-0g1d8A2DItFK6FhY8Q9FL_b_VixsM6cOJ9fWFG714yfHHPtKCHIEeXLQHtaHlzpR1NHF2fPwQvLAYpLlsgCyGK9ABLDNFRJZ7bSVLFNrm0hT6HU60DDAo1vA13QrG3bzxxD2xyXyQyzWaHN2U=w16383" 
@@ -133,7 +131,6 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="pt-32 sm:pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl"></div>
@@ -177,7 +174,6 @@ export default function LandingPage() {
             <div className="relative">
               <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 transform hover:scale-105 transition-transform duration-500">
                 <div className="space-y-6">
-                  {/* Mock Ride Card */}
                   <div className="border-2 border-blue-100 rounded-xl p-6 hover:border-blue-300 transition-colors">
                     <div className="flex items-start justify-between mb-4">
                       <div>
@@ -217,8 +213,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Important Notice */}
+      
       <section className="py-8 px-4 bg-amber-50 border-y border-amber-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-start gap-4">
@@ -238,7 +233,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -266,7 +260,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How It Works */}
       <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -328,7 +321,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Community Section */}
       <section id="community" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-12 md:p-16 text-center text-white relative overflow-hidden">
@@ -362,7 +354,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
@@ -382,7 +373,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-5 gap-8 mb-8">

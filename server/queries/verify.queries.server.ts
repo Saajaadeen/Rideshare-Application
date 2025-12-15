@@ -41,7 +41,7 @@ export async function sendVerificationCode(userId: string, email: string) {
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: 587,
+      port: 465,
       secure: false,
       auth: {
         user: process.env.SMTP_USER,
