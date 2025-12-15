@@ -1,4 +1,47 @@
+import { useState } from "react";
+
 export default function VehicleDescriptionForm() {
+  const colors = [
+    {
+      bg: "bg-black",
+      label: "Black",
+    }, 
+    {
+      bg: "bg-white", 
+      label: "White",
+    },
+    { 
+      bg:"bg-gray-500", 
+      label: "Gray",
+    },
+    {
+      bg: "bg-yellow-950",
+      label: "Brown",
+    },
+    {
+      bg:"bg-green-400",
+      label: "Green"
+    },
+    {
+      bg: "bg-blue-400", 
+      label: "Blue",
+    },
+    {
+      bg: "bg-red-500", 
+      label: "Red"
+    },
+    {
+      bg: "bg-yellow-500",
+      label: "Yellow"
+    }, 
+    {
+      bg:"bg-orange-500", 
+      label: "Other"
+    }]
+
+  const [colorBox, showColorBox] = useState(false);
+  const [carColor, setCarColor] = useState("");
+
   return (
     <div className="space-y-4">
       <h4 className="text-xl font-semibold text-gray-900">Add New Vehicle</h4>
@@ -26,14 +69,23 @@ export default function VehicleDescriptionForm() {
           required
           className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
         />
-        <input
+        <button
+          name="color"
+          type="button"
+          className="rounded-xl text-left border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
+          onClick={() => showColorBox(!colorBox)}
+          >
+            Color
+            {/* {colors.map((c, index) => <option className="text-gray-900 border-2 border-black" value={c.label.toLowerCase()}>{c.label}</option>)} */}
+        </button>
+        {/* <input
           type="text"
           name="color"
           maxLength={15}
           placeholder="Color"
           required
           className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
-        />
+        /> */}
         <input
           type="text"
           name="plate"
@@ -42,6 +94,22 @@ export default function VehicleDescriptionForm() {
           required
           className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
         />
+        <input type="hidden" name="color" value={carColor} />
+        {colorBox && <div className="col-span-5 grid grid-cols-5 gap-4 rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+          {colors.map((c, index) => 
+          <div className={`inline-flex items-center gap-2 text-slate-800 p-2 rounded-lg hover:bg-slate-200 hover:border-2 ${c.label === carColor ? "bg-slate-200 border-2": "border-none bg-none"}`} onClick={() => {setCarColor(prev => {
+            if(prev === c.label){
+              return ""
+            }else{
+              return c.label
+            }}
+            )}}>
+            <p className={`rounded-full w-fit p-4 border-2 border-gray-500 ${c.bg}`}>
+              </p>
+              <p>{c.label}</p>
+            </div>)}
+        </div>}
+
       </div>
       <button
         type="submit"
