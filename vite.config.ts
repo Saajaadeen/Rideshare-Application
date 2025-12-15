@@ -6,7 +6,7 @@ import { reactRouterDevTools } from "react-router-devtools"
 
 export default defineConfig({
   plugins: [
-    reactRouterDevTools(), 
+    // reactRouterDevTools(), 
     tailwindcss(), 
     reactRouter(), 
     tsconfigPaths()

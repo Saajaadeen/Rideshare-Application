@@ -15,7 +15,7 @@ import UserPermissionForm from "../Pages/User/UserPermissionForm";
 import UserProfileForm from "../Pages/User/UserProfileForm";
 import UserInviteForm from "../Pages/User/UserInviteForm";
 import { KeyIcon } from "../Icons/KeyIcon";
-import { tabs } from "~/lib/constants";
+// import { tabs } from "~/lib/constants";
 
 export default function UserSettingsModal({
   user,
