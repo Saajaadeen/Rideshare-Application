@@ -42,8 +42,8 @@ export function useWebSocket(userId: string | null) {
             // Map message types to statuses
             let status = data.status;
             if (data.type === "new_ride_request") status = "requested";
-            if (data.type === "accept_ride_request") status = "accepted";
-            if (data.type === "ride_accepted") status = "accepted";
+            if (data.type === "accept_ride_request") status = "accepted_for_user";
+            if (data.type === "ride_accepted") status = "accepted_for_driver";
             if (data.type === "user_cancelled_request") status = "cancelled";
             if (data.type === "user_cancelled_request_no_notification") status = "cancelled_no_notification"
             if (data.type === "driver_cancelled_ride") status = "requested"; // Reset to requested

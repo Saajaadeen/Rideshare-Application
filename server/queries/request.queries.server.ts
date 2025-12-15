@@ -105,6 +105,7 @@ export async function getPassengerRequest(userId: string) {
           firstName: true,
           lastName: true,
           phoneNumber: true,
+          id: true,
         },
       },
       pickedUpAt: true,
@@ -114,6 +115,7 @@ export async function getPassengerRequest(userId: string) {
           firstName: true,
           lastName: true,
           phoneNumber: true,
+          id: true,
         },
       },
       pickup: {
@@ -187,7 +189,7 @@ export async function acceptRequest(requestId: string, driverId: string, userId:
     },
   });
 
-  notifyRiderOfConfirmation(requestId, userId, driverId)
+  notifyRiderOfConfirmation(requestId, userId)
   return request;
 }
 

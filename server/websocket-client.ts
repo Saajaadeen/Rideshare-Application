@@ -14,13 +14,12 @@ export async function notifyDriversOfNewRide(rideId: string, pickupLocation: str
   }
 }
 
-export async function notifyRiderOfConfirmation(rideId: string, userId: string, driverId: string) {
+export async function notifyRiderOfConfirmation(rideId: string, userId: string) {
   try {
     await axios.post(`${WS_API_URL}/notify/${userId}`, {
       rideId: rideId,
       confirm: true,
       type: "accept_ride_request",
-      driverId: driverId,
     });
 
     await axios.post(`${WS_API_URL}/broadcast`, {

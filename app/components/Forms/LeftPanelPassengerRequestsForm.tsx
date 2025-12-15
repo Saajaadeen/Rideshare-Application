@@ -224,7 +224,7 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
                 timeLeft > 0 ? (
                   <button
                     type="submit"
-                    className="px-3 py-0.5 rounded-full border border-red-300 bg-red-200 text-red-400 hover:bg-red-400 hover:border-red-400 hover:text-white text-xs transition-colors"
+                    className="px-4 py-1 font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600"
                   >
                     Cancel Request
                   </button>

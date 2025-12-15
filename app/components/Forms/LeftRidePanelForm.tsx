@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Form, Link, useSearchParams } from "react-router";
+import { Form, Link, useNavigate, useSearchParams } from "react-router";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import LeftPanelPassengerRequestsForm from "./LeftPanelPassengerRequestsForm";
 import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
 import LeftPanelDriverForm from "./LeftPanelDriverForm";
 import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
 import { LogoutIcon } from "../Icons/LogoutIcon";
+import { tabs } from "~/lib/constants";
 
 export default function LeftSideRidePanelForm({
   user,
@@ -18,6 +19,7 @@ export default function LeftSideRidePanelForm({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
   const [isDriverMode, setIsDriverMode] = useState(mode === 'driver' ? true: false)
+  const navigate = useNavigate();
   const showMain = 
   !searchParams.get("showmap")
   const toggleMode = () => {
@@ -81,6 +83,14 @@ export default function LeftSideRidePanelForm({
                         </p>
                       </div>
                       <Form method="post" action="/logout">
+                        {tabs.map( t => 
+                          <Link 
+                          to={t.to as string}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors font-medium text-gray-600 border-b border-gray-200"
+                          >
+                          {t.label}
+                        </Link>
+                        )}
                         <button
                           type="submit"
                           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium text-red-600"
@@ -136,7 +146,7 @@ export default function LeftSideRidePanelForm({
       
       {!isDriverMode ? (
         <div className="absolute bottom-0">
-          <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />
+          <LeftPanelPassengerRequestsForm requestInfo={requestInfo}/>
         </div>
       ) : (
         user?.isDriver && (

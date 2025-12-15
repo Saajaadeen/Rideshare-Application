@@ -58,6 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
   if (intent === "acceptRequest") {
     acceptRequest(requestId!, driverId! , userId!);
+    return {success: true, message: "Accepted ride!"}
   }
   if (intent === "pickupRequest") {
     if(rideConfirmOrCancel === "confirm"){
@@ -94,12 +95,8 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
     console.log(messages)
     messages.forEach(message => {
       const previous = previousMessagesRef.current.find(m => m.rideId === message.rideId);
-      if (!previous) {
-        if (message.status === "requested") {
-          toast.info("New ride request!");
-        }
-      } else if (previous.status !== message.status) {
-        if (message.status === "accepted") {
+      if (previous?.status !== message.status) {
+        if (message.status === "accepted_for_user") {
           toast.success("Ride accepted!");
         }
         if (message.status === "picked_up") {
