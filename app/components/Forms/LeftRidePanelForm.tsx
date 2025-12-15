@@ -7,6 +7,7 @@ import LeftPanelDriverForm from "./LeftPanelDriverForm";
 import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
 import { LogoutIcon } from "../Icons/LogoutIcon";
 import { tabs } from "~/lib/constants";
+import LeftPanelScheduleForm from "./LeftPanelScheduleForm";
 
 export default function LeftSideRidePanelForm({
   user,
@@ -18,12 +19,13 @@ export default function LeftSideRidePanelForm({
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
-  const [isDriverMode, setIsDriverMode] = useState(mode === 'driver' ? true: false)
+  const [isDriverMode, setIsDriverMode] = useState(
+    mode === "driver" ? true : false
+  );
   const navigate = useNavigate();
-  const showMain = 
-  !searchParams.get("showmap")
+  const showMain = !searchParams.get("showmap");
   const toggleMode = () => {
-    setIsDriverMode(!isDriverMode)
+    setIsDriverMode(!isDriverMode);
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
 
@@ -53,13 +55,13 @@ export default function LeftSideRidePanelForm({
           </div>
         </div>
       )}
-      
+
       {showMain && (
         <div className="absolute top-0 left-0 md:top-8 md:left-8 z-50 w-screen md:w-96 h-screen md:h-fit bg-white md:rounded-2xl shadow-2xl md:border border-gray-100 overflow-hidden">
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div 
+                <div
                   className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl md:cursor-default cursor-pointer"
                   onClick={() => setShowMobileMenu(!showMobileMenu)}
                 >
@@ -72,25 +74,27 @@ export default function LeftSideRidePanelForm({
                       className="fixed inset-0 z-40 md:hidden"
                       onClick={() => setShowMobileMenu(false)}
                     />
-                    
+
                     <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 md:hidden">
                       <div className="p-4 bg-gray-50 border-b border-gray-200">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {user?.email}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {user?.isDriver ? "Driver Account" : "Passenger Account"}
+                          {user?.isDriver
+                            ? "Driver Account"
+                            : "Passenger Account"}
                         </p>
                       </div>
                       <Form method="post" action="/logout">
-                        {tabs.map( t => 
-                          <Link 
-                          to={t.to as string}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors font-medium text-gray-600 border-b border-gray-200"
+                        {tabs.map((t) => (
+                          <Link
+                            to={t.to as string}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors font-medium text-gray-600 border-b border-gray-200"
                           >
-                          {t.label}
-                        </Link>
-                        )}
+                            {t.label}
+                          </Link>
+                        ))}
                         <button
                           type="submit"
                           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium text-red-600"
@@ -103,9 +107,11 @@ export default function LeftSideRidePanelForm({
                   </>
                 )}
               </div>
-              
+
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">Base Bound</h1>
+                <h1 className="text-2xl font-bold tracking-tight">
+                  Base Bound
+                </h1>
                 <p className="text-blue-100 text-sm">Request Your Ride</p>
               </div>
             </div>
@@ -134,19 +140,29 @@ export default function LeftSideRidePanelForm({
 
           <div className="p-6 bg-white">
             {!isDriverMode ? (
-              <LeftPanelPassengerForm user={user} station={station} params={searchParams} />
+              <>
+                <LeftPanelPassengerForm
+                  user={user}
+                  station={station}
+                  params={searchParams}
+                />
+                {/* <LeftPanelScheduleForm /> */}
+              </>
             ) : (
               user?.isDriver && (
-                <LeftPanelDriverForm user={user} activeRequests={activeRequests} />
+                <LeftPanelDriverForm
+                  user={user}
+                  activeRequests={activeRequests}
+                />
               )
             )}
           </div>
         </div>
       )}
-      
+
       {!isDriverMode ? (
         <div className="absolute bottom-0">
-          <LeftPanelPassengerRequestsForm requestInfo={requestInfo}/>
+          <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />
         </div>
       ) : (
         user?.isDriver && (
