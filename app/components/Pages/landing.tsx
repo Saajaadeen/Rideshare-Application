@@ -100,7 +100,7 @@ export default function LandingPage() {
                     width={85}
                     src="/public/SparkLogo.png" 
                     alt="Phoenix Spark"
-                    className="h-20 w-auto"
+                    className="h-15 w-auto"
                   />
                 </a>
               </div>

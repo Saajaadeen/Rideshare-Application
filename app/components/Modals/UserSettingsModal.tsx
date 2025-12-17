@@ -16,7 +16,7 @@ import UserProfileForm from "../Pages/User/UserProfileForm";
 import UserInviteForm from "../Pages/User/UserInviteForm";
 import { KeyIcon } from "../Icons/KeyIcon";
 
-export const createTabs = (user: any, userBase: any) => [
+export const createTabs = ({user, userBase, vehicles}: any) => [
   {
     label: "Profile",
     name: "profile",
@@ -31,13 +31,13 @@ export const createTabs = (user: any, userBase: any) => [
     label: "Base", 
     name: "base", 
     icon: <BaseIcon className="size-6" />,
-    badge: !userBase.base,
+    badge: !userBase?.base,
   },
   {
     label: "Vehicles",
     name: "vehicles",
     icon: <VehicleIcon className="size-6" />,
-    badge: user?.isDriver,
+    badge: user?.isDriver && vehicles.length === 0,
   },
   {
     label: "Security",
@@ -69,12 +69,12 @@ export default function UserSettingsModal({
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTab, setSelectedTab] = useState(searchParams.get("tab") ?? "profile");
 
-  const tabs = createTabs(user, userBase)
+  const tabs = createTabs({user, userBase, vehicles})
 
   
   return (
     <div className="fixed inset-0 z-50 flex md:items-center md:justify-center bg-black/50 to-black/50 backdrop-blur-lg md:p-4 w-screen">
-      <div className="bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl md:w-[1000px] md:h-[700px] flex overflow-hidden relative border border-gray-200/50">
+      <div className="bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl md:w-[1100px] md:h-[700px] flex overflow-hidden relative border border-gray-200/50">
         <aside className="hidden md:block w-80 bg-gradient-to-b from-indigo-50 via-white to-indigo-50/50 p-8 flex-col gap-2 border-r border-indigo-100/50 relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">

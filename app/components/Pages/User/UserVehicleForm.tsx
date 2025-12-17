@@ -48,58 +48,82 @@ export default function UserVehicleForm({ user, vehicles }: any) {
       </Form>
 
       {user?.isDriver && vehicles?.length === 0 && (
-          <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
-          <p className="text-black">Please add a vehicle to your account to complete driver setup.</p>
+        <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
+          <p className="text-black">
+            Please add a vehicle to your account to complete driver setup.
+          </p>
         </div>
-        )}
+      )}
 
       {user?.isDriver && vehicles?.length > 0 && (
         <div className="space-y-4">
           <h4 className="text-xl font-semibold text-gray-900">
             Registered Vehicles
           </h4>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {vehicles.map((vehicle: any) => (
-              <Form method="post" action="/dashboard/settings">
-                <input type="hidden" name="intent" value="vehicle-delete" />
-                <input type="hidden" name="id" value={vehicle.id} />
-                <div
-                  key={vehicle.id}
-                  className=" flex bg-white rounded-2xl p-5 border border-gray-200 shadow hover:shadow-lg transition duration-300"
-                >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-gray-700">
-                    <p>
-                      <span className="font-medium">Year:</span> {vehicle.year}
-                    </p>
-                    <p>
-                      <span className="font-medium">Make:</span> {vehicle.make}
-                    </p>
-                    <p>
-                      <span className="font-medium">Model:</span>{" "}
-                      {vehicle.model}
-                    </p>
-                    <p>
-                      <span className="font-medium">Color:</span>{" "}
-                      {vehicle.color}
-                    </p>
-                    <p>
-                      <span className="font-medium">Plate:</span>{" "}
-                      {vehicle.plate}
-                    </p>
-                    <p>
-                      <span className="font-medium">Added:</span>{" "}
-                      {new Date(vehicle.createdAt).toLocaleDateString()}
-                    </p>
+              <div
+                key={vehicle.id}
+                className="flex items-center justify-between bg-white rounded-2xl p-5 border border-gray-200 shadow hover:shadow-lg transition-all duration-300"
+              >
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-sm flex-1">
+                  <div>
+                    <span className="text-gray-500 text-xs block">Year</span>
+                    <span className="font-semibold text-gray-900">
+                      {vehicle.year}
+                    </span>
                   </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block">Make</span>
+                    <span className="font-semibold text-gray-900">
+                      {vehicle.make}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block">Model</span>
+                    <span className="font-semibold text-gray-900">
+                      {vehicle.model}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block">Color</span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0"
+                        style={{ backgroundColor: vehicle.color }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block">Plate</span>
+                    <span className="font-semibold text-gray-900 uppercase">
+                      {vehicle.plate}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block">Added</span>
+                    <span className="font-semibold text-gray-900">
+                      {new Date(vehicle.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+
+                <Form
+                  method="post"
+                  action="/dashboard/settings"
+                  className="ml-4"
+                >
+                  <input type="hidden" name="intent" value="vehicle-delete" />
+                  <input type="hidden" name="id" value={vehicle.id} />
                   <button
                     type="submit"
-                    className="ml-5 px-3 rounded-full text-gray-600 hover:text-white hover:bg-red-500 transition-all duration-300 transform"
-                    aria-label="Delete vehicle"
+                    className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-red-500 transition-all duration-300"
+                    aria-label={`Delete ${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                   >
-                    <XMarkIcon className="size-6" />
+                    <XMarkIcon className="size-5" />
                   </button>
-                </div>
-              </Form>
+                </Form>
+              </div>
             ))}
           </div>
         </div>
