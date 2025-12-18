@@ -98,7 +98,7 @@ export default function LandingPage() {
                 <a href="https://www.travisspark.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                   <img 
                     width={85}
-                    src="/public/SparkLogo.png" 
+                    src="/SparkLogo.png" 
                     alt="Phoenix Spark"
                     className="h-15 w-auto"
                   />

@@ -11,25 +11,41 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import "./app.css";
 
-export const headers: HeadersFunction = () => {
-  // Use environment variable for WebSocket server in production
-  const WS_URL = process.env.WS_URL || "ws://localhost:3001";
+export async function loader() {
+  const nonce = Array.from(
+    crypto.getRandomValues(new Uint8Array(16)),
+    (byte) => byte.toString(16).padStart(2, "0")
+  ).join("");
 
   return {
-    "Content-Security-Policy": [
-      "default-src 'self'",
-      // Keep unsafe-inline for now to support Remix hydration
-      "script-src 'self' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
-      "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: https://tile.openstreetmap.org",
-      // Restrict connect-src to only your app and necessary external services
-      `connect-src 'self' ${WS_URL} https://tile.openstreetmap.org`,
-      "worker-src 'self' blob:",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join("; "),
+    nonce,
+  };
+}
+
+export const headers: HeadersFunction = () => {
+  const WS_URL = process.env.WS_URL || "ws://localhost:3001";
+  const isProduction = process.env.NODE_ENV === "production";
+
+  const cspDirectives = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: https://tile.openstreetmap.org",
+    `connect-src 'self' ${WS_URL} https://tile.openstreetmap.org`,
+    "worker-src 'self' blob:",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ];
+
+  // Only add upgrade-insecure-requests in production
+  if (isProduction) {
+    cspDirectives.push("upgrade-insecure-requests");
+  }
+
+  return {
+    "Content-Security-Policy": cspDirectives.join("; "),
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
