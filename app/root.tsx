@@ -39,7 +39,7 @@ export const headers: HeadersFunction = () => {
     "form-action 'self'",
   ];
 
-  // Only add upgrade-insecure-requests in production
+  // CRITICAL: Only add upgrade-insecure-requests in production
   if (isProduction) {
     cspDirectives.push("upgrade-insecure-requests");
   }
