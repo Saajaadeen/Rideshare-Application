@@ -1,22 +1,47 @@
 import {
   redirect,
   type LoaderFunctionArgs,
+  useLoaderData,
   useActionData,
 } from "react-router";
 import { authenticateUser } from "server/queries/auth.queries.server";
-import { createUserSession, getUserId } from "server/session.server";
+import {
+  createUserSession,
+  getUserId,
+  getSession,
+  requireCSRFToken,
+  generateCSRFToken,
+  storage,
+} from "server/session.server";
 import LoginForm from "~/components/Forms/LoginForm";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
   if (userId) return redirect("/dashboard");
+
+  const session = await getSession(request);
+  const csrfToken = generateCSRFToken();
+  session.set("csrfToken", csrfToken);
+
+  return new Response(
+    JSON.stringify({ csrfToken }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": await storage.commitSession(session),
+      },
+    }
+  );
 }
 
-export const action = async({ request }: { request: Request }) => {
+
+export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  await requireCSRFToken(request, formData);
+
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
 
   if (!email || !password) {
     return { error: "Email and password are required" };
@@ -28,11 +53,13 @@ export const action = async({ request }: { request: Request }) => {
   }
 
   return createUserSession(user.id, "/dashboard");
-}
+};
 
 export default function Login() {
+  const { csrfToken } = useLoaderData<{ csrfToken: string }>();
   const actionData = useActionData<{ error?: string }>();
-  return <LoginForm error={actionData?.error} />;
+
+  return <LoginForm error={actionData?.error} csrfToken={csrfToken} />;
 }
 
 export { ErrorBoundary };

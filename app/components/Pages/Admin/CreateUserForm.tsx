@@ -20,7 +20,7 @@ export default function CreateUserForm() {
         </div>
       )}
 
-      <Form method="post" action="/dashboard/admin?page=users" className="space-y-5">
+      <Form method="post" action="/dashboard/admin" className="space-y-5">
         <input type="hidden" name="intent" value="createUser" />
 
         <div className="grid grid-cols-2 gap-4">

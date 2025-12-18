@@ -73,7 +73,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return { success: true, message: "Stop deleted!", intent} 
   }
   if (intent === "createUser") {
-    registerUser(inviteCode!, firstName!, lastName!, email!, phoneNumber!, password!)
+    registerUser(inviteCode!, firstName!, lastName!, email!, phoneNumber!, password!, baseId!)
     return { success: true, message: "User created!", intent}
   }
   if (intent === "updateUser") {

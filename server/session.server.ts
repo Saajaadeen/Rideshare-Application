@@ -1,14 +1,19 @@
 import { createCookieSessionStorage, redirect } from "react-router";
 import { prisma } from "./db.server";
+import crypto from "crypto";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set in environment variables");
 }
 
-const storage = createCookieSessionStorage({
+export function generateCSRFToken(): string {
+  return crypto.randomBytes(32).toString("hex"); // 32 bytes = 64 hex chars
+}
+
+export const storage = createCookieSessionStorage({
   cookie: {
-    name: "RJ_session",
+    name: "session-cookies",
     secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
     sameSite: "lax",
@@ -28,12 +33,27 @@ export async function getSession(request: Request) {
 export async function createUserSession(userId: string, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
+  session.unset("csrfToken");
+  session.set("csrfToken", generateCSRFToken());
+
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await storage.commitSession(session),
     },
   });
 }
+
+// Store CSRF token session from request
+export async function requireCSRFToken( request: Request, formData: FormData ) {
+  const session = await getSession(request);
+  const submittedToken = formData.get("_csrf")?.toString();
+  const sessionToken = session.get("csrfToken");
+
+  if (!submittedToken || submittedToken !== sessionToken) {
+    throw new Response("Invalid CSRF token", { status: 403 });
+  }
+}
+
 
 // Read userId from session
 export async function getUserId(request: Request) {

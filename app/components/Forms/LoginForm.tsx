@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { EyeOpenIcon } from "../Icons/EyeOpenIcon";
 import { EyeClosedIcon } from "../Icons/EyeClosedIcon";
 
-export default function Login({ error }: { error?: string }) {
+export default function Login({ error, csrfToken }: any) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -40,6 +40,7 @@ export default function Login({ error }: { error?: string }) {
         </div>
 
         <form method="POST" action="/login">
+          <input type="hidden" name="_csrf" value={csrfToken} />
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-5">
               <p className="text-red-400 text-sm text-center">{error}</p>

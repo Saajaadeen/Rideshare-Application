@@ -1,6 +1,6 @@
 import { Form, Link } from "react-router";
 
-export default function SendCodeForm({ user }: any) {
+export default function SendCodeForm({ user, csrfToken }: any) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
@@ -30,6 +30,7 @@ export default function SendCodeForm({ user }: any) {
 
         <Form method="post" action="/send">
           <div className="flex flex-col justify-between items-center">
+            <input type="hidden" name="_csrf" value={csrfToken} />
             <input type="hidden" name="intent" value="sendCode" />
             <input type="hidden" name="userId" value={user?.id} />
             <input type="hidden" name="email" value={user?.email} />
@@ -48,10 +49,6 @@ export default function SendCodeForm({ user }: any) {
             </button>
           </div>
         </Form>
-
-        <p className="text-center text-sm text-gray-500 mt-6">
-          🔒 Secured by Shared Rides
-        </p>
       </div>
     </div>
   );
