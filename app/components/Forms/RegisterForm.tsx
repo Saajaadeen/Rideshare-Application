@@ -3,7 +3,7 @@ import { Form, useActionData } from "react-router";
 import { EyeClosedIcon } from "../Icons/EyeClosedIcon";
 import { EyeOpenIcon } from "../Icons/EyeOpenIcon";
 
-export default function Register({bases}: any) {
+export default function RegisterForm({bases}: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [useInvite, setUseInvite] = useState(false);
   const actionData = useActionData<{ error?: string }>();
