@@ -5,7 +5,7 @@ import { registerUser } from "server/queries/auth.queries.server";
 import { createBase, deleteBase, getBase, updateBase } from "server/queries/base.queries.server";
 import { createStop, deleteStop, getStop, updateStop } from "server/queries/station.queries.server";
 import { deleteUserAccount, getAccounts, getUserInfo, updateUserInfoAdmin } from "server/queries/user.queries.server";
-import { checkEmailVerification, requireAdminId, requireUserId } from "server/session.server";
+import { checkEmailVerification, requireAdminId, requireSameOrigin, requireUserId } from "server/session.server";
 import AdminSettingsModal from "~/components/Modals/AdminSettingsModal";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 import type { Route } from "./+types/adminsettings";
@@ -22,6 +22,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  requireSameOrigin(request);
   const loggedinUserId = await requireUserId(request);
   await requireAdminId(loggedinUserId)
 

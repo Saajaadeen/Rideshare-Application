@@ -3,12 +3,11 @@ import { Link } from "react-router";
 import { EyeOpenIcon } from "../Icons/EyeOpenIcon";
 import { EyeClosedIcon } from "../Icons/EyeClosedIcon";
 
-export default function Login({ error, csrfToken }: any) {
+export default function LoginForm({ error }: any) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 md:p-6 relative overflow-hidden">
-
       <div className="absolute inset-0 overflow-hidden opacity-40">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
@@ -40,7 +39,6 @@ export default function Login({ error, csrfToken }: any) {
         </div>
 
         <form method="POST" action="/login">
-          <input type="hidden" name="_csrf" value={csrfToken} />
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-5">
               <p className="text-red-400 text-sm text-center">{error}</p>
@@ -75,7 +73,6 @@ export default function Login({ error, csrfToken }: any) {
                   name="email"
                   placeholder="you@example.com"
                   required
-                  
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900 placeholder:text-gray-400"
                 />
               </div>
@@ -110,6 +107,7 @@ export default function Login({ error, csrfToken }: any) {
                   required
                   className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900 placeholder:text-gray-400"
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -150,7 +148,6 @@ export default function Login({ error, csrfToken }: any) {
             >
               Sign In
             </button>
-            
           </div>
         </form>
 

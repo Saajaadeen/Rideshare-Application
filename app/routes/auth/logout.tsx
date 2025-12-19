@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { logoutUser, requireUserId } from "server/session.server";
+import { logoutUser, requireSameOrigin, requireUserId } from "server/session.server";
 import LogoutForm from "~/components/Forms/LogoutForm";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
@@ -9,6 +9,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  requireSameOrigin(request);
   await requireUserId(request);
   return logoutUser(request);
 }

@@ -2,7 +2,7 @@ import { useLoaderData, type LoaderFunctionArgs, type ActionFunctionArgs } from 
 import { createInvite, deleteInvite, disableInvite, enableInvite, getInvites, updateInvite } from "server/queries/invite.queries.server";
 import { deleteUserAccount, getBaseInfo, getUserBase, getUserInfo, updateUserInfo } from "server/queries/user.queries.server";
 import { createVehicle, deleteVehicle, enableVehicle, getVehicles } from "server/queries/vehicle.queries.server";
-import { checkEmailVerification, requireUserId } from "server/session.server";
+import { checkEmailVerification, requireSameOrigin, requireUserId } from "server/session.server";
 import UserSettingsModal from "~/components/Modals/UserSettingsModal";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
@@ -19,6 +19,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  requireSameOrigin(request);
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const intent      = formData.get("intent") as string;

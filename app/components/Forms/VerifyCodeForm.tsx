@@ -1,6 +1,6 @@
 import { Form } from "react-router";
 
-export default function VerifyCodeForm({ user, error, actionData}: any) {
+export default function VerifyCodeForm({ user, actionData, csrfToken}: any) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
@@ -37,8 +37,10 @@ export default function VerifyCodeForm({ user, error, actionData}: any) {
         )}
 
         <Form method="post" action="/verify">
+          <input type="hidden" name="_csrf" value={csrfToken} />
           <input type="hidden" name="intent" value="tryCode" />
           <input type="hidden" name="userId" value={user.id} />
+          
 
           <div className="mb-6">
             <label
@@ -68,6 +70,7 @@ export default function VerifyCodeForm({ user, error, actionData}: any) {
         <p className="text-center text-sm text-gray-600 mt-4">
           Didn't receive a code?{" "}
           <Form method="post" action="/verify" className="inline">
+            <input type="hidden" name="_csrf" value={csrfToken} />
             <input type="hidden" name="intent" value="sendCode" />
             <input type="hidden" name="email" value={user?.email} />
             <input type="hidden" name="userId" value={user?.id} />

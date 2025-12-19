@@ -11,6 +11,11 @@ import { ToastContainer } from "react-toastify";
 import type { Route } from "./+types/root";
 import "./app.css";
 
+const GOOGLE_FONTS_SRI =
+  "sha384-aRw8TdsqapY+uDYzY5fx3IkEv21j0YKx1b0NOcB5m+0ZZd4x/NrQ23ALQBsaZg1m"; 
+const REACT_TOASTIFY_SRI =
+  "sha384-JnCg6eF8GhEGjdkqwV7E+UMYiG+IyoLTJbZYuNlVJ7QufeimSsCeUvy0dBRehb4T";
+
 export async function loader() {
   const nonce = Array.from(
     crypto.getRandomValues(new Uint8Array(16)),
@@ -30,8 +35,8 @@ export const headers: HeadersFunction = () => {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
-      `font-src 'self' https://fonts.gstatic.com`,
-      `img-src 'self' data: https://tile.openstreetmap.org`,
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https://tile.openstreetmap.org",
       `connect-src 'self' ${WS_URL} https://tile.openstreetmap.org`,
       "worker-src 'self' blob:",
       "frame-ancestors 'none'",
@@ -42,9 +47,12 @@ export const headers: HeadersFunction = () => {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "Cache-Control": "no-store, no-cache, must-revalidate, private",
+    "Pragma": "no-cache",
+    "Expires": "0",
   };
 };
-
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,10 +64,14 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    integrity: GOOGLE_FONTS_SRI,
+    crossOrigin: "anonymous",
   },
   {
     rel: "stylesheet",
     href: "https://cdn.jsdelivr.net/npm/react-toastify@10/dist/ReactToastify.min.css",
+    integrity: REACT_TOASTIFY_SRI,
+    crossOrigin: "anonymous",
   },
 ];
 

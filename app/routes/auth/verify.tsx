@@ -1,6 +1,6 @@
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router";
 import { getUserInfo } from "server/queries/user.queries.server";
-import { checkEmailVerification, requireUserId } from "server/session.server";
+import { checkEmailVerification, requireSameOrigin, requireUserId } from "server/session.server";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 import type { Route } from "./+types/verify";
 import VerifyCodeForm from "~/components/Forms/VerifyCodeForm";
@@ -12,12 +12,13 @@ import {
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
   await checkEmailVerification(userId, request);
-  const user = await getUserInfo("verify", userId);
 
-  return { userId, user };
+  const user = await getUserInfo("verify", userId);
+  return { userId, user, };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  requireSameOrigin(request);
   const formData = await request.formData();
   const intent = formData.get("intent") as string;
   const userId = formData.get("userId") as string;
@@ -32,12 +33,9 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function Verify({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function Verify({ loaderData, actionData, }: Route.ComponentProps) {
   const { user } = loaderData;
-  return <VerifyCodeForm user={user} actionData={actionData} />;
+  return <VerifyCodeForm user={user} actionData={actionData}/>;
 }
 
 export { ErrorBoundary };

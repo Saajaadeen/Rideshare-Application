@@ -7,16 +7,12 @@ if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set in environment variables");
 }
 
-export function generateCSRFToken(): string {
-  return crypto.randomBytes(32).toString("hex"); // 32 bytes = 64 hex chars
-}
-
 export const storage = createCookieSessionStorage({
   cookie: {
     name: "session-cookies",
     secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     httpOnly: true,
   },
@@ -33,8 +29,6 @@ export async function getSession(request: Request) {
 export async function createUserSession(userId: string, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
-  session.unset("csrfToken");
-  session.set("csrfToken", generateCSRFToken());
 
   return redirect(redirectTo, {
     headers: {
@@ -43,14 +37,12 @@ export async function createUserSession(userId: string, redirectTo: string) {
   });
 }
 
-// Store CSRF token session from request
-export async function requireCSRFToken( request: Request, formData: FormData ) {
-  const session = await getSession(request);
-  const submittedToken = formData.get("_csrf")?.toString();
-  const sessionToken = session.get("csrfToken");
-
-  if (!submittedToken || submittedToken !== sessionToken) {
-    throw new Response("Invalid CSRF token", { status: 403 });
+// Belt and suspenders for XSS/CSRF Attacks
+export function requireSameOrigin(request: Request) {
+  const origin = request.headers.get("Origin");
+  const requestOrigin = new URL(request.url).origin;
+  if (origin && origin !== requestOrigin) {
+    throw new Response("Invalid origin", { status: 403 });
   }
 }
 

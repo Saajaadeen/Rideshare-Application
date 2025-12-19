@@ -18,7 +18,7 @@ import {
 } from "server/queries/request.queries.server";
 import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo } from "server/queries/user.queries.server";
-import { checkEmailVerification, requireUserId } from "server/session.server";
+import { checkEmailVerification, requireSameOrigin, requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
 import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
@@ -40,6 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  requireSameOrigin(request);
   const formData = await request.formData();
   const intent = formData.get("intent") as string;
   const requestId = (formData.get("requestId") as string) || undefined;

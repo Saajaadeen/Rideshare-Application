@@ -4,41 +4,25 @@ import { useState } from "react";
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const [copied, setCopied] = useState(false);
+
   let message = "Something Went Wrong";
   let details = "An unexpected error occurred.";
-  let stack: string | undefined;
   let statusCode: number | undefined;
 
   if (isRouteErrorResponse(error)) {
     statusCode = error.status;
     message = error.status === 404 ? "Page Not Found" : "Error";
-    details = error.data || error.statusText || details;
-  } 
-  else if (error instanceof Error) {
-    message = error.name || "Error";
-    details = error.message;
-    stack = error.stack;
-  } 
-  else if (error && typeof error === 'object') {
-    if ('message' in error) {
-      details = String(error.message);
-    }
-    if ('stack' in error) {
-      stack = String(error.stack);
-    }
-    if ('status' in error) {
-      statusCode = Number(error.status);
-    }
-  } 
-  else if (error) {
-    details = String(error);
+    details = "We're sorry, but something unexpected happened.";
+  } else {
+    message = "Error";
+    details = "An unexpected error occurred. Please try again later.";
   }
 
   const copyError = () => {
     const errorText = `Error: ${message}\nDetails: ${details}${
-      stack ? `\n\nStack Trace:\n${stack}` : ""
-    }${statusCode ? `\nStatus Code: ${statusCode}` : ""}`;
-    
+      statusCode ? `\nStatus Code: ${statusCode}` : ""
+    }`;
+
     navigator.clipboard.writeText(errorText).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -51,9 +35,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-200">
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-12 text-center">
             {statusCode && (
-              <div className="text-white/90 text-8xl font-bold mb-4">
-                {statusCode}
-              </div>
+              <div className="text-white/90 text-8xl font-bold mb-4">{statusCode}</div>
             )}
             <h1 className="text-3xl font-bold text-white mb-2">{message}</h1>
             <div className="w-20 h-1 bg-white/50 mx-auto rounded-full"></div>
@@ -75,57 +57,17 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
                 />
               </svg>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-1">
-                  What happened?
-                </h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-1">What happened?</h2>
                 <p className="text-gray-600 leading-relaxed">{details}</p>
               </div>
             </div>
-
-            {stack && (
-              <div className="mt-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                  <svg
-                    className="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                    />
-                  </svg>
-                  Technical Details
-                </h3>
-                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-xs leading-relaxed border border-gray-700">
-                  <code>{stack}</code>
-                </pre>
-              </div>
-            )}
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={copyError}
                 className="flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-lg font-medium border-2 border-blue-300 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
               >
-                {copied ? (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    Copy Error
-                  </>
-                )}
+                {copied ? "Copied!" : "Copy Info"}
               </button>
               <button
                 onClick={() => window.history.back()}
