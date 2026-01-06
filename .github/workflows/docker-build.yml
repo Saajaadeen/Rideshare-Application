@@ -1,47 +1,29 @@
-name: Build, Push Docker & SonarCloud Scan
-
+name: Build, Push Docker & SonarCloud Scan (Dev)
 on:
   push:
     branches:
-      - main
       - dev
-      - prod
-
 jobs:
   docker-and-sonar:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3.3.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-
       - name: Set Docker tags
         id: docker-tags
         run: |
-          BRANCH=${GITHUB_REF##*/}
-          if [ "$BRANCH" == "main" ]; then
-            echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:latest,${{ secrets.DOCKER_USERNAME }}/rideshare:${GITHUB_SHA}" >> $GITHUB_ENV
-          elif [ "$BRANCH" == "dev" ]; then
-            echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:dev,${{ secrets.DOCKER_USERNAME }}/rideshare:dev-${GITHUB_SHA}" >> $GITHUB_ENV
-          elif [ "$BRANCH" == "prod" ]; then
-            echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:prod,${{ secrets.DOCKER_USERNAME }}/rideshare:prod-${GITHUB_SHA}" >> $GITHUB_ENV
-          else
-            echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:${GITHUB_SHA}" >> $GITHUB_ENV
-          fi
-
+          echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:dev,${{ secrets.DOCKER_USERNAME }}/rideshare:dev-${GITHUB_SHA}" >> $GITHUB_ENV
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
           push: true
           tags: ${{ env.TAGS }}
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -52,4 +34,3 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.branch.name=${GITHUB_REF##*/}
