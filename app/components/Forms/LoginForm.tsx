@@ -3,18 +3,18 @@ import { Link } from "react-router";
 import { EyeOpenIcon } from "../Icons/EyeOpenIcon";
 import { EyeClosedIcon } from "../Icons/EyeClosedIcon";
 
-export default function LoginForm({ error, csrfToken }: { error?: string, csrfToken: string }) {
+export default function LoginForm({ error }: any) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex md:items-center md:justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 md:p-6 relative overflow-hidden">
-      <div className="hidden md:block absolute inset-0 overflow-hidden opacity-40">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 md:p-6 relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden opacity-40">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative bg-white md:rounded-b-3xl md:shadow-xl md:border-l md:border-b md:border-r border-gray-100 p-6 md:p-10 w-full min-h-screen md:min-h-0 md:h-auto md:max-w-[550px]">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500" />
+      <div className="relative bg-white md:rounded-b-3xl h-screen md:h-fit shadow-xl md:border-l md:border-b md:border-r border-gray-100 p-6 md:p-10 w-full max-w-[550px] flex flex-col justify-center md:justify-start">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 " />
 
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-blue-500/30">
@@ -39,7 +39,6 @@ export default function LoginForm({ error, csrfToken }: { error?: string, csrfTo
         </div>
 
         <form method="POST" action="/login">
-          <input type="hidden" name="csrf" value={csrfToken} />
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-5">
               <p className="text-red-400 text-sm text-center">{error}</p>

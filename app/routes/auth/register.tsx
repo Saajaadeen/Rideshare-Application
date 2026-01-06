@@ -1,4 +1,3 @@
-import { redirect } from "react-router";
 import { prisma } from "server/db.server";
 import { registerUser } from "server/queries/auth.queries.server";
 import RegisterForm from "~/components/Forms/RegisterForm";
