@@ -1,4 +1,5 @@
 import { redirect, type LoaderFunctionArgs, useActionData } from "react-router";
+import { securedAction, securedLoader } from "server/csrf.server";
 import { authenticateUser } from "server/queries/auth.queries.server";
 import {
   createUserSession,
@@ -8,15 +9,18 @@ import {
 import LoginForm from "~/components/Forms/LoginForm";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export const loader = securedLoader(async ({ request, csrfToken }) => {
   const userId = await getUserId(request);
 
   // console.log('uId: ',userId)
   if (userId) return redirect("/dashboard");
-}
 
-export const action = async ({ request }: { request: Request }) => {
+  return { csrfToken };
+});
+
+export const action = securedAction(async ({ request }) => {
   requireSameOrigin(request);
+
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -31,7 +35,7 @@ export const action = async ({ request }: { request: Request }) => {
   }
 
   return createUserSession(user.id, "/dashboard");
-};
+});
 
 export default function Login() {
   const actionData = useActionData<{ error?: string }>();
