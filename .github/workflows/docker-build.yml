@@ -10,6 +10,7 @@ on:
 jobs:
   docker-and-sonar:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
@@ -21,6 +22,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Set Docker tags
+        id: docker-tags
         run: |
           BRANCH=${GITHUB_REF##*/}
           if [ "$BRANCH" == "main" ]; then
@@ -43,12 +45,12 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         with:
+          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+          organization: ${{ secrets.SONAR_ORGANIZATION }}
           projectBaseDir: .
           args: >
             -Dsonar.branch.name=${GITHUB_REF##*/}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
