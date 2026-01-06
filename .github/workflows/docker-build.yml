@@ -21,7 +21,6 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Set Docker tags
-        id: docker-tags
         run: |
           BRANCH=${GITHUB_REF##*/}
           if [ "$BRANCH" == "main" ]; then
@@ -33,7 +32,6 @@ jobs:
           else
             echo "TAGS=${{ secrets.DOCKER_USERNAME }}/rideshare:${GITHUB_SHA}" >> $GITHUB_ENV
           fi
-          echo "Docker tags set to: $TAGS"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.18.0
@@ -44,9 +42,12 @@ jobs:
 
       - name: SonarQube Scan
         uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://your-sonarqube.example.com
+          SONAR_PROJECT_KEY: rideshare
+          SONAR_ORGANIZATION: your-org
         with:
-          projectKey: rideshare
-          organization: your-org
-          token: ${{ secrets.SONAR_TOKEN }}
-          extraProperties: |
-            sonar.branch.name=${GITHUB_REF##*/}
+          projectBaseDir: .
+          args: >
+            -Dsonar.branch.name=${GITHUB_REF##*/}
