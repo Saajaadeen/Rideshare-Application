@@ -40,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const plate       = (formData.get("plate") as string | null)?.toUpperCase() || undefined;
 
   if (intent === "user") {
-    return updateUserInfo(userId, firstName, lastName, email, phoneNumber, password, baseId);
+    return updateUserInfo(userId, {firstName, lastName, email, phoneNumber, password, baseId});
   } else if (intent === "user-delete") {
     return deleteUserAccount(userId);
   } else if (intent === "vehicle") {

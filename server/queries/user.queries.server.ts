@@ -119,13 +119,16 @@ export async function getBaseInfo() {
 
 export async function updateUserInfo(
   userId: string,
-  firstName?: string,
-  lastName?: string,
-  email?: string,
-  phoneNumber?: string,
-  password?: string,
-  baseId?: string,
+  options: {
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    phoneNumber?: string,
+    password?: string,
+    baseId?: string,
+  }
 ) {
+  const { firstName, lastName, email, phoneNumber, password, baseId } = options;
   if (email) {
     const allowedDomains = [
       "@us.af.mil",

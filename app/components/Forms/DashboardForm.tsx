@@ -10,13 +10,14 @@ export default function Dashboard({
   activeRequests,
   vehicles,
   requestInfo,
+  bases,
 }: any) {
   const navigate = useNavigate();
 
   return (
     <div className="w-full h-screen">
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20 w-[90%] max-w-4xl">
-        <MiddlePanelForm user={user} vehicles={vehicles} />
+        <MiddlePanelForm user={user} vehicles={vehicles} bases={bases}/>
       </div>
 
       <div className="absolute top-0 left-0 h-full z-10">

@@ -17,7 +17,7 @@ import {
   cancelAcceptedRide,
 } from "server/queries/request.queries.server";
 import { getStop } from "server/queries/station.queries.server";
-import { getUserInfo } from "server/queries/user.queries.server";
+import { getUserInfo, updateUserInfo } from "server/queries/user.queries.server";
 import { checkEmailVerification, requireSameOrigin, requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
@@ -25,6 +25,7 @@ import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 import type { Route } from "./+types/dashboard";
 import { getVehicles } from "server/queries/vehicle.queries.server";
+import { getBase } from "server/queries/base.queries.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -35,8 +36,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const accepted = await getDriverRequest(userId);
   const vehicles = await getVehicles(userId);
   const activeRequests = await getActiveRequest(user?.base?.id);
+  const bases = await getBase();
 
-  return { user, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger };
+  return { user, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -50,7 +52,12 @@ export async function action({ request }: ActionFunctionArgs) {
   const pickupId = (formData.get("pickupId") as string) || undefined;
   const dropoffId = (formData.get("dropoffId") as string) || undefined;
   const rideConfirmOrCancel = (formData.get("submit") as string) || undefined
-
+  console.log('test----------------', formData)
+  if (intent === "initialSetup"){
+    updateUserInfo(userId!, {baseId})
+    console.log('test from dashboard')
+    return {success: true, message: "Base updated!"}
+  }
   if (intent === "createRequest") {
     createRequest(userId!, baseId!, pickupId!, dropoffId!);
     return {success: true, message: "Ride requested!"}
@@ -79,7 +86,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
-  const { user, station, accepted, activeRequests, vehicles, requestInfo } = loaderData;
+  const { user, station, accepted, activeRequests, vehicles, requestInfo, bases } = loaderData;
 
   const revalidate = useRevalidator();
 
@@ -128,6 +135,7 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
         vehicles={vehicles}
         activeRequests={activeRequests}
         requestInfo={requestInfo}
+        bases={bases}
       />
     </div>
   );

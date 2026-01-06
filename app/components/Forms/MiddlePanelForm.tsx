@@ -1,7 +1,8 @@
 import { Form, Link } from "react-router";
 import { WarningIcon } from "../Icons/WarningIcon";
+import type { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
-export default function MiddlePanelForm({ user, vehicles }: any) {
+export default function MiddlePanelForm({ user, vehicles, bases }: any) {
   const hasBase = !!user?.base?.id;
   const isReset = !!user?.isReset;
   const isDriver = !!user?.isDriver;
@@ -17,7 +18,7 @@ export default function MiddlePanelForm({ user, vehicles }: any) {
       {!hasBase && (
         <>
           {/* Backdrop */}
-          <div className="fixed inset-0 bg-black/50 z-40 animate-in fade-in duration-200" />
+          <div className="blur-md md:block absolute -top-8 w-screen h-screen bg-black/30 z-40 animate-in fade-in duration-200" />
 
           {/* Dialog */}
           <dialog
@@ -43,8 +44,10 @@ export default function MiddlePanelForm({ user, vehicles }: any) {
               </div>
 
               {/* Form */}
-              <Form method="POST" className="space-y-6">
+              <Form method="POST" action="/dashboard" className="space-y-6">
                 <div className="space-y-2">
+                  <input type="hidden" name="intent" value="initialSetup" />
+                  <input type="hidden" name="userId" value={user.id} />
                   <label
                     htmlFor="baseId"
                     className="block text-sm font-semibold text-gray-700"
@@ -59,15 +62,7 @@ export default function MiddlePanelForm({ user, vehicles }: any) {
                                focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100
                                transition-all duration-300 bg-white"
                   >
-                    <option value="">Select your base...</option>
-                    <option value="travis-afb">Travis Air Force Base, CA</option>
-                    <option value="mcchord-afb">Joint Base Lewis-McChord, WA</option>
-                    <option value="dover-afb">Dover Air Force Base, DE</option>
-                    <option value="charleston-afb">Joint Base Charleston, SC</option>
-                    <option value="hickam-afb">Joint Base Pearl Harbor-Hickam, HI</option>
-                    <option value="macdill-afb">MacDill Air Force Base, FL</option>
-                    <option value="scott-afb">Scott Air Force Base, IL</option>
-                    <option value="wright-patterson">Wright-Patterson Air Force Base, OH</option>
+                    {bases.map((base: { id: string ; name: string }) => <option value={base.id}>{base.name}</option>)}
                   </select>
                 </div>
 
