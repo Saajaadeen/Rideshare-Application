@@ -35,14 +35,16 @@ export async function loader({ request }: Route.LoaderArgs) {
     { headers }
   );
 }
+
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
   const WS_URL = process.env.WS_API_URL || "ws://localhost:3001";
-  
   const setCookie = loaderHeaders.get("set-cookie");
-  
+
   const headers: Record<string, string> = {
     "Content-Security-Policy": [
       "default-src 'self'",
+      // Note: 'unsafe-inline' is required for React Router v7 hydration scripts
+      // This is acceptable when combined with other security measures (CSRF tokens, strict headers)
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
       "font-src 'self' https://fonts.gstatic.com",
@@ -90,13 +92,15 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://cdn.jsdelivr.net/npm/react-toastify@10/dist/ReactToastify.min.css",
     crossOrigin: "anonymous",
+    integrity: "sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb",
   },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/register";
   const allowScroll = isLandingPage || isAuthPage;
 
   return (
