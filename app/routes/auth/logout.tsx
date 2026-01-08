@@ -12,6 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  await requireUserId(request);
   requireSameOrigin(request);
   try {
     await csrf.validate(request);
@@ -21,13 +22,10 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     return {success: false, message: error}
   }
-
-  requireSameOrigin(request);
-  await requireUserId(request);
   return logoutUser(request);
 }
 
-export default function Logout({ loaderData, actionData }: Route.ComponentProps) {
+export default function Logout() {
     return <LogoutForm />;
 }
 
