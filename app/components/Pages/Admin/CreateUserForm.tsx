@@ -31,6 +31,7 @@ export default function CreateUserForm() {
               First Name
             </label>
             <input
+              required
               type="text"
               name="firstName"
               placeholder="Jane"
@@ -42,6 +43,7 @@ export default function CreateUserForm() {
               Last Name
             </label>
             <input
+              required
               type="text"
               name="lastName"
               placeholder="Smith"
@@ -67,6 +69,7 @@ export default function CreateUserForm() {
             Email
           </label>
           <input
+            required
             type="email"
             name="email"
             placeholder="jane.smith@domain.com"
@@ -79,6 +82,7 @@ export default function CreateUserForm() {
             Phone Number
           </label>
           <input
+            required
             type="tel"
             name="phoneNumber"
             placeholder="e.g., (555) 123-4567"
@@ -91,6 +95,7 @@ export default function CreateUserForm() {
             Password
           </label>
           <input
+            required
             type="password"
             name="password"
             placeholder="••••••••••••••••"
