@@ -40,31 +40,16 @@ export async function createUserSession(userId: string, redirectTo: string) {
 // Belt and suspenders for XSS/CSRF Attacks
 export function requireSameOrigin(request: Request) {
   const origin = request.headers.get("Origin");
-  
   if (!origin) {
     return;
   }
-  
-  const forwardedHost = request.headers.get("X-Forwarded-Host");
-  const forwardedProto = request.headers.get("X-Forwarded-Proto") || "http";
-  
-  let expectedOrigin: string;
-  
-  if (forwardedHost) {
-    expectedOrigin = `${forwardedProto}://${forwardedHost}`;
-  } else {
-    expectedOrigin = new URL(request.url).origin;
-  }
+
+  const expectedOrigin = `https://${process.env.DOMAIN}`;
   
   if (origin !== expectedOrigin) {
     console.error("Origin mismatch:", {
       received: origin,
       expected: expectedOrigin,
-      headers: {
-        host: request.headers.get("Host"),
-        forwardedHost,
-        forwardedProto,
-      }
     });
     throw new Response("Invalid origin", { status: 403 });
   }
