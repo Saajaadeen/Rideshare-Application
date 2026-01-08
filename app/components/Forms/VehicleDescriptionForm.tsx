@@ -50,6 +50,7 @@ export default function VehicleDescriptionForm() {
   const [customColor, setCustomColor] = useState("#000000");
   const [selectedMake, setSelectedMake] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
   const [customMake, setCustomMake] = useState("");
   const [customModel, setCustomModel] = useState("");
 
@@ -75,9 +76,10 @@ export default function VehicleDescriptionForm() {
         <select
           name="year"
           required
+          onChange={(e) => setSelectedYear(e.target.value)}
           className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
         >
-          <option value="">Year</option>
+          {!selectedYear && <option value="">Year</option>}
           {years.map(year => (
             <option key={year} value={year}>{year}</option>
           ))}
@@ -94,7 +96,7 @@ export default function VehicleDescriptionForm() {
           }}
           className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
         >
-          <option value="">Make</option>
+          {!selectedMake && <option value="">Make</option>}
           {makes.map(make => (
             <option key={make} value={make}>{make}</option>
           ))}
@@ -129,7 +131,7 @@ export default function VehicleDescriptionForm() {
               : "text-gray-900 bg-white"
           }`}
         >
-          <option value="">Model</option>
+          {!selectedModel && <option value="">Model</option>}
           {availableModels.map((model: any) => (
             <option key={model} value={model}>{model}</option>
           ))}
