@@ -8,7 +8,7 @@ const PORT = process.env.WS_PORT || 3001;
 
 // Enable CORS
 app.use(cors({
-  origin: `http://${process.env.DOMAIN}:${process.env.DOMAIN_PORT}`,
+  origin: `http://${process.env.VITE_DOMAIN}:${process.env.VITE_DOMAIN_PORT}`,
   credentials: true
 }));
 

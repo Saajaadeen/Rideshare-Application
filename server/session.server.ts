@@ -44,14 +44,35 @@ export function requireSameOrigin(request: Request) {
     return;
   }
 
-  const expectedOrigin = `https://${process.env.DOMAIN}`;
+  const isProduction = process.env.NODE_ENV === "production";
   
-  if (origin !== expectedOrigin) {
-    console.error("Origin mismatch:", {
-      received: origin,
-      expected: expectedOrigin,
-    });
-    throw new Response("Invalid origin", { status: 403 });
+  if (isProduction) {
+    const expectedOrigin = `https://${process.env.WEBSITE_DOMAIN}`;
+    
+    if (origin !== expectedOrigin) {
+      console.error("Origin mismatch:", {
+        received: origin,
+        expected: expectedOrigin,
+        environment: process.env.NODE_ENV,
+      });
+      throw new Response("Invalid origin", { status: 403 });
+    }
+  } else {
+    const port = process.env.VITE_DOMAIN_PORT;
+    const originUrl = new URL(origin);
+    
+    const isValidDevOrigin = 
+      originUrl.protocol === "http:" && 
+      originUrl.port === port;
+    
+    if (!isValidDevOrigin) {
+      console.error("Origin mismatch:", {
+        received: origin,
+        expected: `http://*:${port}`,
+        environment: process.env.NODE_ENV,
+      });
+      throw new Response("Invalid origin", { status: 403 });
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const WS_API_URL = `http://${process.env.WS_DOMAIN}:${process.env.WS_PORT}`
+const WS_API_URL = `http://${process.env.VITE_WS_DOMAIN}:${process.env.VITE_WS_PORT}`
 
 export async function notifyDriversOfNewRide(rideId: string, pickupLocation: string) {
   try {

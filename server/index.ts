@@ -41,6 +41,6 @@ app.all(
   })
 );
 
-const port = process.env.DOMAIN_PORT || 3000;
+const port = process.env.VITE_DOMAIN_PORT || 3000;
 httpServer.listen(port, () => {
 });

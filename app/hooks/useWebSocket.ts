@@ -21,8 +21,7 @@ export function useWebSocket(userId: string | null) {
 
     const connect = () => {
       // Connect to external WebSocket server
-      const wsUrl = `ws://${import.meta.env.WS_DOMAIN}:${import.meta.env.WS_PORT}`;
-      ws.current = new WebSocket(wsUrl);
+      ws.current = new WebSocket(`ws://${import.meta.env.VITE_WS_DOMAIN}:${import.meta.env.VITE_WS_PORT}`);
 
       ws.current.onopen = () => {
         setIsConnected(true);
