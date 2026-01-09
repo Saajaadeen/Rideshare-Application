@@ -37,7 +37,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  const WS_URL = `ws://${process.env.VITE_WS_DOMAIN}:${process.env.VITE_WS_PORT}`
   const setCookie = loaderHeaders.get("set-cookie");
 
   const headers: Record<string, string> = {
@@ -49,7 +48,8 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://tile.openstreetmap.org",
-      `connect-src 'self' ${WS_URL} https://tile.openstreetmap.org`,
+      // Allow WebSocket from any origin for network IP access
+      "connect-src 'self' ws: wss: https://tile.openstreetmap.org",
       "worker-src 'self' blob:",
       "frame-ancestors 'none'",
       "base-uri 'self'",
@@ -64,9 +64,10 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
     "Cache-Control": "no-store, no-cache, must-revalidate, private",
     "Pragma": "no-cache",
     "Expires": "0",
-    "Cross-Origin-Embedder-Policy": "require-corp",
+    // Use 'credentialless' instead of 'require-corp' to allow cross-origin resources like map tiles
+    "Cross-Origin-Embedder-Policy": "credentialless",
     "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Resource-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "cross-origin",
     "X-Permitted-Cross-Domain-Policies": "none",
   };
 

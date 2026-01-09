@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.WS_PORT || 3001;
+const PORT = process.env.VITE_WS_PORT || 3001;
 
 // Enable CORS
 app.use(cors({

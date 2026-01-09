@@ -20,8 +20,11 @@ export function useWebSocket(userId: string | null) {
     if (!userId) return;
 
     const connect = () => {
-      // Connect to external WebSocket server
-      ws.current = new WebSocket(`ws://${import.meta.env.VITE_WS_DOMAIN}:${import.meta.env.VITE_WS_PORT}`);
+      // Connect to external WebSocket server using the current page's hostname
+      // This ensures WebSocket works when accessing via network IP, not just localhost
+      const wsHost = window.location.hostname;
+      const wsPort = import.meta.env.VITE_WS_PORT || "3001";
+      ws.current = new WebSocket(`ws://${wsHost}:${wsPort}`);
 
       ws.current.onopen = () => {
         setIsConnected(true);
