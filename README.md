@@ -161,11 +161,22 @@ npm test
 Create a `.env` file in the root directory with the following variables:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/basebound"
-NODE_ENV="development"
-PORT=3000
-JWT_SECRET="your-secret-key"
-SESSION_SECRET="your-session-secret"
+NODE_ENV=development
+VITE_WEBSITE_DOMAIN=rideshare.travisspark.com
+
+DATABASE_URL=postgresql://postgres:supersecret@localhost:5432/postgres
+SESSION_SECRET=128_BIT_HASH
+CSRF_SECRET=128_BIT_HASH
+API_SECRET=128_BIT_HASH
+
+SMTP_HOST=smtp.example.com
+SMTP_USER=user@email.com
+SMTP_PASS=password123
+
+VITE_DOMAIN=localhost
+VITE_DOMAIN_PORT=3000
+VITE_WS_DOMAIN=localhost
+VITE_WS_PORT=3001
 ```
 
 ## 🤝 Contributing
