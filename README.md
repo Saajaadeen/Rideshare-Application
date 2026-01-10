@@ -49,7 +49,7 @@ Get matched with a driver or rider. Coordinate pickup details through the app an
 - **Backend**: Node.js with Express
 - **Database**: Prisma ORM with PostgreSQL
 - **Containerization**: Docker & Docker Compose
-- **Real-Time Updates**: WebSocket integration
+- **Real-Time Updates**
 
 ## 📦 Installation
 

@@ -52,8 +52,6 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
       return () => clearInterval(interval);
     }, [request.createdAt, isActiveOrPending]);
 
-    const isEndingSoon = timeLeft > 0 && timeLeft <= 30 * 1000;
-
     const getStatusBadge = () => {
       const baseClass =
         "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium";
@@ -144,21 +142,6 @@ export default function LeftPanelRequestsForm({ requestInfo }: any) {
                   {request.user.phoneNumber || "No phone"}
                 </p>
               </div>
-
-              {/* {isActiveOrPending && timeLeft > 0 && (
-                <div className="flex items-center gap-1 text-xs">
-                  <ClockIcon
-                    className={`w-5 h-5 ${isEndingSoon ? "text-red-500" : "text-gray-500"}`}
-                  />
-                  <span
-                    className={`text-sm font-medium ${
-                      isEndingSoon ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    {formatCountdown(timeLeft)}
-                  </span>
-                </div>
-              )} */}
             </div>
 
             <div className="space-y-2">

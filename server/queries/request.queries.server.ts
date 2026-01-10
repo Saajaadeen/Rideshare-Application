@@ -1,5 +1,3 @@
-
-import { notifyDriverOfCancelation, notifyDriversOfNewRide, notifyPassengerOfDropoff, notifyPassengerOfPickup, notifyRiderOfCancellation, notifyRiderOfConfirmation } from "server/websocket-client";
 import { prisma } from "../db.server";
 
 export async function createRequest(
@@ -17,7 +15,6 @@ export async function createRequest(
       status: "Pending",
     },
   });
-  notifyDriversOfNewRide(request.id, pickupId)
   return request;
 }
 
@@ -174,7 +171,6 @@ export async function cancelRequest(id: string, driverId: string | null) {
       status: "Cancelled",
     },
   });
-  notifyDriverOfCancelation(id, driverId);
   return request;
 }
 
@@ -189,7 +185,6 @@ export async function acceptRequest(requestId: string, driverId: string, userId:
     },
   });
 
-  notifyRiderOfConfirmation(requestId, userId)
   return request;
 }
 
@@ -202,8 +197,6 @@ export async function pickupRequest(requestId: string, userId: string) {
       pickedUpAt: new Date(Date.now()),
     },
   });
-  notifyPassengerOfPickup(requestId, userId)
-  // notifyDriversOfNewRide(requestId, requestId)
   return request;
 }
 
@@ -216,7 +209,6 @@ export async function dropOffRequest(requestId: string, userId: string) {
       droppedOffAt: new Date(Date.now()),
     },
   });
-  notifyPassengerOfDropoff(requestId, userId)
   return request;
 }
 
@@ -230,7 +222,5 @@ export async function cancelAcceptedRide(requestId: string, userId: string, pick
       driverId: null,
     }
   })
-  notifyDriversOfNewRide(requestId, pickupId);
-  notifyRiderOfCancellation(requestId, userId);
   return request;
 }

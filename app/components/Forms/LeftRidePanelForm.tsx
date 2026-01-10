@@ -6,7 +6,6 @@ import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
 import LeftPanelDriverForm from "./LeftPanelDriverForm";
 import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
 import { LogoutIcon } from "../Icons/LogoutIcon";
-// import { tabs } from "~/lib/constants";
 import LeftPanelScheduleForm from "./LeftPanelScheduleForm";
 import UserSettingsModal, { createTabs } from "../Modals/UserSettingsModal";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";

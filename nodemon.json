@@ -1,6 +1,0 @@
-{
-      "watch": ["server/**/*", "app/**/*"],
-  "ext": "ts,tsx,js,jsx",
-  "ignore": ["node_modules", "build", ".react-router"],
-  "delay": "1000"
-}

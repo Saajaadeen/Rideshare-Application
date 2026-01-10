@@ -21,7 +21,6 @@ import { getUserInfo, updateUserInfo } from "server/queries/user.queries.server"
 import { checkEmailVerification, requireSameOrigin, requireUserId } from "server/session.server";
 import DashboardForm from "~/components/Forms/DashboardForm";
 import MapDisplay from "~/components/Maps/MapDisplay";
-import { useWebSocket, type RideMessage } from "~/hooks/useWebSocket";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 import type { Route } from "./+types/dashboard";
 import { getVehicles } from "server/queries/vehicle.queries.server";
@@ -94,45 +93,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
+export default function Dashboard({ loaderData }: Route.ComponentProps) {
   const { user, station, accepted, activeRequests, vehicles, requestInfo, bases } = loaderData;
-
-  const revalidate = useRevalidator();
-
-  const { messages } = useWebSocket(user?.id);
-  const previousMessagesRef = useRef<RideMessage[]>([]);
-  useEffect(() => {
-    if (actionData?.success) {
-      if(actionData.message.length > 0){ 
-        toast.success(actionData.message);
-      }
-    }
-    if (actionData && !actionData?.success) {
-      toast.error(actionData.message);
-    }
-  }, [actionData]);
-
-  useEffect(() => {
-    messages.forEach(message => {
-      const previous = previousMessagesRef.current.find(m => m.rideId === message.rideId);
-      if (previous?.status !== message.status) {
-        if (message.status === "accepted_for_user") {
-          toast.success("Ride accepted!");
-        }
-        if (message.status === "picked_up") {
-          toast.info("You've been picked up!");
-        }
-        if (message.status === "completed") {
-          toast.success("Ride completed!");
-        }
-        if (message.status === "cancelled") {
-          toast.info("Ride request cancelled!")
-        }
-      }
-    });
-    revalidate.revalidate();
-    previousMessagesRef.current = messages;
-  }, [messages]);
 
   return (
     <div>

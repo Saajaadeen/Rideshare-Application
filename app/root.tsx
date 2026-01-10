@@ -48,8 +48,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://tile.openstreetmap.org",
-      // Allow WebSocket from any origin for network IP access
-      "connect-src 'self' ws: wss: https://tile.openstreetmap.org",
+      "connect-src 'self' https://tile.openstreetmap.org",
       "worker-src 'self' blob:",
       "frame-ancestors 'none'",
       "base-uri 'self'",
