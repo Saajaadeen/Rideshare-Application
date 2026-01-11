@@ -7,6 +7,7 @@ export default [
     route("/register", "./routes/auth/register.tsx"),
     route("/send", "./routes/auth/send.tsx"),
     route("/verify", "./routes/auth/verify.tsx"),
+    route("/api/sse", "./routes/api/sse.ts"),
     route("/dashboard", "./routes/dashboard/dashboard.tsx", [
         route("settings", "./routes/settings/usersettings.tsx"),
         route("admin", "./routes/settings/adminsettings.tsx"),
