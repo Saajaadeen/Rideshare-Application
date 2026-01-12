@@ -42,8 +42,6 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   const headers: Record<string, string> = {
     "Content-Security-Policy": [
       "default-src 'self'",
-      // Note: 'unsafe-inline' is required for React Router v7 hydration scripts
-      // This is acceptable when combined with other security measures (CSRF tokens, strict headers)
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
       "font-src 'self' https://fonts.gstatic.com",
@@ -63,7 +61,6 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
     "Cache-Control": "no-store, no-cache, must-revalidate, private",
     "Pragma": "no-cache",
     "Expires": "0",
-    // Use 'credentialless' instead of 'require-corp' to allow cross-origin resources like map tiles
     "Cross-Origin-Embedder-Policy": "credentialless",
     "Cross-Origin-Opener-Policy": "same-origin",
     "Cross-Origin-Resource-Policy": "cross-origin",
