@@ -1,14 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRevalidator } from "react-router";
 
-interface UseRequestSSEOptions {
-  onNewRequest?: (request: any) => void;
-}
-
-export function useRequestSSE({ onNewRequest }: UseRequestSSEOptions = {}) {
+export function useRequestSSE({ onNewRequest }: any) {
   const revalidator = useRevalidator();
   const eventSourceRef = useRef<EventSource | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
   const onNewRequestRef = useRef(onNewRequest);
   const revalidatorRef = useRef(revalidator);
 
@@ -18,8 +13,8 @@ export function useRequestSSE({ onNewRequest }: UseRequestSSEOptions = {}) {
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
+    if (typeof window === "undefined") return;
+
     if (eventSourceRef.current?.readyState === EventSource.OPEN) {
       return;
     }
@@ -27,34 +22,18 @@ export function useRequestSSE({ onNewRequest }: UseRequestSSEOptions = {}) {
     const eventSource = new EventSource("/broadcast/sse");
     eventSourceRef.current = eventSource;
 
-    eventSource.onopen = () => {
-      setIsConnected(true);
-    };
-
     eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
 
-        if (data.type === "NEW_REQUEST") {
-          onNewRequestRef.current?.(data.request);
-          revalidatorRef.current.revalidate();
-        }
-      } catch (error) {
-        console.error("Parse error:", error);
+      if (data.type === "NEW_REQUEST") {
+        onNewRequestRef.current?.(data.request);
+        revalidatorRef.current.revalidate();
       }
     };
 
-    eventSource.onerror = (error) => {
-      setIsConnected(false);
-    };
-
     return () => {
-      console.log("🧹 Cleanup: Closing connection");
       eventSource.close();
       eventSourceRef.current = null;
-      setIsConnected(false);
     };
   }, []);
-
-  return { isConnected };
 }

@@ -34,7 +34,7 @@ import {
   broadcastCancelAcceptedRide,
 } from "server/events/requestEvents.server";
 import { prisma } from "server/db.server";
-import { useSSE } from "~/hooks/useSSE";
+import { broadcastSSE } from "~/hooks/broadcast.sse";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -142,9 +142,9 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
   const { user, station, accepted, activeRequests, vehicles, requestInfo, bases } = loaderData;
 
-  useSSE({
+  broadcastSSE({
     onNewRequest: (data) => {
-      console.log('data: ', data.request)
+      console.log('data: ', data?.request)
       const { id } = data?.request.user
       if(user?.id === id){
         toast.success('Your ride request was created!');
@@ -170,21 +170,12 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
         if (driver) {
           toast.success(`Your ride was accepted by ${driver.firstName} ${driver.lastName}!`);
         } 
-        // else {
-        //   toast.info("Your ride was accepted!");
-        // }
       }, 0);
     },
-    // onRequestCancelled: (data) => {
-    //   console.log("[Dashboard] onRequestCancelled called", data);
-    //   setTimeout(() => toast.warning("A ride request was cancelled."), 0);
-    // },
     onRequestPickup: (data) => {
-      console.log("[Dashboard] onRequestPickup called", data);
       setTimeout(() => toast.info("Your driver has arrived!"), 0);
     },
     onRequestComplete: (data) => {
-      console.log("[Dashboard] onRequestComplete called", data);
       setTimeout(() => toast.success("Ride completed. Thank you!"), 0);
     },
     autoRevalidate: true,

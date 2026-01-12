@@ -1,4 +1,3 @@
-import { broadcast } from "~/routes/broadcast.sse";
 import { prisma } from "../db.server";
 
 export async function createRequest(
@@ -15,7 +14,7 @@ export async function createRequest(
       dropoffId,
       status: "Pending",
     },
-    // Include all the data drivers need to see
+    
     select: {
       id: true,
       status: true,
@@ -39,13 +38,6 @@ export async function createRequest(
       },
     },
   });
-
-  broadcast({
-    type: "NEW_REQUEST",
-    request: request,
-  });
-
-  console.log("✅ New request created and broadcasted:", request.id);
 
   return request;
 }

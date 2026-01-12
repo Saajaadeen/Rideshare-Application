@@ -29,19 +29,16 @@ interface SSEState {
   error: string | null;
 }
 
-export function useSSE(options: SSEOptions = {}) {
+export function broadcastSSE(options: SSEOptions = {}) {
   const { autoRevalidate = true } = options;
   const revalidator = useRevalidator();
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reconnectAttemptsRef = useRef(0);
-
-  // Use refs to avoid effect re-runs
   const optionsRef = useRef(options);
   const revalidatorRef = useRef(revalidator);
   const autoRevalidateRef = useRef(autoRevalidate);
 
-  // Keep refs up to date
   useEffect(() => {
     optionsRef.current = options;
     revalidatorRef.current = revalidator;
@@ -55,7 +52,6 @@ export function useSSE(options: SSEOptions = {}) {
   });
 
   useEffect(() => {
-    // Only run on client side
     if (typeof window === "undefined") return;
 
     const connect = () => {
@@ -194,7 +190,7 @@ export function useSSE(options: SSEOptions = {}) {
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []); // Empty deps - only run once on mount
+  }, []);
 
   return {
     ...state,
