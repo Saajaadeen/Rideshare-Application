@@ -1,3 +1,4 @@
+// hooks/useBroadcastSSE.ts
 import { useEffect, useRef, useState } from "react";
 import { useRevalidator } from "react-router";
 
@@ -29,7 +30,7 @@ interface SSEState {
   error: string | null;
 }
 
-export function broadcastSSE(options: SSEOptions = {}) {
+export function useBroadcastSSE(options: SSEOptions = {}) {
   const { autoRevalidate = true } = options;
   const revalidator = useRevalidator();
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -59,7 +60,7 @@ export function broadcastSSE(options: SSEOptions = {}) {
         eventSourceRef.current.close();
       }
 
-      const eventSource = new EventSource("/api/sse", {
+      const eventSource = new EventSource("/broadcast/sse", {
         withCredentials: true,
       });
       eventSourceRef.current = eventSource;
