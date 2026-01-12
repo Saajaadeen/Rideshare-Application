@@ -65,13 +65,11 @@ export function broadcastSSE(options: SSEOptions = {}) {
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log("[SSE] Connected");
         setState((prev) => ({ ...prev, isConnected: true, error: null }));
         reconnectAttemptsRef.current = 0;
       };
 
       eventSource.onerror = () => {
-        console.log("[SSE] Error, reconnecting...");
         setState((prev) => ({
           ...prev,
           isConnected: false,
@@ -91,14 +89,12 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("connected", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received connected event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onConnected?.(data);
       });
 
       eventSource.addEventListener("new_request", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received new_request event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onNewRequest?.(data);
         if (autoRevalidateRef.current) {
@@ -108,7 +104,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("renew_request", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received renew_request event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRenewRequest?.(data);
         if (autoRevalidateRef.current) {
@@ -118,7 +113,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("request_accepted", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received request_accepted event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRequestAccepted?.(data);
         if (autoRevalidateRef.current) {
@@ -128,7 +122,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("request_cancelled", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received request_cancelled event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRequestCancelled?.(data);
         if (autoRevalidateRef.current) {
@@ -138,7 +131,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("request_cancelled_passenger", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received request_cancelled_passenger event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRequestCancelled?.(data);
         if (autoRevalidateRef.current) {
@@ -148,7 +140,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("request_pickup", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received request_pickup event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRequestPickup?.(data);
         if (autoRevalidateRef.current) {
@@ -158,7 +149,6 @@ export function broadcastSSE(options: SSEOptions = {}) {
 
       eventSource.addEventListener("request_complete", (e) => {
         const data = JSON.parse(e.data);
-        console.log("[SSE] Received request_complete event", data);
         setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
         optionsRef.current.onRequestComplete?.(data);
         if (autoRevalidateRef.current) {

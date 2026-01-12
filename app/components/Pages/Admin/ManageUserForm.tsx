@@ -5,7 +5,6 @@ import ToggleSwitch from "~/components/Buttons/ToggleSwitch";
 import { WarningIcon } from "~/components/Icons/WarningIcon";
 
 export default function ManageUserForm({ accounts , base, user}: any) {
-  console.log('user: ', user)
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

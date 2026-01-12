@@ -144,11 +144,7 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
 
   broadcastSSE({
     onNewRequest: (data) => {
-      console.log('data: ', data?.request)
       const { id } = data?.request.user
-      // if(user?.id === id){
-      //   toast.success('Your ride request was created!');
-      // }
     },
     onRenewRequest: (data) => {
       const {id} = data?.request.user;
@@ -157,17 +153,12 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
       }
     },
     onRequestCancelled: (data) => {
-      console.log('data: ', data)
-      const {passengerId, driverId} = data
-      // if(passengerId === user?.id){
-      //   toast.info("Your request was successfully cancelled!")
-      // }
+      const {driverId} = data
       if(driverId === user?.id){
         toast.info("User cancelled ride")
       }
     },
     onRequestAccepted: (data) => {
-      console.log("[Dashboard] onRequestAccepted called", data);
       const { driver } = data as { driver?: { firstName: string; lastName: string } };
       setTimeout(() => {
         if (driver) {

@@ -59,9 +59,7 @@ class EventBus {
       drivers.forEach((subscriber) => {
         try {
           subscriber.callback(event);
-          console.log(drivers, event)
         } catch (error) {
-          console.error(`Failed to notify driver ${subscriber.userId}:`, error);
         }
       });
     }
@@ -72,9 +70,7 @@ class EventBus {
     if (subscriber) {
       try {
         subscriber.callback(event);
-        console.log('sent message', event, subscriber)
       } catch (error) {
-        console.error(`Failed to notify passenger ${userId}:`, error);
       }
     }
   }

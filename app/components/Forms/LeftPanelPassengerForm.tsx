@@ -17,7 +17,6 @@ export default function LeftSidePassengerForm({ user, station, params, activeReq
   }, [actionData]);
 
   const hasActiveRequest = activeRequests.some(r => r.user.id === user.id)
-  console.log(hasActiveRequest)
 
   const isButtonEnabled =
     !user?.isReset &&

@@ -29,7 +29,6 @@ export async function getSession(request: Request) {
 export async function createUserSession(userId: string, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
-  console.log('cus', userId, redirectTo)
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await storage.commitSession(session),
@@ -50,11 +49,6 @@ export function requireSameOrigin(request: Request) {
     const expectedOrigin = `https://${process.env.WEBSITE_DOMAIN}`;
     
     if (origin !== expectedOrigin) {
-      console.error("Origin mismatch:", {
-        received: origin,
-        expected: expectedOrigin,
-        environment: process.env.NODE_ENV,
-      });
       throw new Response("Invalid origin", { status: 403 });
     }
   } else {
@@ -66,11 +60,6 @@ export function requireSameOrigin(request: Request) {
       originUrl.port === port;
     
     if (!isValidDevOrigin) {
-      console.error("Origin mismatch:", {
-        received: origin,
-        expected: `http://*:${port}`,
-        environment: process.env.NODE_ENV,
-      });
       throw new Response("Invalid origin", { status: 403 });
     }
   }
