@@ -143,7 +143,7 @@ export default function RegisterForm() {
             <button
               type="submit"
               disabled={turnstileToken ? false : true}
-              className={"w-full mb-8 md:mb-0 py-4 mt-6 rounded-xl font-semibold text-white text-lg transition-all shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/30"}
+              className={`w-full mb-8 md:mb-0 py-4 mt-6 rounded-xl font-semibold text-white text-lg transition-all shadow-lg ${turnstileToken ?'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/30' : 'bg-gray-400 hover:cursor-not-allowed'}`}
             >
               Create Account
             </button>

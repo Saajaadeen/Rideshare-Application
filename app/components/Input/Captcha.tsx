@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 declare global {
   interface Window {
@@ -9,7 +9,7 @@ declare global {
           sitekey: string;
           callback?: (token: string) => void;
           "error-callback"?: () => void;
-          appearance?: "always" | "interaction-only";
+          appearance?: "always";
           theme?: "light" | "dark" | "auto";
         }
       ) => string;
@@ -18,34 +18,49 @@ declare global {
   }
 }
 
-export default function Captcha({turnstileToken, setTurnstileToken, error, setError}: any) {
+interface CaptchaProps {
+  turnstileToken: string | null;
+  setTurnstileToken: (token: string | null) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
+}
+
+export default function Captcha({ turnstileToken, setTurnstileToken, error, setError }: CaptchaProps) {
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
-
-  console.log("Current hostname:", window.location.hostname);
-  console.log("Current origin:", window.location.origin);
+  const hasRenderedRef = useRef(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    // Prevent multiple render attempts
+    if (hasRenderedRef.current) return;
+
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     const renderWidget = () => {
       if (!window.turnstile || !turnstileRef.current || widgetIdRef.current) return;
 
+      hasRenderedRef.current = true;
+      console.log("Rendering Turnstile on:", window.location.hostname);
+      console.log("Using sitekey:", import.meta.env.VITE_CF_SITEKEY ? "env key" : "test key");
+
       try {
         widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-          sitekey: import.meta.env.VITE_CF_SITEKEY ,//|| "3x00000000000000000000FF",
-          appearance: "interaction-only", // ✅ Add this here
-          theme: "auto", // Optional: auto, light, or dark
+          sitekey: import.meta.env.VITE_CF_SITEKEY || "1x00000000000000000000AA",
+          appearance: "always",
+          theme: "auto",
           callback: (token: string) => {
+            console.log("Turnstile success, token received");
             setTurnstileToken(token);
             setError(null);
           },
           "error-callback": () => {
+            console.error("Turnstile error callback triggered");
             setError("Verification failed. Please try again.");
           },
         });
       } catch (e) {
         console.error("Turnstile render error:", e);
+        setError("Failed to load verification widget.");
       }
     };
 
@@ -62,22 +77,12 @@ export default function Captcha({turnstileToken, setTurnstileToken, error, setEr
 
     return () => {
       if (interval) clearInterval(interval);
-      if (widgetIdRef.current && window.turnstile) {
-        try {
-          window.turnstile.remove(widgetIdRef.current);
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-        widgetIdRef.current = null;
-      }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Security Verification
-      </label>
+    <div className="pt-2 ">
       <div ref={turnstileRef} className="flex justify-center" />
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       <input type="hidden" name="cf-turnstile-response" value={turnstileToken || ""} />
