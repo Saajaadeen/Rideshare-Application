@@ -139,16 +139,6 @@ export default function RegisterForm() {
             </div>
 
             <Captcha turnstileToken={turnstileToken} setTurnstileToken={setTurnstileToken} error={error} setError={setError}/>
-            <div className="flex text-black gap-2">
-              <p>TEST: </p>
-              <div className="flex flex-col">
-                
-              <span>Sitekey: {import.meta.env.CF_SITEKEY}</span>
-              <span>Secret key: {import.meta.env.CF_SECRET}</span>
-              <span>VITESitekey: {import.meta.env.VITE_CF_SITEKEY}</span>
-              <span>VITESecret key: {import.meta.env.VITE_CF_SECRET}</span>
-              </div>
-            </div>
 
             <button
               type="submit"
