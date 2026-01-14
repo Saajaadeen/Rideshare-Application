@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Entry() {
   return (
     <div className="overflow-y-scroll">
-      <DebugPanel />
+      {/* <DebugPanel /> */}
       <MainLanding />
     </div>
   );
