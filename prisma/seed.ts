@@ -1,4 +1,5 @@
 // prisma/seed.ts
+import { randomInt } from 'crypto';
 import { prisma } from '../server/db.server';
 import bcrypt from 'bcryptjs';
 
@@ -396,7 +397,7 @@ async function main() {
 
   // Lists of first and last names
   const firstNames = [
-    'James', 'Sarah', 'Michael', 'Emily', 'David', 
+    'James', 'Sarah', 'Michael', 'Emily', 'David',
     'Jennifer', 'Robert', 'Amanda', 'Christopher', 'Jessica',
     'Matthew', 'Ashley', 'Daniel', 'Nicole', 'Joshua',
     'Elizabeth', 'Andrew', 'Samantha', 'Ryan', 'Lauren',
@@ -415,8 +416,8 @@ async function main() {
   // Generate random phone number (707 area code for Travis AFB region)
   const generatePhoneNumber = () => {
     const areaCode = '707';
-    const prefix = Math.floor(Math.random() * 900) + 100; // 100-999
-    const lineNumber = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
+    const prefix = randomInt(100, 1000); // 100-999 (upper bound is exclusive)
+    const lineNumber = randomInt(1000, 10000); // 1000-9999 (upper bound is exclusive)
     return `${areaCode}-${prefix}-${lineNumber}`;
   };
 
