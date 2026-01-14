@@ -2,7 +2,7 @@ name: Build & Push Docker Image (test-unstable)
 on:
   push:
     branches:
-      - main
+      - captcha
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -22,4 +22,10 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/rideshare:main
+            ${{ secrets.DOCKER_USERNAME }}/rideshare:captcha
+          build-args: |
+            VITE_CF_SITEKEY=${{ secrets.VITE_CF_SITEKEY }}
+            VITE_DOMAIN=${{ secrets.VITE_DOMAIN }}
+            VITE_DOMAIN_PORT=${{ secrets.VITE_DOMAIN_PORT }}
+            VITE_WS_DOMAIN=${{ secrets.VITE_WS_DOMAIN }}
+            VITE_WS_PORT=${{ secrets.VITE_WS_PORT }}
