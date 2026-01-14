@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router";
 import { CSRFError } from "remix-utils/csrf/server";
 import { csrf } from "server/csrf.server";
 import { deleteReset } from "server/queries/reset.queries.server";
@@ -14,6 +14,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   await requireSameOrigin(request);
+  await requireMagicLink(request.url);
   
   try {
     await csrf.validate(request);
@@ -26,18 +27,24 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const formData = await request.formData();
   const password = formData.get("password") as string;
-  const userId = formData.get("userId") as string;
+  const formUserId = formData.get("userId") as string;
+  
+  const url = new URL(request.url);
+  const urlUserId = url.searchParams.get("userId");
+  
+  if (formUserId !== urlUserId) {
+    throw redirect("/login");
+  }
 
   if (!password || password.length < 8) {
     return { success: false, error: "Password must be at least 8 characters" };
   }
 
   try {
-    await updateUserInfo(userId, password);
-    await deleteReset(userId);
-    await createUserSession(userId, "/dashboard");
+    await updateUserInfo(urlUserId!, { password });
+    await deleteReset(urlUserId!);
+    return await createUserSession(urlUserId!, "/dashboard");
   } catch (error) {
-    console.error('Password reset error:', error);
     return { success: false, error: "Failed to reset password. Please try again." };
   }
 }

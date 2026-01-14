@@ -5,8 +5,15 @@ import { useState } from "react";
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const actionData = useActionData<{ success: boolean; error?: string }>();
-  const userId = searchParams.get("userId");
   const [showPassword, setShowPassword] = useState(false);
+  
+  const token = searchParams.get("token");
+  const id = searchParams.get("id");
+  const userId = searchParams.get("userId");
+  const valid = searchParams.get("valid");
+  const code = searchParams.get("code");
+  
+  const actionUrl = `/reset?token=${token}&id=${id}&userId=${userId}&valid=${valid}&code=${code}`;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 relative overflow-hidden">
@@ -31,8 +38,8 @@ export default function ResetPassword() {
           </div>
         )}
 
-        <Form method="post" action={'/reset'} className="space-y-6 text-black">
-          <input type="hidden" name="userId" value={userId} />
+        <Form method="post" action={actionUrl} className="space-y-6 text-black">
+          <input type="hidden" name="userId" value={userId || ""} />
           <AuthenticityTokenInput />
 
           <div>
