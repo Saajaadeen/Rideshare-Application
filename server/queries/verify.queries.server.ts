@@ -139,6 +139,51 @@ export async function sendWelcomeEmail(userId: string, email: string) {
   }
 }
 
+export async function sendInvitationEmail(email: string, userId: string) {
+  try {
+    const invite = await prisma.invite.findFirst({
+      where: {
+        userId,
+        email,
+        isActive: true,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    if (!invite) {
+      return { 
+        success: false, 
+        error: "No active invite found for this email address." 
+      };
+    }
+
+    const inviterName = `${invite.user.firstName} ${invite.user.lastName}`.trim();
+    const baseUrl = getBaseUrl();
+    const inviteLink = `${baseUrl}/register?code=${encodeURIComponent(invite.code)}&email=${encodeURIComponent(email)}`;
+
+    await sendEmail(email, {
+      type: 'invitation',
+      data: {
+        inviterName,
+        inviteLink,
+        inviteCode: invite.code,
+      },
+    });
+
+    return { success: true, message: "Invitation email sent successfully!" };
+  } catch (error) {
+    console.error('Failed to send invitation email:', error);
+    return { success: false, error: "Failed to send invitation email." };
+  }
+}
+
 export async function sendMagicLink(email: string) {
   try {
     const user = await prisma.user.findUnique({

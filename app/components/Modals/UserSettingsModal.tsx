@@ -66,6 +66,7 @@ export const createTabs = ({user, userBase, vehicles}: any) => [
 ].filter((tab) => !tab.hide);
 
 
+
 export default function UserSettingsModal({
   user,
   base,
@@ -77,12 +78,10 @@ export default function UserSettingsModal({
   const [selectedTab, setSelectedTab] = useState(searchParams.get("tab") ?? "profile");
 
   const tabs = createTabs({user, userBase, vehicles})
-
   
   return (
     <div className="fixed inset-0 z-50 flex md:items-center md:justify-center bg-black/50 to-black/50 backdrop-blur-lg md:p-4 w-screen">
       <div className="fixed inset-0 md:relative md:w-[1100px] md:h-[700px] bg-white/95 backdrop-blur-xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden border-0 md:border border-gray-200/50">
-        {/* Desktop Sidebar - keep existing */}
         <aside className="hidden md:block w-80 bg-gradient-to-b from-indigo-50 via-white to-indigo-50/50 p-8 flex-col gap-2 border-r border-indigo-100/50 relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">

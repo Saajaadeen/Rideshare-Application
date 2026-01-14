@@ -29,19 +29,25 @@ export async function registerUser(
   }
 
   let inviteId: string | null = null;
+
   if (inviteCode) {
-    const invite = await prisma.invite.findFirst({
+    const inviteExists = await prisma.invite.findFirst({
       where: {
         code: inviteCode,
-        email,
         isActive: true,
       },
-      select: { id: true },
+      select: { id: true, email: true },
     });
-    if (!invite) {
-      return { error: "Invalid invite code" };
+    
+    if (!inviteExists) {
+      return { error: "Invalid or expired invite code" };
     }
-    inviteId = invite.id;
+    
+    if (inviteExists.email.toLowerCase() !== email.toLowerCase()) {
+      return { error: "Invalid invite code or email address" };
+    }
+    
+    inviteId = inviteExists.id;
   } else {
     const allowedDomains = [
       "@us.af.mil",
@@ -65,6 +71,7 @@ export async function registerUser(
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const existingAdmin = await prisma.user.findFirst({
     where: {
       isAdmin: true,
@@ -84,6 +91,8 @@ export async function registerUser(
       password: hashedPassword,
       isAdmin,
       inviteId,
+      isInvite: !!inviteId,
+      inviteCode,
       emailVerified,
       baseId: base,
     },

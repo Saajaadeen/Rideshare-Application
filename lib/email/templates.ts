@@ -15,6 +15,7 @@ interface PasswordResetData {
 interface InvitationData {
   inviterName: string;
   inviteLink: string;
+  inviteCode: string;
 }
 
 export type EmailTemplateData = 
@@ -213,10 +214,10 @@ function getPasswordResetTemplate({ resetLink }: PasswordResetData): EmailConten
   };
 }
 
-function getInvitationTemplate({ inviterName, inviteLink }: InvitationData): EmailContent {
+function getInvitationTemplate({ inviterName, inviteLink, inviteCode }: InvitationData): EmailContent {
   return {
     subject: `${inviterName} invited you to join Base Bound`,
-    text: `${inviterName} has invited you to join their team on Base Bound!\n\nClick the link: ${inviteLink}`,
+    text: `${inviterName} has invited you to join their team on Base Bound!\n\nYour Invite Code: ${inviteCode}\n\nTo get started:\n1. Go to rideshare.travisspark.com\n2. Click "Register"\n3. Toggle "Sign up with invite code"\n4. Enter your invite code: ${inviteCode}\n5. Fill in your information\n6. Click "Create Account"\n\nOr use this direct link: ${inviteLink}`,
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -230,17 +231,28 @@ function getInvitationTemplate({ inviterName, inviteLink }: InvitationData): Ema
           <tr>
             <td align="center" style="padding: 40px 20px;">
               <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                <!-- Header -->
                 <tr>
                   <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px 8px 0 0;">
                     <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">Base Bound</h1>
                   </td>
                 </tr>
+                
+                <!-- Main Content -->
                 <tr>
                   <td style="padding: 40px;">
                     <h2 style="margin: 0 0 16px; color: #1a1a1a; font-size: 24px; font-weight: 600;">You've Been Invited!</h2>
                     <p style="margin: 0 0 24px; color: #4a5568; font-size: 16px; line-height: 24px;">
-                      <strong>${inviterName}</strong> has invited you to join their team on Base Bound.
+                      <strong>${inviterName}</strong> has invited you to join Base Bound, the volunteer-driven rideshare platform for your base community.
                     </p>
+                    
+                    <!-- Invite Code Box -->
+                    <div style="background-color: #f7fafc; border: 2px dashed #cbd5e0; border-radius: 8px; padding: 20px; margin: 24px 0; text-align: center;">
+                      <p style="margin: 0 0 8px; color: #718096; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Your Invite Code</p>
+                      <p style="margin: 0; color: #1a1a1a; font-size: 28px; font-weight: 700; letter-spacing: 2px; font-family: 'Courier New', monospace;">${inviteCode}</p>
+                    </div>
+                    
+                    <!-- Quick Action Button -->
                     <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 32px 0;">
                       <tr>
                         <td align="center">
@@ -250,12 +262,46 @@ function getInvitationTemplate({ inviterName, inviteLink }: InvitationData): Ema
                         </td>
                       </tr>
                     </table>
+                    
+                    <p style="margin: 0 0 16px; color: #718096; font-size: 14px; text-align: center;">
+                      Or follow these steps to sign up manually:
+                    </p>
+                    
+                    <!-- Step-by-Step Instructions -->
+                    <div style="background-color: #f7fafc; border-radius: 8px; padding: 24px; margin: 24px 0;">
+                      <ol style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 15px; line-height: 28px;">
+                        <li style="margin-bottom: 12px;">
+                          <strong>Go to</strong> <a href="https://rideshare.travisspark.com" style="color: #667eea; text-decoration: none;">rideshare.travisspark.com</a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                          <strong>Click</strong> the "Register" button
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                          <strong>Toggle</strong> "Sign up with invite code"
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                          <strong>Enter</strong> your invite code: <code style="background-color: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace;">${inviteCode}</code>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                          <strong>Fill in</strong> your account information
+                        </li>
+                        <li>
+                          <strong>Click</strong> "Create Account"
+                        </li>
+                      </ol>
+                    </div>
+                    
+                    <p style="margin: 24px 0 0; color: #718096; font-size: 14px; line-height: 20px; text-align: center;">
+                      Welcome to the Base Bound community!
+                    </p>
                   </td>
                 </tr>
+                
+                <!-- Footer -->
                 <tr>
                   <td style="padding: 32px 40px; background-color: #f7fafc; border-radius: 0 0 8px 8px; border-top: 1px solid #e2e8f0;">
                     <p style="margin: 0; color: #a0aec0; font-size: 12px; line-height: 18px; text-align: center;">
-                      This is an automated message, please do not reply to this email.
+                      This is an automated message. Please do not reply to this email.
                     </p>
                     <p style="margin: 8px 0 0; color: #a0aec0; font-size: 12px; line-height: 18px; text-align: center;">
                       © ${new Date().getFullYear()} Base Bound. All rights reserved.

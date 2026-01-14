@@ -36,6 +36,7 @@ import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
 import type { Route } from "./+types/usersettings";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { sendInvitationEmail } from "server/queries/verify.queries.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -97,7 +98,12 @@ export async function action({ request }: ActionFunctionArgs) {
   } else if (intent === "vehicle-delete") {
     return deleteVehicle(id!);
   } else if (intent === "create-invite") {
-    return createInvite(email!, userId);
+    const createResult = await createInvite(email!, userId);
+    if (createResult.error) {
+      return { success: false, message: createResult.error };
+    }
+    const emailResult = await sendInvitationEmail(email!, userId);
+    return emailResult;
   } else if (intent === "regenerate-invite") {
     return updateInvite(id!);
   } else if (intent === "disable-invite") {

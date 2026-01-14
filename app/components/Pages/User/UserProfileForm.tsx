@@ -76,7 +76,7 @@ export default function UserProfileForm({ user }: any) {
             </div>
           </div>
 
-          {user?.isInvite && (
+          {user?.isInvite && user?.inviteId && (
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Invite Access Code
@@ -85,7 +85,7 @@ export default function UserProfileForm({ user }: any) {
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <KeyIcon className="size-6" />
                 </span>
-                <p className="border border-2 border-gray-200 rounded-xl pl-12 py-3 text-gray-400 select-none">{user?.inviteCode}</p>
+                <p className="border border-2 border-gray-200 rounded-xl pl-12 py-3 text-gray-400 select-none">{user?.inviteId}</p>
               </div>
             </div>
           )}

@@ -3,6 +3,7 @@ import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import ButtonControls from "~/components/Buttons/ButtonControls";
 import { LockIcon } from "~/components/Icons/LockIcon";
+import { MailIcon } from "~/components/Icons/MailIcon";
 import { PhoneIcon } from "~/components/Icons/PhoneIcon";
 
 export default function UserSecurityForm({ user }: any) {
@@ -73,18 +74,19 @@ export default function UserSecurityForm({ user }: any) {
             )}
           </div>
 
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-gray-200 space-y-2">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Two-Factor Authentication
             </label>
+
             <div className="flex items-center gap-3 bg-indigo-50 rounded-xl p-4">
               <span className="text-2xl">
-                <PhoneIcon className="size-6 text-black/40" />
+                <MailIcon className="size-6 text-black/40" />
               </span>
               <div>
-                <p className="text-sm text-gray-600">Enrolled Phone Number</p>
+                <p className="text-sm text-gray-600">Enrolled Email</p>
                 <p className="font-semibold text-gray-900">
-                  {user?.phoneNumber}
+                  {user?.email}
                 </p>
               </div>
             </div>

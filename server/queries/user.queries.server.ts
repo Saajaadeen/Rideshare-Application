@@ -58,7 +58,7 @@ export async function getUserInfo(intent: string, userId: string) {
           isPassenger: true,
           isReset: true,
           isInvite: true,
-          inviteCode: true,
+          inviteId: true,
           base: {
             select: {
               id: true,
