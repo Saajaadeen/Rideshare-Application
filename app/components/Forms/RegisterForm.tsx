@@ -143,8 +143,10 @@ export default function RegisterForm() {
               <p>TEST: </p>
               <div className="flex flex-col">
                 
-              <span>Sitekey: {import.meta.env.VITE_CF_SITEKEY}</span>
-              <span>Secret key: {import.meta.env.VITE_CF_SECRET}</span>
+              <span>Sitekey: {import.meta.env.CF_SITEKEY}</span>
+              <span>Secret key: {import.meta.env.CF_SECRET}</span>
+              <span>VITESitekey: {import.meta.env.VITE_CF_SITEKEY}</span>
+              <span>VITESecret key: {import.meta.env.VITE_CF_SECRET}</span>
               </div>
             </div>
 
