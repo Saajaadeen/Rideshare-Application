@@ -45,7 +45,7 @@ export default function Captcha({ turnstileToken, setTurnstileToken, error, setE
 
       try {
         widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-          sitekey: import.meta.env.VITE_CF_SITEKEY || "1x00000000000000000000AA",
+          sitekey: import.meta.env.VITE_CF_SITEKEY ,//|| "1x00000000000000000000AA",
           appearance: "always",
           theme: "auto",
           callback: (token: string) => {
