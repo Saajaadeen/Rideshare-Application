@@ -33,7 +33,7 @@ export default function Captcha({turnstileToken, setTurnstileToken, error, setEr
 
       try {
         widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-          sitekey: import.meta.env.VITE_CF_SITEKEY || "3x00000000000000000000FF",
+          sitekey: import.meta.env.VITE_CF_SITEKEY ,//|| "3x00000000000000000000FF",
           appearance: "interaction-only", // ✅ Add this here
           theme: "auto", // Optional: auto, light, or dark
           callback: (token: string) => {
