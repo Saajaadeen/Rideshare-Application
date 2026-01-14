@@ -181,3 +181,40 @@ export async function requireAdminId(userId: string) {
 
   return user;
 }
+
+
+const userConnections = new Map<string, number>();
+const MAX_CONNECTIONS_PER_USER = 5;
+
+export function requireSseConnection(userId: string): void {
+  const current = userConnections.get(userId) || 0;
+  
+  if (current >= MAX_CONNECTIONS_PER_USER) {
+    console.warn(`[SSE] User ${userId} exceeded connection limit (${current}/${MAX_CONNECTIONS_PER_USER})`);
+    throw new Response(
+      `Too many connections (${current}/${MAX_CONNECTIONS_PER_USER}). Please close an existing connection.`,
+      { 
+        status: 429,
+        headers: {
+          "Retry-After": "10",
+          "Content-Type": "text/plain"
+        }
+      }
+    );
+  }
+  
+  userConnections.set(userId, current + 1);
+  console.log(`[SSE] User ${userId} connected. Total connections: ${current + 1}`);
+}
+
+export function releaseSseConnection(userId: string): void {
+  const current = userConnections.get(userId) || 1;
+  
+  if (current <= 1) {
+    userConnections.delete(userId);
+    console.log(`[SSE] User ${userId} disconnected. Total connections: 0`);
+  } else {
+    userConnections.set(userId, current - 1);
+    console.log(`[SSE] User ${userId} disconnected. Total connections: ${current - 1}`);
+  }
+}

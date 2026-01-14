@@ -1,10 +1,19 @@
+// routes/api/sse.ts
 import type { LoaderFunctionArgs } from "react-router";
-import { requireUserId } from "server/session.server";
+import { 
+  requireUserId, 
+  requireSameOrigin, 
+  requireSseConnection, 
+  releaseSseConnection 
+} from "server/session.server";
 import { eventBus } from "server/events/eventBus.server";
 import { prisma } from "server/db.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
+  requireSameOrigin(request);
+  requireSseConnection(userId);
+  
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -40,19 +49,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
           try {
             sendEvent(event.type, event.payload);
           } catch {
-            // Connection closed, will be cleaned up
           }
         },
       });
 
-      request.signal.addEventListener("abort", () => {
+      const cleanup = () => {
         unsubscribe();
+        releaseSseConnection(userId);
         try {
           controller.close();
         } catch {
-          // Already closed
         }
-      });
+      };
+
+      request.signal.addEventListener("abort", cleanup);
     },
   });
 
@@ -60,7 +70,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
+      "Connection": "keep-alive",
       "X-Accel-Buffering": "no",
     },
   });
