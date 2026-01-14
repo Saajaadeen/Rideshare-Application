@@ -22,4 +22,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/rideshare:testing-unstable
+            ${{ secrets.DOCKER_USERNAME }}/rideshare:captcha
+          build-args: |
+            VITE_CF_SITEKEY=${{ secrets.VITE_CF_SITEKEY }}
+            VITE_DOMAIN=${{ secrets.VITE_DOMAIN }}
+            VITE_DOMAIN_PORT=${{ secrets.VITE_DOMAIN_PORT }}
