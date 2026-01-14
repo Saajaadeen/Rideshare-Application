@@ -11,7 +11,8 @@ import { sendWelcomeEmail } from "server/queries/verify.queries.server";
 // Turnstile validation function
 async function validateTurnstile(token: string, remoteip: string) {
   const formData = new FormData();
-  formData.append('secret', process.env.VITE_CF_SECRETKEY!); // ✓ Fixed: removed VITE_ prefix
+  const key = process.env.VITE_CF_SECRET || process.env.CF_SECRET
+  formData.append('secret', key!); // ✓ Fixed: removed VITE_ prefix
   formData.append('response', token); // ✓ Fixed: was 'reponse'
   formData.append('remoteip', remoteip);
 

@@ -145,7 +145,6 @@ export default function RegisterForm() {
                 
               <span>Sitekey: {import.meta.env.VITE_CF_SITEKEY}</span>
               <span>Secret key: {import.meta.env.VITE_CF_SECRET}</span>
-              <span>nonVite secret: {import.meta.env.CF_SECRET_KEY}</span>
               </div>
             </div>
 
