@@ -43,21 +43,20 @@ export function requireSameOrigin(request: Request) {
   }
 
   const isProduction = process.env.NODE_ENV === "production";
-  
+
   if (isProduction) {
     const expectedOrigin = `https://${process.env.WEBSITE_DOMAIN}`;
-    
+
     if (origin !== expectedOrigin) {
       throw new Response("Invalid origin", { status: 403 });
     }
   } else {
     const port = process.env.VITE_DOMAIN_PORT;
     const originUrl = new URL(origin);
-    
-    const isValidDevOrigin = 
-      originUrl.protocol === "http:" && 
-      originUrl.port === port;
-    
+
+    const isValidDevOrigin =
+      originUrl.protocol === "http:" && originUrl.port === port;
+
     if (!isValidDevOrigin) {
       throw new Response("Invalid origin", { status: 403 });
     }
@@ -68,7 +67,7 @@ export function requireSameOrigin(request: Request) {
 export async function requireMagicLink(url: string): Promise<true> {
   const parsedUrl = new URL(url);
   const params = parsedUrl.searchParams;
-  
+
   const token = params.get("token");
   const id = params.get("id");
   const userId = params.get("userId");
@@ -80,7 +79,7 @@ export async function requireMagicLink(url: string): Promise<true> {
   }
 
   const validUntil = new Date(valid);
-  
+
   if (Number.isNaN(validUntil.getTime())) {
     throw redirect("/login");
   }
@@ -146,6 +145,10 @@ export async function checkEmailVerification(userId: string, request: Request) {
     },
   });
 
+  if (!user) {
+    throw await logoutUser(request);
+  }
+
   const verificationCode = user?.emailVerificationCode;
   const expirationDate = user?.emailVerificationCodeExpiration;
   const emailVerified = user?.emailVerified;
@@ -176,7 +179,7 @@ export async function requireAdminId(userId: string) {
   });
 
   if (!user || !user.isAdmin) {
-    return ("Unauthorized user");
+    return "Unauthorized user";
   }
 
   return user;

@@ -47,7 +47,7 @@ export default function LeftSidePassengerForm({ user, station, params, activeReq
               className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer"
             >
               <option value="">Select pickup location...</option>
-              {station.map((s: any) => (
+              {station.sort((a, b) => a.name.localeCompare(b.name)).map((s: any) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -86,6 +86,7 @@ export default function LeftSidePassengerForm({ user, station, params, activeReq
               <option value="">Select dropoff location...</option>
               {station
                 .filter((s: any) => s.id !== fromLocation)
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((s: any) => (
                   <option key={s.id} value={s.id}>
                     {s.name}

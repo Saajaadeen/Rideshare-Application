@@ -122,13 +122,3 @@ model Reset {
   updatedAt    DateTime   @updatedAt
   user         User?      @relation("ResetLinks", fields: [userId], references: [id])
 }
-
-model Token {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  @@index([expiresAt])
-  @@map("Token")
-}
