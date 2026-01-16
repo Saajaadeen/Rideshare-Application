@@ -149,7 +149,7 @@ export default function LoginForm({ error }: any) {
                 Forgot password?
               </Link>
             </div>
-            <Captcha turnstileToken={turnstileToken} setTurnstileToken={setTurnstileToken} error={errorT} setError={setErrorT} />
+              <Captcha turnstileToken={turnstileToken} setTurnstileToken={setTurnstileToken} error={errorT} setError={setErrorT} />
             <button
               type="submit"
               disabled={turnstileToken ? false: true}

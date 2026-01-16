@@ -3,7 +3,12 @@ import { randomInt } from 'crypto';
 import { prisma } from '../server/db.server';
 import bcrypt from 'bcryptjs';
 
-const BASE_ID = '8b3084e4-abd4-4b68-90c8-98c603b4a3ed';
+// Base IDs
+const BASES = {
+  TRAVIS: '8b3084e4-abd4-4b68-90c8-98c603b4a3ed',
+  VANDENBERG: 'a1b2c3d4-e5f6-4789-abcd-ef1234567890',
+  EGLIN: 'b2c3d4e5-f6a7-4890-bcde-f12345678901',
+};
 
 async function createStations(stations: any[]) {
   console.log(`📍 Creating ${stations.length} stations...`);
@@ -38,6 +43,7 @@ async function createUsers(users: any[]) {
         lastName: user.lastName,
         phoneNumber: user.phoneNumber,
         password: user.password,
+        emailVerified: true,
       },
       create: {
         firstName: user.firstName,
@@ -45,355 +51,120 @@ async function createUsers(users: any[]) {
         email: user.email,
         phoneNumber: user.phoneNumber,
         password: user.password,
+        emailVerified: true,
       },
     });
   }
   console.log('✅ Users created successfully');
 }
 
+// Function to generate random coordinates within radius (in miles)
+function generateRandomCoordinates(centerLong: number, centerLat: number, radiusMiles: number) {
+  // Convert miles to degrees (approximately)
+  // 1 degree latitude ≈ 69 miles
+  // 1 degree longitude ≈ 69 miles * cos(latitude)
+  const latDegreePerMile = 1 / 69;
+  const longDegreePerMile = 1 / (69 * Math.cos(centerLat * Math.PI / 180));
+
+  // Generate random angle and distance
+  const angle = Math.random() * 2 * Math.PI;
+  const distance = Math.random() * radiusMiles;
+
+  // Calculate offset
+  const latOffset = distance * Math.sin(angle) * latDegreePerMile;
+  const longOffset = distance * Math.cos(angle) * longDegreePerMile;
+
+  return {
+    longitude: (centerLong + longOffset).toFixed(8),
+    latitude: (centerLat + latOffset).toFixed(8),
+  };
+}
+
+// Station type prefixes for variety
+const stationTypes = [
+  'Building', 'Hangar', 'Gate', 'Facility', 'Squadron',
+  'Center', 'Office', 'Complex', 'Terminal', 'Wing',
+  'Dormitory', 'Shop', 'Unit', 'Warehouse', 'Station'
+];
+
+// Generate random stations for a base
+function generateStationsForBase(baseId: string, baseLong: number, baseLat: number) {
+  const NUM_STATIONS = 20;
+  const RADIUS_MILES = 1.5;
+  
+  return Array.from({ length: NUM_STATIONS }, (_, index) => {
+    const coords = generateRandomCoordinates(baseLong, baseLat, RADIUS_MILES);
+    const stationType = stationTypes[randomInt(0, stationTypes.length)];
+    const buildingNumber = randomInt(100, 2000);
+    
+    return {
+      baseId: baseId,
+      name: `${stationType} ${buildingNumber}`,
+      longitude: coords.longitude,
+      latitude: coords.latitude,
+      description: `${stationType} ${buildingNumber}`,
+    };
+  });
+}
+
 async function main() {
-  // Create Travis Air Force Base
-  console.log('🏛️  Creating Travis Air Force Base...');
-  await prisma.base.upsert({
-    where: { id: BASE_ID },
-    update: {},
-    create: {
-      id: BASE_ID,
+  // Create all Air Force Bases
+  console.log('🏛️  Creating Air Force Bases...');
+  
+  const bases = [
+    {
+      id: BASES.TRAVIS,
       name: 'Travis Air Force Base',
-      abbreviation: null,
+      abbreviation: 'TAFB',
       state: 'California',
       long: '-121.93912044024607',
       lat: '38.27213331292935',
     },
-  });
-  console.log('✅ Base created successfully');
-
-  // Define all stations
-  const stations = [
-    // Original stations
     {
-      baseId: BASE_ID,
-      name: 'North Gate',
-      longitude: '-121.93317727310736',
-      latitude: '38.284030251135036',
-      description: 'North Gate',
+      id: BASES.VANDENBERG,
+      name: 'Vandenberg Air Force Base',
+      abbreviation: 'VAFB',
+      state: 'California',
+      long: '-120.51930818025428',
+      lat: '34.74712544604196',
     },
     {
-      baseId: BASE_ID,
-      name: 'DFAC',
-      longitude: '-121.931778',
-      latitude: '38.276338',
-      description: 'Monarch Dining Facility',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Visitors Center',
-      longitude: '-121.95711510910652',
-      latitude: '38.27193795674447',
-      description: 'Visitors Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Commissary',
-      longitude: '-121.946734',
-      latitude: '38.270440',
-      description: 'Travis Commissary (Groceries)',
-    },
-    // Base Bound Locations
-    {
-      baseId: BASE_ID,
-      name: 'MPF (Bldg 381)',
-      longitude: '-121.929651',
-      latitude: '38.274192',
-      description: 'Military Personnel Flight',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Dormitory 1354',
-      longitude: '-121.928293',
-      latitude: '38.276620',
-      description: 'Dormitory 1354',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Dormitory 1353',
-      longitude: '-121.926596',
-      latitude: '38.276714',
-      description: 'Dormitory 1353',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Dormitory 1308',
-      longitude: '-121.931978',
-      latitude: '38.278446',
-      description: 'Dormitory 1308',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Dormitory 1314',
-      longitude: '-121.931108',
-      latitude: '38.278772',
-      description: 'Dormitory 1314',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Delta Breeze Community Center',
-      longitude: '-121.936098',
-      latitude: '38.275199',
-      description: 'Delta Breeze Community Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Physical Fitness Center',
-      longitude: '-121.936967',
-      latitude: '38.273035',
-      description: 'Physical Fitness Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Travis Main Exchange',
-      longitude: '-121.950249',
-      latitude: '38.269477',
-      description: 'Travis Main Exchange',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'MFRC',
-      longitude: '-121.946606',
-      latitude: '38.271887',
-      description: 'Military & Family Readiness Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'DGMC',
-      longitude: '-121.963761',
-      latitude: '38.270394',
-      description: 'David Grant Medical Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: "Airmen's Attic",
-      longitude: '-121.935717',
-      latitude: '38.268574',
-      description: "Airmen's Attic",
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Honor Guard',
-      longitude: '-121.933648',
-      latitude: '38.270235',
-      description: 'Honor Guard',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Passenger Terminal',
-      longitude: '-121.93099',
-      latitude: '38.267084',
-      description: 'Passenger Terminal',
-    },
-    {
-      baseId: BASE_ID,
-      name: '660th AMXS',
-      longitude: '-121.936357',
-      latitude: '38.266851',
-      description: '660th Aircraft Maintenance Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: '9th ARS',
-      longitude: '-121.934889',
-      latitude: '38.267425',
-      description: '9th Air Refueling Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: '6th ARS',
-      longitude: '-121.937421',
-      latitude: '38.267600',
-      description: '6th Air Refueling Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Education Center',
-      longitude: '-121.937364',
-      latitude: '38.268494',
-      description: 'Education Center',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60 MXG',
-      longitude: '-121.93886',
-      latitude: '38.265725',
-      description: '60th Maintenance Group',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Aerospace Ground Equipment',
-      longitude: '-121.946243',
-      latitude: '38.266457',
-      description: 'Aerospace Ground Equipment',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'P1 (IPE Pick-up)',
-      longitude: '-121.930392',
-      latitude: '38.268048',
-      description: 'P1 IPE Pick-up',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60 AMW Headquarters',
-      longitude: '-121.932147',
-      latitude: '38.268533',
-      description: '60th Air Mobility Wing Headquarters',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Aviation Museum',
-      longitude: '-121.932206',
-      latitude: '38.270197',
-      description: 'Aviation Museum',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'PMEL',
-      longitude: '-121.953263',
-      latitude: '38.264557',
-      description: 'Precision Measurement Equipment Laboratory',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'All Night Café',
-      longitude: '-121.950581',
-      latitude: '38.263542',
-      description: 'All Night Café',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Hangar 811',
-      longitude: '-121.951513',
-      latitude: '38.262565',
-      description: 'Hangar 811',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Hangar 818',
-      longitude: '-121.949925',
-      latitude: '38.261423',
-      description: 'Hangar 818',
-    },
-    {
-      baseId: BASE_ID,
-      name: '860th AMXS',
-      longitude: '-121.950874',
-      latitude: '38.258909',
-      description: '860th Aircraft Maintenance Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: '22nd Airlift Squadron',
-      longitude: '-121.950889',
-      latitude: '38.257451',
-      description: '22nd Airlift Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Nosedock Gym',
-      longitude: '-121.950691',
-      latitude: '38.255772',
-      description: 'Nosedock Gym',
-    },
-    {
-      baseId: BASE_ID,
-      name: '21st Airlift Squadron',
-      longitude: '-121.954045',
-      latitude: '38.259288',
-      description: '21st Airlift Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Outdoor Recreation',
-      longitude: '-121.956135',
-      latitude: '38.261283',
-      description: 'Outdoor Recreation',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'CBRN',
-      longitude: '-121.958722',
-      latitude: '38.256016',
-      description: 'Chemical, Biological, Radiological, Nuclear',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Airman Leadership School',
-      longitude: '-121.939067',
-      latitude: '38.271963',
-      description: 'Airman Leadership School',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60th AES',
-      longitude: '-121.935636',
-      latitude: '38.270042',
-      description: '60th Aeromedical Evacuation Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60th LRS Ground Transportation',
-      longitude: '-121.939519',
-      latitude: '38.266897',
-      description: '60th Logistics Readiness Squadron Ground Transportation',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'C-5 Aircrew & MX Training',
-      longitude: '-121.941118',
-      latitude: '38.268705',
-      description: 'C-5 Aircrew & Maintenance Training',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Hangar 14',
-      longitude: '-121.936756',
-      latitude: '38.266010',
-      description: 'Hangar 14',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60th CS',
-      longitude: '-121.933833',
-      latitude: '38.269671',
-      description: '60th Communications Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: '60th MXS (Bldg 803)',
-      longitude: '-121.952918',
-      latitude: '38.263556',
-      description: '60th Maintenance Squadron',
-    },
-    {
-      baseId: BASE_ID,
-      name: 'Ammo',
-      longitude: '-121.963026',
-      latitude: '38.262868',
-      description: 'Ammunition Storage',
-    },
-    {
-      baseId: BASE_ID,
-      name: '349th AMW',
-      longitude: '-121.938211',
-      latitude: '38.27062',
-      description: '349th Air Mobility Wing',
+      id: BASES.EGLIN,
+      name: 'Eglin Air Force Base',
+      abbreviation: 'EAFB',
+      state: 'Florida',
+      long: '-86.55188610116491',
+      lat: '30.458099157824904',
     },
   ];
 
-  // Create stations
-  await createStations(stations);
+  for (const base of bases) {
+    await prisma.base.upsert({
+      where: { id: base.id },
+      update: {},
+      create: base,
+    });
+    console.log(`✅ Created ${base.name}`);
+  }
+
+  // Generate stations for each base
+  const allStations: any[] = [];
+
+  for (const base of bases) {
+    const baseLong = parseFloat(base.long);
+    const baseLat = parseFloat(base.lat);
+
+    // Generate random stations for this base
+    const stations = generateStationsForBase(base.id, baseLong, baseLat);
+    allStations.push(...stations);
+    console.log(`📍 Generated ${stations.length} stations for ${base.name}`);
+  }
+
+  // Create all stations
+  await createStations(allStations);
 
   // Hash password once for all users
-  const hashedPassword = await bcrypt.hash('password123', 10);
+  const hashedPassword = await bcrypt.hash('asdasdasdasd', 10);
 
   // Lists of first and last names
   const firstNames = [
@@ -428,6 +199,7 @@ async function main() {
     email: `${firstName.toLowerCase()}.${lastNames[index].toLowerCase()}@us.af.mil`,
     phoneNumber: generatePhoneNumber(),
     password: hashedPassword,
+    
   }));
 
   // Create users
@@ -435,8 +207,8 @@ async function main() {
 
   console.log('\n🎉 Seeding completed successfully!');
   console.log(`📊 Summary:`);
-  console.log(`   - 1 Base`);
-  console.log(`   - ${stations.length} Stations`);
+  console.log(`   - ${bases.length} Bases`);
+  console.log(`   - ${allStations.length} Stations`);
   console.log(`   - ${users.length} Users`);
 }
 
