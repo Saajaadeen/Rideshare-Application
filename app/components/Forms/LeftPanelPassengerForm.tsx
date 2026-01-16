@@ -4,7 +4,7 @@ import { MapPinIcon } from "../Icons/MapPinIcon";
 import { NavigationIcon } from "../Icons/NavigationIcon";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-export default function LeftSidePassengerForm({ user, station, params, activeRequests, actionData }: any) {
+export default function LeftSidePassengerForm({ user, station, params, actionData, activePassengerRequests }: any) {
   const [fromLocation, setFromLocation] = useState(params?.pickupId ?? "");
   const [toLocation, setToLocation] = useState(params?.dropoffId ?? "");
   
@@ -15,9 +15,8 @@ export default function LeftSidePassengerForm({ user, station, params, activeReq
       setToLocation("");
     }
   }, [actionData]);
-  console.log('active: ', activeRequests)
 
-  const hasActiveRequest = activeRequests.some(r => r.user.id === user.id && (r.status !== "Cancelled" && r.status !== "Completed"))
+  const hasActiveRequest = activePassengerRequests.some(r => r.user.id === user.id && (r.status === "Pending" || r.status === "Accepted" || r.status === "In-Progress"))
 
   const isButtonEnabled =
     !user?.isReset &&

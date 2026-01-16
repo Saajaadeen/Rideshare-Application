@@ -74,6 +74,39 @@ export async function getActiveRequest(baseId: string) {
   return request;
 }
 
+export async function getActivePassengerRequest(userId: string){
+  return await prisma.request.findMany({
+    where: {
+      userId,
+      status: {
+        in: ['Pending', 'Accepted', 'In-Progress']
+      }
+    },
+    select: {
+      id: true,
+      status: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+          id: true,
+        },
+      },
+      pickup: {
+        select: {
+          name: true,
+        },
+      },
+      dropoff: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })
+}
+
 export async function getDriverRequest(userId: string) {
   const request = await prisma.request.findMany({
     where: {

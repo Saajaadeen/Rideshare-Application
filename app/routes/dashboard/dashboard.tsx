@@ -13,6 +13,7 @@ import {
   pickupRequest,
   dropOffRequest,
   cancelAcceptedRide,
+  getActivePassengerRequest,
 } from "server/queries/request.queries.server";
 import { getStop } from "server/queries/station.queries.server";
 import { getUserInfo, updateUserInfo } from "server/queries/user.queries.server";
@@ -45,9 +46,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const accepted = await getDriverRequest(userId);
   const vehicles = await getVehicles(userId);
   const activeRequests = await getActiveRequest(user?.base?.id);
+  const activePassengerRequests = await getActivePassengerRequest(userId);
   const bases = await getBase();
 
-  return { user, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases };
+  return { user, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases, activePassengerRequests };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -140,7 +142,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
-  const { user, station, accepted, activeRequests, vehicles, requestInfo, bases } = loaderData;
+  const { user, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests } = loaderData;
 
   broadcastSSE({
     onNewRequest: (data) => {
@@ -184,6 +186,7 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
         accepted={accepted}
         vehicles={vehicles}
         activeRequests={activeRequests}
+        activePassengerRequests={activePassengerRequests}
         requestInfo={requestInfo}
         bases={bases}
         actionData={actionData}

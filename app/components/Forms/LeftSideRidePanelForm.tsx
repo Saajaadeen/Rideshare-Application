@@ -7,16 +7,18 @@ import { MagnifyIcon } from "../Icons/MagnifyIcon";
 import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-export default function LeftSideRidePanelForm({ user, station, requestInfo }: any) {
+export default function LeftSideRidePanelForm({ user, station, requestInfo, activeRequests }: any) {
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
+  const haveActiveRequests = activeRequests.filter(r => r.user.id === user.id && (r.status === "Pending" || r.status === "Accepted"))
 
   const isButtonEnabled =
     !user?.isReset &&
     !!user?.base?.id &&
     fromLocation &&
     toLocation &&
-    fromLocation !== toLocation;
+    fromLocation !== toLocation &&
+    !haveActiveRequests;
 
   const getDisabledReason = () => {
     if (user?.isReset) return "Please create a new password to continue.";
