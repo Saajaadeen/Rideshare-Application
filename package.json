@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "react-router dev --port 3000 --host",
+    "dev": "react-router dev --port 3000",
     "dev:all": "npm run dev",
     "build": "react-router build",
-    "start": "react-router-serve ./build/server/index.js",
+    "start": "react-router-serve ./build/server/index.js --host 0.0.0.0",
     "start:prod": "npm start"
   },
   "dependencies": {

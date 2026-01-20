@@ -1,4 +1,3 @@
-// routes/api/sse.ts
 import type { LoaderFunctionArgs } from "react-router";
 import { 
   requireUserId, 
