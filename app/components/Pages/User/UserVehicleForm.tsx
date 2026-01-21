@@ -19,13 +19,13 @@ export default function UserVehicleForm({ user, vehicles }: any) {
           </p>
         </div>
 
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 shadow-md border border-green-100 flex items-center justify-between">
+        <div className={`border ${user.isDriver ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-100':'bg-gray-100 border-gray-200'} rounded-2xl p-6 shadow-md flex items-center justify-between`}>
           <div>
             <span className="text-base font-semibold text-gray-900 block">
-              Enable Driver Mode
+              Driver Mode
             </span>
             <span className="text-sm text-gray-500 mt-1 block">
-              Activate driver capabilities and vehicle registration
+              Activate driver capabilities by adding a vehicle
             </span>
           </div>
 
@@ -34,30 +34,35 @@ export default function UserVehicleForm({ user, vehicles }: any) {
               type="checkbox"
               name="isDriver"
               value="true"
+              disabled
               defaultChecked={!!user?.isDriver}
               className="sr-only peer"
               onChange={(e) => e.currentTarget.form?.submit()}
             />
             <div
-              className="w-14 h-7 bg-gray-300 rounded-full peer-focus:ring-4 peer-focus:ring-green-100 
-                         peer-checked:bg-gradient-to-r peer-checked:from-green-600 peer-checked:to-emerald-500 
-                         after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white 
-                         after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7 
-                         after:border after:border-gray-200 relative"
+              className={`w-14 h-7 rounded-full hover:cursor-not-allowed peer-focus:ring-4 peer-focus:ring-green-100 
+                ${user.isDriver 
+                  ? 'bg-gradient-to-r from-green-600 to-emerald-500' 
+                  : 'bg-gray-300'
+                }
+                after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white 
+                after:rounded-full after:h-5 after:w-5 after:transition-all 
+                ${user.isDriver ? 'after:translate-x-7' : ''}
+                after:border after:border-gray-200 relative`}
             ></div>
           </label>
         </div>
       </Form>
 
-      {user?.isDriver && vehicles?.length === 0 && (
-        <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
+      {/* {user?.isDriver && vehicles?.length === 0 && ( */}
+        {/* <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
           <p className="text-black">
-            Please add a vehicle to your account to complete driver setup.
+            Please add a vehicle to your account to activate driver ability.
           </p>
-        </div>
-      )}
+        </div> */}
+      {/* )} */}
 
-      {user?.isDriver && vehicles?.length > 0 && (
+      {/* {user?.isDriver && vehicles?.length > 0 && ( */}
         <div className="space-y-4">
           <h4 className="text-xl font-semibold text-gray-900">
             Registered Vehicles
@@ -126,9 +131,9 @@ export default function UserVehicleForm({ user, vehicles }: any) {
             ))}
           </div>
         </div>
-      )}
+      {/* )} */}
 
-      {user?.isDriver && vehicles.length === 0 && (
+      {vehicles.length === 0 && (
         <Form method="post" action="/dashboard/settings" className="space-y-4">
           <AuthenticityTokenInput />
           <input type="hidden" name="intent" value="vehicle" />

@@ -95,7 +95,7 @@ export async function action({ request }: ActionFunctionArgs) {
   } else if (intent === "vehicle-enable") {
     return enableVehicle(userId, isDriver);
   } else if (intent === "vehicle-delete") {
-    return deleteVehicle(id!);
+    return deleteVehicle(id!, userId);
   } else if (intent === "create-invite") {
     const createResult = await createInvite(email!, userId);
     if (createResult.error) {

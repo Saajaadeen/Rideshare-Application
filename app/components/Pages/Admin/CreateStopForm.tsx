@@ -115,7 +115,16 @@ export default function CreateStopForm({ base }: any) {
               <input
                 name="latitude"
                 value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
+                onChange={(e) => {
+                  const latInput = e.target.value.split(",")
+                  
+                  if(latInput.length > 0){
+                    setLatitude(latInput[0]);
+                    setLongitude(latInput[1].trim());
+                  }else{
+                    setLatitude(e.target.value)
+                  }
+                }}
                 required
                 placeholder="e.g., 37.0701"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"

@@ -7,6 +7,22 @@ export async function createStop(
   latitude: string,
   description?: string
 ) {
+  const existing = await prisma.station.findFirst({
+    where: {
+      baseId,
+      OR:[
+        {name},
+        {description},
+      ],
+    }
+  })
+
+  console.log(existing?.name.toLowerCase(), " ---- ", name.toLowerCase(), " = ", (existing?.name.toLowerCase() === name.toLowerCase()))
+
+  if(existing?.name.toLowerCase() === name.toLowerCase() || existing?.description?.toLowerCase() === description?.toLowerCase()){
+    return {success: false, message: "Location already exists!"}
+  }
+
   const stop = await prisma.station.create({
     data: {
       baseId,
@@ -17,7 +33,7 @@ export async function createStop(
     },
   });
 
-  return stop;
+  return {success: true, message: "New stop created!"};
 }
 
 export async function getStop(baseId: string) {

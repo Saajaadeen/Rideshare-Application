@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import { prisma } from "../db.server";
 
 export async function enableVehicle(userId: string, isDriver: boolean) {
@@ -16,16 +17,26 @@ export async function createVehicle(
   color: string,
   plate: string,
 ) {
-  const vehicle = await prisma.vehicle.create({
-    data: {
-      userId,
-      year,
-      make,
-      model,
-      color,
-      plate,
-    },
-  });
+  const [vehicle, user] = await prisma.$transaction([
+    prisma.vehicle.create({
+      data: {
+        userId,
+        year,
+        make,
+        model,
+        color,
+        plate,
+      },
+    }),
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isDriver: true,
+      }
+    })
+  ])
 
   return vehicle;
 }
@@ -45,10 +56,31 @@ export async function getVehicles(userId: string) {
   });
 }
 
-export async function deleteVehicle(id: string) {
-  const vehicle = await prisma.vehicle.delete({
-    where: { id },
-  });
+export async function deleteVehicle(vehicleId: string, userId: string) {
+  // const vehicle = await prisma.vehicle.delete({
+  //   where: { id },
+  // });
 
-  return vehicle;
+  const [deleteVehicle, remainingCount] = await prisma.$transaction([
+    prisma.vehicle.delete({
+      where: {id: vehicleId},
+    }),
+    prisma.vehicle.count({
+      where: {id: userId}
+    })
+  ]);
+
+
+  if(remainingCount === 0){
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isDriver: false,
+      }
+    });
+  }
+
+  return deleteVehicle;
 }

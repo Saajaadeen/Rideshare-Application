@@ -73,8 +73,8 @@ export async function action({ request }: ActionFunctionArgs) {
     return { success: true, message: "Base deleted!", intent} 
   }
   if (intent === "createStop") {
-    createStop(baseId!, name!, longitude!, latitude!, description!)
-    return { success: true, message: "New stop added!", intent} 
+    return createStop(baseId!, name!, longitude!, latitude!, description!)
+    // return { success: true, message: "New stop added!", intent} 
   }
   if (intent === "updateStop") {
     updateStop(id!, baseId!, name!, longitude!, latitude!, description!)
@@ -105,9 +105,12 @@ export default function AdminSettings({ loaderData, actionData}: Route.Component
       if(actionData?.success && actionData?.message){
         toast.success(actionData.message);
       }
+      if(!actionData?.success && actionData?.message){
+        toast.error(actionData.message)
+      }
     },[actionData]);
 
-    return <AdminSettingsModal user={user} base={base} station={station} accounts={accounts} />
+    return <AdminSettingsModal user={user} base={base} station={station} accounts={accounts} actionData={actionData}/>
 }
 
 export { ErrorBoundary };
