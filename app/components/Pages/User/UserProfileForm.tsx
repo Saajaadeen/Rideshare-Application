@@ -1,5 +1,6 @@
 import { Form, useActionData } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { useState, useEffect } from "react";
 import ButtonControls from "~/components/Buttons/ButtonControls";
 import { KeyIcon } from "~/components/Icons/KeyIcon";
 import { MailIcon } from "~/components/Icons/MailIcon";
@@ -8,6 +9,24 @@ import { UserIcon } from "~/components/Icons/UserIcon";
 
 export default function UserProfileForm({ user }: any) {
   const actionData = useActionData<{ error?: string; success?: boolean }>();
+  
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Check if any field has changed from the original user data
+  useEffect(() => {
+    const changed = 
+      (firstName && firstName !== user?.firstName) ||
+      (lastName && lastName !== user?.lastName) ||
+      (email && email !== user?.email) ||
+      (phoneNumber && phoneNumber !== user?.phoneNumber);
+    
+    setHasChanges(changed);
+  }, [firstName, lastName, email, phoneNumber, user]);
 
   return (
     <div className="space-y-4">
@@ -52,6 +71,8 @@ export default function UserProfileForm({ user }: any) {
                   minLength={1}
                   maxLength={256}
                   placeholder={user?.firstName}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="w-full rounded-xl border-2 border-gray-200 pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
                 />
               </div>
@@ -70,6 +91,8 @@ export default function UserProfileForm({ user }: any) {
                   minLength={1}
                   maxLength={256}
                   placeholder={user?.lastName}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="w-full rounded-xl border-2 border-gray-200 pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
                 />
               </div>
@@ -106,6 +129,8 @@ export default function UserProfileForm({ user }: any) {
                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                   maxLength={256}
                   placeholder={user?.email}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-xl border-2 border-gray-200 pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
                 />
               ) : (
@@ -128,13 +153,15 @@ export default function UserProfileForm({ user }: any) {
                 pattern="\d{10}"
                 maxLength={10}
                 placeholder={user?.phoneNumber}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
                 className="w-full rounded-xl border-2 border-gray-200 pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
               />
             </div>
           </div>
 
           <div className="absolute bottom-10 right-10">
-            <ButtonControls />
+            <ButtonControls disabled={!hasChanges} />
           </div>
         </div>
       </Form>

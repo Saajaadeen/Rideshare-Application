@@ -1,9 +1,14 @@
 import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { useState } from "react";
 import ButtonControls from "~/components/Buttons/ButtonControls";
 
 export default function UserBaseForm({ user, base, userBase }: any) {
   const bases = base.base;
+  const [selectedBase, setSelectedBase] = useState(user?.base?.id || "");
+  
+  // Disable if no base selected OR if selected base is same as current base
+  const isDisabled = !selectedBase || selectedBase === user?.base?.id;
 
   return (
     <div className="flex flex-col min-h-full space-y-6">
@@ -15,10 +20,10 @@ export default function UserBaseForm({ user, base, userBase }: any) {
       </div>
 
       {!userBase.base && (
-          <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
+        <div className="bg-red-100 p-2 rounded-lg border border-1 border-red-400">
           <p className="text-black">Please select a duty location to start requesting rides from your base.</p>
         </div>
-        )}
+      )}
 
       <Form method="post" action="/dashboard/settings"
         className="flex flex-col flex-1"
@@ -31,6 +36,8 @@ export default function UserBaseForm({ user, base, userBase }: any) {
           </label>
           <select
             name="baseId"
+            value={selectedBase}
+            onChange={(e) => setSelectedBase(e.target.value)}
             className="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 bg-white cursor-pointer hover:border-indigo-300"
           >
             <option value="">-- Select Base --</option>
@@ -54,7 +61,7 @@ export default function UserBaseForm({ user, base, userBase }: any) {
         )}
 
         <div className="absolute bottom-0 md:bottom-10 right-10">
-          <ButtonControls />
+          <ButtonControls disabled={isDisabled} />
         </div>
       </Form>
     </div>
