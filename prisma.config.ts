@@ -1,10 +1,10 @@
-import { config } from "dotenv";
+// import { config } from "dotenv";
 
-config();
+// config();
 
-export default {
-  migrations: {
-    path: "prisma/migrations",
-    seed: 'tsx prisma/seed.ts',
-  },
-};
+// export default {
+//   migrations: {
+//     path: "prisma/migrations",
+//     seed: 'tsx prisma/seed.ts',
+//   },
+// };
