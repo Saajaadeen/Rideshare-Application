@@ -1,10 +1,16 @@
-// import { config } from "dotenv";
+import { config } from "dotenv";
 
-// config();
+config();
 
-// export default {
-//   migrations: {
-//     path: "prisma/migrations",
-//     seed: 'tsx prisma/seed.ts',
-//   },
-// };
+export default {
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: 'tsx prisma/seed.ts',
+  },
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL!,
+    },
+  },
+};
