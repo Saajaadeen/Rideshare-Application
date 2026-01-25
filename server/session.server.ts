@@ -42,22 +42,10 @@ export function requireSameOrigin(request: Request) {
     return;
   }
 
-  const isProduction = process.env.NODE_ENV === "production";
-
-  if (isProduction) {
+  // Only enforce origin check in production
+  if (process.env.NODE_ENV === "production") {
     const expectedOrigin = `https://${process.env.WEBSITE_DOMAIN}`;
-
     if (origin !== expectedOrigin) {
-      throw new Response("Invalid origin", { status: 403 });
-    }
-  } else {
-    const port = process.env.VITE_DOMAIN_PORT;
-    const originUrl = new URL(origin);
-
-    const isValidDevOrigin =
-      originUrl.protocol === "http:" && originUrl.port === port;
-
-    if (!isValidDevOrigin) {
       throw new Response("Invalid origin", { status: 403 });
     }
   }
