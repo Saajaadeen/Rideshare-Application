@@ -49,6 +49,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const description   = formData.get("description") as string || undefined;
 
   const userId        = formData.get("userId") as string;
+  const loggedInUserId = formData.get("loggedInUserId") as string;
   const inviteCode    = formData.get("inviteCode") as string || undefined;
   const firstName     = formData.get("firstName") as string || undefined;
   const lastName      = formData.get("lastName") as string || undefined;

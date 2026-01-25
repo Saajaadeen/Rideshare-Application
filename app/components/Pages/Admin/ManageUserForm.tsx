@@ -89,7 +89,7 @@ export default function ManageUserForm({ accounts , base, user}: any) {
           >
             <AuthenticityTokenInput />
             <input type="hidden" name="intent" value="updateUser" />
-            <input type="hidden" name="userId" value={user.id} />
+            <input type="hidden" name="loggedInUserId" value={user.id} />
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Select User
