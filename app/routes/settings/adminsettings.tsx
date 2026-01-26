@@ -17,7 +17,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   await checkEmailVerification(userId, request)
   const user     = await getUserInfo('admin', userId);
   const base     = await getBase();
-  const station  = await getStop(user?.baseId);
+
+  const searchParams = new URL(request.url).searchParams;
+  const selectedBase = searchParams.get("selectedBase");
+  let station: { name: string; id: string; baseId: string; base: { name: string; }; longitude: string; latitude: string; description: string | null; }[] = []
+  if(selectedBase) {
+    station  = await getStop(atob(selectedBase));
+  }
   const accounts = await getAccounts();
 
   return { user, base, station, accounts };
@@ -62,31 +68,31 @@ export async function action({ request }: ActionFunctionArgs) {
   try{
 
     if (intent === "createBase") {
-      createBase(name, state, longitude, latitude);
+      await createBase(name, state, longitude, latitude);
       return { success: true, message: "Base created!", intent}
     } 
     if (intent === "updateBase") {
-      updateBase(id, name, state, longitude, latitude);
+      await updateBase(id, name, state, longitude, latitude);
       return { success: true, message: "Base updated!", intent} 
     } 
     if (intent === "deleteBase") {
-      deleteBase(id)
+      await deleteBase(id)
       return { success: true, message: "Base deleted!", intent} 
     }
     if (intent === "createStop") {
-      return createStop(baseId, name, longitude, latitude, description)
+      return await createStop(baseId, name, longitude, latitude, description)
       // return { success: true, message: "New stop added!", intent} 
     }
     if (intent === "updateStop") {
-      updateStop(id, baseId, name, longitude, latitude, description)
+      await updateStop(id, baseId, name, longitude, latitude, description)
       return { success: true, message: "Stop updated!", intent} 
     }
     if (intent === "deleteStop") {
-      deleteStop(id)
+      await deleteStop(id)
       return { success: true, message: "Stop deleted!", intent} 
     }
     if (intent === "createUser") {
-      registerUser(inviteCode, firstName, lastName, email, phoneNumber, password, baseId)
+      await registerUser(inviteCode, firstName, lastName, email, phoneNumber, password, baseId)
       return { success: true, message: "User created!", intent}
   }
   if (intent === "updateUser") {
@@ -94,7 +100,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return { success: true, message: "User updated!", intent}
   }
   if (intent === "deleteUser") {
-    deleteUserAccount(userId)
+    await deleteUserAccount(userId)
     return { success: true, message: "User deleted!", intent}
   }
   }catch(error){
@@ -105,7 +111,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AdminSettings({ loaderData, actionData}: Route.ComponentProps) {
     
-  const { user, base, station, accounts } = loaderData;
+  const { user, base, accounts, station } = loaderData;
   useEffect(() => {
     if (!actionData) return;
 

@@ -14,7 +14,7 @@ import { VehicleIcon } from "../Icons/VehicleIcon";
 // import CreateRidesTable from "../Forms/CreateRidesTable";
 // import Rides from "~/routes/auth/rides";
 
-export default function AdminSettingsModal({ user, base, station, accounts }: any) {
+export default function AdminSettingsModal({ user, base, station, accounts, actionData }: any) {
   const location = useLocation();
   const navigate = useNavigate();
   const isRidesRoute = location.pathname.includes("/admin/rides");
@@ -75,14 +75,14 @@ export default function AdminSettingsModal({ user, base, station, accounts }: an
         return (
           <div className="space-y-8">
             <CreateBaseForm />
-            <ManageBaseForm base={base} />
+            <ManageBaseForm base={base} actionData={actionData} />
           </div>
         );
       case "stops":
         return (
           <div className="space-y-8">
             <CreateStopForm base={base} />
-            <ManageStopForm station={station} base={base} />
+            <ManageStopForm base={base} station={station} actionData={actionData} />
           </div>
         );
       case "users":
