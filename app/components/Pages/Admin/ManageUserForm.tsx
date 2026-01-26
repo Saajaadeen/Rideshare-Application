@@ -56,6 +56,7 @@ export default function ManageUserForm({ accounts , base, user}: any) {
             Manage Users
           </h3>
           <select className="rounded-lg p-2 -mt-3 mr-2 border border-gray-200 text-black w-[300px]" onChange={(e) => setSelectedBase(e.currentTarget.value)}>
+            <option value="">-- Select a base --</option>
            {base.map(b => <option value={b.id}>{b.name}</option>)}
           </select>
         </div>
@@ -89,7 +90,7 @@ export default function ManageUserForm({ accounts , base, user}: any) {
           >
             <AuthenticityTokenInput />
             <input type="hidden" name="intent" value="updateUser" />
-            <input type="hidden" name="userId" value={user.id} />
+            <input type="hidden" name="userId" value={user.id}/>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Select User

@@ -40,75 +40,83 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData      = await request.formData();
   const intent        = formData.get("intent") as string;
 
-  const baseId        = formData.get("baseId") as string || undefined;
-  const id            = formData.get("id") as string || undefined;
-  const name          = formData.get("name") as string || undefined;
-  const state         = formData.get("state") as string || undefined;
-  const longitude     = formData.get("longitude") as string || undefined;
-  const latitude      = formData.get("latitude") as string || undefined;
-  const description   = formData.get("description") as string || undefined;
+  const baseId        = formData.get("baseId") as string;
+  const id            = formData.get("id") as string;
+  const name          = formData.get("name") as string;
+  const state         = formData.get("state") as string;
+  const longitude     = formData.get("longitude") as string;
+  const latitude      = formData.get("latitude") as string;
+  const description   = formData.get("description") as string;
 
   const userId        = formData.get("userId") as string;
-  const inviteCode    = formData.get("inviteCode") as string || undefined;
-  const firstName     = formData.get("firstName") as string || undefined;
-  const lastName      = formData.get("lastName") as string || undefined;
-  const email         = formData.get("email") as string || undefined;
-  const phoneNumber   = formData.get("phoneNumber") as string || undefined;
-  const password      = formData.get("password") as string || undefined;
+  const inviteCode    = formData.get("inviteCode") as string;
+  const firstName     = formData.get("firstName") as string;
+  const lastName      = formData.get("lastName") as string;
+  const email         = formData.get("email") as string;
+  const phoneNumber   = formData.get("phoneNumber") as string;
+  const password      = formData.get("password") as string;
   const isAdmin       = formData.get("isAdmin") === "true";
   const isDriver      = formData.get("isDriver") === "true";
   const isPassenger   = formData.get("isPassenger") === "true";
   const isReset       = formData.get("isReset") === "true";
-  
-  if (intent === "createBase") {
-    createBase(name!, state!, longitude!, latitude!);
-    return { success: true, message: "Base created!", intent}
-  } 
-  if (intent === "updateBase") {
-    updateBase(id!, name!, state!, longitude!, latitude!);
-    return { success: true, message: "Base updated!", intent} 
-  } 
-  if (intent === "deleteBase") {
-    deleteBase(id!)
-    return { success: true, message: "Base deleted!", intent} 
-  }
-  if (intent === "createStop") {
-    return createStop(baseId!, name!, longitude!, latitude!, description!)
-    // return { success: true, message: "New stop added!", intent} 
-  }
-  if (intent === "updateStop") {
-    updateStop(id!, baseId!, name!, longitude!, latitude!, description!)
-    return { success: true, message: "Stop updated!", intent} 
-  }
-  if (intent === "deleteStop") {
-    deleteStop(id!)
-    return { success: true, message: "Stop deleted!", intent} 
-  }
-  if (intent === "createUser") {
-    registerUser(inviteCode!, firstName!, lastName!, email!, phoneNumber!, password!, baseId!)
-    return { success: true, message: "User created!", intent}
+  try{
+
+    if (intent === "createBase") {
+      createBase(name, state, longitude, latitude);
+      return { success: true, message: "Base created!", intent}
+    } 
+    if (intent === "updateBase") {
+      updateBase(id, name, state, longitude, latitude);
+      return { success: true, message: "Base updated!", intent} 
+    } 
+    if (intent === "deleteBase") {
+      deleteBase(id)
+      return { success: true, message: "Base deleted!", intent} 
+    }
+    if (intent === "createStop") {
+      return createStop(baseId, name, longitude, latitude, description)
+      // return { success: true, message: "New stop added!", intent} 
+    }
+    if (intent === "updateStop") {
+      updateStop(id, baseId, name, longitude, latitude, description)
+      return { success: true, message: "Stop updated!", intent} 
+    }
+    if (intent === "deleteStop") {
+      deleteStop(id)
+      return { success: true, message: "Stop deleted!", intent} 
+    }
+    if (intent === "createUser") {
+      registerUser(inviteCode, firstName, lastName, email, phoneNumber, password, baseId)
+      return { success: true, message: "User created!", intent}
   }
   if (intent === "updateUser") {
-    updateUserInfoAdmin({ userId, firstName, lastName, email, phoneNumber, isAdmin, isDriver, isPassenger, isReset })
-    return { success: true, message: "User updated", intent}
+    await updateUserInfoAdmin( userId, {firstName, lastName, email, phoneNumber, isAdmin, isDriver, isPassenger, isReset })
+    return { success: true, message: "User updated!", intent}
   }
   if (intent === "deleteUser") {
     deleteUserAccount(userId)
     return { success: true, message: "User deleted!", intent}
   }
+  }catch(error){
+    const message = error instanceof Error ? error.message : String(error);
+    return { success: false, message }
+  }
 }
 
 export default function AdminSettings({ loaderData, actionData}: Route.ComponentProps) {
     
-    const { user, base, station, accounts } = loaderData;
-    useEffect(() => {
-      if(actionData?.success && actionData?.message){
-        toast.success(actionData.message);
+  const { user, base, station, accounts } = loaderData;
+  useEffect(() => {
+    if (!actionData) return;
+
+    if ('success' in actionData && 'message' in actionData) {
+      if (actionData.success) {
+        toast.success(actionData.message as string);
+      } else {
+        toast.error("Uh oh, an error occured.");
       }
-      if(!actionData?.success && actionData?.message){
-        toast.error(actionData.message)
-      }
-    },[actionData]);
+    }
+  }, [actionData]);
 
     return <AdminSettingsModal user={user} base={base} station={station} accounts={accounts} actionData={actionData}/>
 }

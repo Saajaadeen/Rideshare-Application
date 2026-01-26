@@ -191,28 +191,20 @@ export async function updateUserInfo(
   return { success: true, user };
 }
 
-export async function updateUserInfoAdmin({
-  userId,
-  firstName,
-  lastName,
-  email,
-  phoneNumber,
-  isAdmin,
-  isDriver,
-  isPassenger,
-  isReset,
-}: {
-  userId?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phoneNumber?: string;
-  isAdmin?: boolean;
-  isDriver?: boolean;
-  isPassenger?: boolean;
-  isReset?: boolean;
+export async function updateUserInfoAdmin(
+  userId: string,
+  options: {
+    firstName: string,
+    lastName: string,
+    email: string,
+    phoneNumber: string,
+    isAdmin: boolean,
+    isDriver: boolean,
+    isPassenger: boolean,
+    isReset: boolean,
 }) {
   if (!userId) throw new Error("userId is required");
+  const {firstName, lastName, email, phoneNumber, isAdmin, isDriver, isPassenger, isReset} = options
 
   const data: any = {
     firstName,

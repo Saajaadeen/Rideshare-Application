@@ -10,7 +10,8 @@ export async function registerUser(
   password: string,
   base: string,
 ) {
-  const existingEmail = await prisma.user.findFirst({
+  try{
+    const existingEmail = await prisma.user.findFirst({
     where: {
       email: email.toLowerCase(),
     },
@@ -97,8 +98,11 @@ export async function registerUser(
       baseId: base,
     },
   });
+  return { success: true, message: "User updated!" };
+}catch(error){
+  return {success: false, message: error}
+}
 
-  return { success: true, user };
 }
 
 export async function authenticateUser(email: string, password: string) {
