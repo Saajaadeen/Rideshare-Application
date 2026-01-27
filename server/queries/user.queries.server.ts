@@ -256,8 +256,8 @@ export async function deleteUserAccount(userId: string) {
       id: userId,
     },
     data: {
-      email: null,
-      phoneNumber: null,
+      // email: null,
+      // phoneNumber: null,
       password: "",
       isAdmin: false,
       isDriver: false,
