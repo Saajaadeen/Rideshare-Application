@@ -5,6 +5,7 @@ import MiddlePanelForm from "./MiddlePanelForm";
 
 export default function Dashboard({
   user,
+  userId,
   station,
   accepted,
   activeRequests,
@@ -25,6 +26,7 @@ export default function Dashboard({
       <div className="absolute top-0 left-0 h-full z-10">
         <LeftSideRidePanelForm
           user={user}
+          userId={userId}
           station={station}
           accepted={accepted}
           activeRequests={activeRequests}

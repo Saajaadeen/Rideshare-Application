@@ -29,6 +29,7 @@ interface SSEOptions {
   onNewRequest?: (data: SSEData) => void;
   onRenewRequest?: (data: SSEData) => void;
   onRequestAccepted?: (data: SSEData) => void;
+  onRequestAcceptedCancelled?: (data: SSEData) => void;
   onRequestCancelled?: (data: SSEData) => void;
   onRequestPickup?: (data: SSEData) => void;
   onRequestComplete?: (data: SSEData) => void;

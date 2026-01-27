@@ -49,7 +49,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const activePassengerRequests = await getActivePassengerRequest(userId);
   const bases = await getBase();
 
-  return { user, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases, activePassengerRequests };
+  return { user, userId, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases, activePassengerRequests };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -72,8 +72,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const pickupId = formData.get("pickupId") as string;
   const dropoffId = formData.get("dropoffId") as string;
   const rideConfirmOrCancel = formData.get("submit") as string
-  try {
 
+  try {
       if (intent === "initialSetup") {
         updateUserInfo(userId, { baseId })
         return { success: true, message: "Base updated!" }
@@ -88,7 +88,7 @@ export async function action({ request }: ActionFunctionArgs) {
           where: { id: requestId },
           select: { baseId: true, userId: true, driverId: true },
         });
-        await cancelRequest(requestId, driverId);
+        await cancelRequest(requestId, userId);
         if (req) {
           await broadcastRequestCancelled(
             requestId,
@@ -99,6 +99,20 @@ export async function action({ request }: ActionFunctionArgs) {
           );
         }
         return {success: true, message: "Ride cancelled!"}
+      }
+      if (intent === "cancelAcceptedRequest") {
+        const req = await prisma.request.findUnique({
+          where: { id: requestId },
+          select: { baseId: true, userId: true, driverId: true },
+        });
+        await cancelAcceptedRide(requestId, userId);
+        if (req) {
+          await broadcastCancelAcceptedRide(
+            requestId, 
+            req.baseId, 
+            req.userId
+          )
+        }
       }
       if (intent === "acceptRequest") {
         const req = await prisma.request.findUnique({
@@ -147,10 +161,8 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 }
 
-
-
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
-  const { user, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests } = loaderData;
+  const { user, userId, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests } = loaderData;
 
   broadcastSSE({
     onNewRequest: (data: SSEData) => {
@@ -176,6 +188,14 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
         } 
       }, 0);
     },
+    onRequestAcceptedCancelled: (data: SSEData) => {
+      const { driver } = data;
+      setTimeout(() => {
+        if (driver) {
+          toast.success(`Your ride was cancelled by ${driver.firstName.slice(0,1).toUpperCase() + driver.firstName.slice(1)} ${driver.lastName.slice(0,1).toUpperCase() + driver.lastName.slice(1)}!`);
+        } 
+      }, 0);
+    },
     onRequestPickup: (data: SSEData) => {
       setTimeout(() => toast.info("Your driver has arrived!"), 0);
     },
@@ -190,6 +210,7 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
       <MapDisplay user={user} station={station} />
       <DashboardForm
         user={user}
+        userId={userId}
         station={station}
         accepted={accepted}
         vehicles={vehicles}

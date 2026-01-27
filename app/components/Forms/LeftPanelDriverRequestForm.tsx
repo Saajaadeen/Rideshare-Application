@@ -3,7 +3,7 @@ import { Form, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { displayName } from "../Utilities/formatName";
 
-export default function LeftPanelDriverRequestForm({ accepted }: any) {
+export default function LeftPanelDriverRequestForm({ accepted, userId }: any) {
   const [showRequests, setShowRequests] = useState(false);
   const navigation = useNavigation();
 
@@ -89,7 +89,10 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                   <div className=" flex items-center justify-between mb-3 border-b border-gray-200">
                     <div className="">
                       <p className="font-bold text-gray-900">
-                        {displayName(ride?.user?.firstName, ride?.user?.lastName)}
+                        {displayName(
+                          ride?.user?.firstName,
+                          ride?.user?.lastName,
+                        )}
                       </p>
                       {ride.user?.phoneNumber && (
                         <p className="text-sm text-gray-600">
@@ -115,6 +118,7 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                   </div>
 
                   {!ride?.pickedUpAt && (
+                    <>
                     <Form method="post" action="/dashboard?mode=driver">
                       <AuthenticityTokenInput />
                       <input
@@ -123,35 +127,37 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                         value="pickupRequest"
                       />
                       <input type="hidden" name="requestId" value={ride.id} />
-                      <input type="hidden" name="userId" value={ride.user.id}/>
+                      <input type="hidden" name="userId" value={ride.user.id} />
                       <div className="flex gap-2">
-                      <button
-                        type="submit"
-                        name="submit"
-                        value="confirm"
-                        disabled={isPickupSubmitting}
-                        className="w-full px-4 py-2.5 min-h-[44px] font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                        <button
+                          type="submit"
+                          name="submit"
+                          value="confirm"
+                          disabled={isPickupSubmitting}
+                          className="w-full px-4 py-2.5 min-h-[44px] font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                         >
-                        {isPickupSubmitting ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            Confirming...
-                          </>
-                        ) : (
-                          "Confirm Pickup"
-                        )}
-                      </button>
-                      <button
-                        type="submit"
-                        name="submit"
-                        value="cancel"
-                        disabled={isPickupSubmitting}
-                        className="px-4 py-2.5 min-h-[44px] font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600"
-                        >
-                        Cancel
-                      </button>
+                          {isPickupSubmitting ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              Confirming...
+                            </>
+                          ) : (
+                            "Confirm Pickup"
+                          )}
+                        </button>
                       </div>
-                    </Form>
+                      </Form>
+                      <Form method="post" action="/dashboard?mode=driver">
+                        <AuthenticityTokenInput />
+                        <input type="hidden" name="intent" value="cancelAcceptedRequest" />
+                        <input type="hidden" name="requestId" value={ride.id} />
+                        <input type="hidden" name="userId" value={userId} />
+                        <button type="submit" disabled={isPickupSubmitting}
+                          className="px-4 py-2.5 min-h-[44px] font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600">
+                          Cancel
+                        </button>
+                      </Form>
+                    </>
                   )}
 
                   {ride.pickedUpAt && !ride.droppedOffAt && (
@@ -163,7 +169,7 @@ export default function LeftPanelDriverRequestForm({ accepted }: any) {
                         value="dropOffRequest"
                       />
                       <input type="hidden" name="requestId" value={ride.id} />
-                      <input type="hidden" name="userId" value={ride.user.id}/>
+                      <input type="hidden" name="userId" value={userId} />
                       <button
                         type="submit"
                         disabled={isDropoffSubmitting}

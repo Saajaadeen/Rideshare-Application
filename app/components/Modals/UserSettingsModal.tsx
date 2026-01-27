@@ -136,7 +136,7 @@ export default function UserSettingsModal({
           {selectedTab === "vehicles" && ( <UserVehicleForm user={user} vehicles={vehicles} /> )}
           {selectedTab === "security" && <UserSecurityForm user={user} />}
           {!user?.isInvite && selectedTab === "invites" && ( <UserInviteForm user={user} invite={invite} /> )}
-          {selectedTab === "metrics" && <UserMetricsForm rides={rides} />}
+          {selectedTab === "metrics" && <UserMetricsForm rides={rides} user={user} />}
           {/* {selectedTab === "deactivation" && <UserDeleteForm user={user} />} */}
           
         </div>

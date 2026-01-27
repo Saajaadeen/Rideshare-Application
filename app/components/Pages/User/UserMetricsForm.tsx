@@ -89,31 +89,88 @@ function formatDuration(minutes: number): string {
   return `${hours}h ${mins}m`;
 }
 
-export default function UserMetricsForm({ rides }: any) {
+// Count how many times a user's ID appears in the cancelledById array
+function countCancellations(cancelledById: string[] | undefined, userId: string): number {
+  if (!cancelledById) return 0;
+  return cancelledById.filter(id => id === userId).length;
+}
+
+function getCancellationContext(ride: any, currentUserId: string): {
+  currentUserCancelCount: number;
+  otherPartyCancelCount: number;
+  statusLabel: string;
+} {
+  const cancelledById = ride.cancelledById || [];
+  const currentUserCancelCount = countCancellations(cancelledById, currentUserId);
+  
+  // Determine the other party (driver or passenger)
+  const otherPartyId = ride.userId === currentUserId ? ride.driverId : ride.userId;
+  const otherPartyCancelCount = countCancellations(cancelledById, otherPartyId);
+  
+  let statusLabel = ride.status;
+  
+  // Add cancellation context to the status label
+  if (currentUserCancelCount > 0 || otherPartyCancelCount > 0) {
+    const cancelParts = [];
+    if (currentUserCancelCount > 0) {
+      cancelParts.push(`${currentUserCancelCount} by you`);
+    }
+    if (otherPartyCancelCount > 0) {
+      const otherPartyLabel = ride.userId === currentUserId ? "driver" : "passenger";
+      cancelParts.push(`${otherPartyCancelCount} by ${otherPartyLabel}`);
+    }
+    
+    if (ride.status === "Cancelled") {
+      statusLabel = `Cancelled (${cancelParts.join(", ")})`;
+    } else {
+      statusLabel = `${ride.status} (${cancelParts.join(", ")} cancelled)`;
+    }
+  }
+
+  return {
+    currentUserCancelCount,
+    otherPartyCancelCount,
+    statusLabel
+  };
+}
+
+export default function UserMetricsForm({ rides, user }: any) {
   const [activeTab, setActiveTab] = useState<"taken" | "given">("taken");
   const [mpg, setMpg] = useState<number>(25);
 
+  console.log(rides);
+
   const allRides = rides.request || [];
 
-  const ridesTaken = allRides.filter((r: any) => r.user?.email);
-  const ridesGiven = allRides.filter((r: any) => r.driver?.email && !r.user?.email);
+  const ridesTaken = allRides.filter((r: any) => r.userId === user.id);
+  const ridesGiven = allRides.filter((r: any) => r.driverId === user.id);
+
+  // Count ALL cancellation attempts by the user across all rides
+  const ridesTakenCancellations = ridesTaken.reduce((total: number, ride: any) => {
+    return total + countCancellations(ride.cancelledById, user.id);
+  }, 0);
+
+  const ridesGivenCancellations = ridesGiven.reduce((total: number, ride: any) => {
+    return total + countCancellations(ride.cancelledById, user.id);
+  }, 0);
 
   const ridesTakenCompleted = ridesTaken.filter((r: any) => r.status === "Completed");
-  const ridesTakenCancelled = ridesTaken.filter((r: any) => r.status === "Cancelled").length;
   const ridesTakenPending = ridesTaken.filter((r: any) => r.status === "Pending").length;
   const ridesTakenInProgress = ridesTaken.filter((r: any) => r.status === "In-Progress").length;
 
   const ridesGivenCompleted = ridesGiven.filter((r: any) => r.status === "Completed");
-  const ridesGivenCancelled = ridesGiven.filter((r: any) => r.status === "Cancelled").length;
   const ridesGivenPending = ridesGiven.filter((r: any) => r.status === "Pending").length;
   const ridesGivenInProgress = ridesGiven.filter((r: any) => r.status === "In-Progress").length;
 
+  // Only calculate totals for completed rides
   const calculateTotals = (rides: any[]) => {
     let totalDistance = 0;
     let totalCost = 0;
     let totalTime = 0;
 
-    rides.forEach((ride: any) => {
+    const completedRides = rides.filter((r: any) => r.status === "Completed");
+
+    completedRides.forEach((ride: any) => {
       if (ride.pickup && ride.dropoff) {
         const distance = calculateDistance(
           parseFloat(ride.pickup.latitude),
@@ -132,19 +189,22 @@ export default function UserMetricsForm({ rides }: any) {
     return { totalDistance, totalCost, totalTime };
   };
 
-  const ridesTakenTotals = calculateTotals(ridesTakenCompleted);
-  const ridesGivenTotals = calculateTotals(ridesGivenCompleted);
+  const ridesTakenTotals = calculateTotals(ridesTaken);
+  const ridesGivenTotals = calculateTotals(ridesGiven);
 
   const getStatusColor = (status: string) => {
+    if (status.includes("Cancelled")) {
+      return "bg-red-100 text-red-700 border-red-300";
+    }
     switch (status) {
       case "Completed":
         return "bg-green-100 text-green-700 border-green-300";
-      case "Cancelled":
-        return "bg-red-100 text-red-700 border-red-300";
       case "Pending":
         return "bg-yellow-100 text-yellow-700 border-yellow-300";
       case "In-Progress":
         return "bg-blue-100 text-blue-700 border-blue-300";
+      case "Accepted":
+        return "bg-purple-100 text-purple-700 border-purple-300";
       default:
         return "bg-gray-100 text-gray-700 border-gray-300";
     }
@@ -237,10 +297,11 @@ export default function UserMetricsForm({ rides }: any) {
         </div>
 
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-          <p className="text-sm text-red-600 font-medium">Cancelled</p>
+          <p className="text-sm text-red-600 font-medium">Cancellations</p>
           <p className="text-3xl font-bold text-red-700 mt-1">
-            {activeTab === "taken" ? ridesTakenCancelled : ridesGivenCancelled}
+            {activeTab === "taken" ? ridesTakenCancellations : ridesGivenCancellations}
           </p>
+          <p className="text-xs text-red-600 mt-1">total cancel attempts</p>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
@@ -294,7 +355,8 @@ export default function UserMetricsForm({ rides }: any) {
                   let cost = 0;
                   let duration = 0;
                   
-                  if (ride.pickup && ride.dropoff) {
+                  // Only calculate metrics for completed rides
+                  if (ride.status === "Completed" && ride.pickup && ride.dropoff) {
                     distance = calculateDistance(
                       parseFloat(ride.pickup.latitude),
                       parseFloat(ride.pickup.longitude),
@@ -304,17 +366,19 @@ export default function UserMetricsForm({ rides }: any) {
                     
                     const state = ride.base?.state || "California";
                     cost = calculateGasCost(distance, state, mpg);
+                    
+                    if (ride.createdAt && ride.droppedOffAt) {
+                      duration = calculateRideDuration(ride.createdAt, ride.droppedOffAt);
+                    }
                   }
-                  
-                  if (ride.createdAt && ride.droppedOffAt) {
-                    duration = calculateRideDuration(ride.createdAt, ride.droppedOffAt);
-                  }
+
+                  const context = getCancellationContext(ride, user.id);
 
                   return (
                     <tr key={ride.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(ride.status)}`}>
-                          {ride.status}
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(context.statusLabel)}`}>
+                          {context.statusLabel}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">

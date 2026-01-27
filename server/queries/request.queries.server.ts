@@ -228,11 +228,15 @@ export async function updateRequest(id: string) {
   return request;
 }
 
-export async function cancelRequest(id: string, driverId: string | null) {
-  const request = await prisma.request.updateMany({
-    where: { id },
+export async function cancelRequest(id: string, userId: string) {
+  const request = await prisma.request.update({
+    where: { 
+      id,
+    },
     data: {
       status: "Cancelled",
+      cancelledById: { push: userId },
+      cancelledAt: new Date(Date.now()),
     },
   });
   return request;
@@ -276,12 +280,14 @@ export async function dropOffRequest(requestId: string, userId: string) {
   return request;
 }
 
-export async function cancelAcceptedRide(requestId: string, userId: string, pickupId: string){
+export async function cancelAcceptedRide(requestId: string, userId: string){
   const request = await prisma.request.updateMany({
     where: {id: requestId},
     data: {
       status: 'Pending',
       updatedAt: new Date(Date.now()),
+      cancelledById: { push: userId },
+      cancelledAt: new Date(Date.now()),
       acceptedAt: null,
       driverId: null,
     }
@@ -411,15 +417,22 @@ export async function getRidesByUser(userId: string) {
     select: {
       id: true,
       status: true,
+      userId: true,
+      driverId: true,
       createdAt: true,
       droppedOffAt: true,
+      cancelledById: true,
       base: {
         select: {
+          name: true,
           state: true,
+          long: true,
+          lat: true,
         },
       },
       user: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           email: true,
@@ -427,6 +440,7 @@ export async function getRidesByUser(userId: string) {
       },
       driver: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           email: true,
@@ -434,6 +448,7 @@ export async function getRidesByUser(userId: string) {
       },
       pickup: {
         select: {
+          id: true,
           name: true,
           longitude: true,
           latitude: true,
@@ -441,6 +456,7 @@ export async function getRidesByUser(userId: string) {
       },
       dropoff: {
         select: {
+          id: true,
           name: true,
           longitude: true,
           latitude: true,

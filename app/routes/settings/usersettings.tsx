@@ -48,8 +48,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const invite = await getInvites(userId);
   const rides = await getRidesByUser(userId);
 
-  console.log({rides})
-
   return { user, base, userBase, vehicles, invite, rides };
 }
 
@@ -68,19 +66,19 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent") as string;
 
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const phoneNumber = formData.get("phoneNumber") as string;
-  const baseId = formData.get("baseId") as string;
+  const firstName = formData.get("firstName") as string || undefined;
+  const lastName = formData.get("lastName") as string || undefined;
+  const email = formData.get("email") as string || undefined;
+  const password = formData.get("password") as string || undefined;
+  const phoneNumber = formData.get("phoneNumber") as string || undefined;
+  const baseId = formData.get("baseId") as string || undefined;
 
   const isDriver = formData.get("isDriver") === "true";
-  const id = formData.get("id") as string ;
-  const year = formData.get("year") as string ;
-  const make = formData.get("make") as string ;
-  const model = formData.get("model") as string ;
-  const color = formData.get("color") as string ;
+  const id = formData.get("id") as string || undefined;
+  const year = formData.get("year") as string || undefined;
+  const make = formData.get("make") as string || undefined;
+  const model = formData.get("model") as string || undefined;
+  const color = formData.get("color") as string || undefined;
   const plate = formData.get("plate")?.toString().toUpperCase() || undefined;
 
   try{
@@ -96,26 +94,26 @@ export async function action({ request }: ActionFunctionArgs) {
     // } else if (intent === "user-delete") {
     //   return deleteUserAccount(userId);
     } else if (intent === "vehicle") {
-      return createVehicle(userId, year, make, model, color, plate);
+      return createVehicle(userId, year!, make!, model!, color!, plate!);
     } else if (intent === "vehicle-enable") {
       return enableVehicle(userId, isDriver);
     } else if (intent === "vehicle-delete") {
-      return deleteVehicle(id, userId);
+      return deleteVehicle(id!, userId);
     } else if (intent === "create-invite") {
-      const createResult = await createInvite(email, userId);
+      const createResult = await createInvite(email!, userId);
       if (createResult.error) {
         return { success: false, message: createResult.error };
       }
-      const emailResult = await sendInvitationEmail(email, userId);
+      const emailResult = await sendInvitationEmail(email!, userId);
       return emailResult;
     } else if (intent === "regenerate-invite") {
-      return updateInvite(id);
+      return updateInvite(id!);
     } else if (intent === "disable-invite") {
-      return disableInvite(id);
+      return disableInvite(id!);
     } else if (intent === "enable-invite") {
-      return enableInvite(id);
+      return enableInvite(id!);
     } else if (intent === "delete-invite") {
-      return deleteInvite(id);
+      return deleteInvite(id!);
     }
     
   }catch(error){
@@ -126,8 +124,6 @@ export async function action({ request }: ActionFunctionArgs) {
   
 export default function UserSettings({loaderData, actionData}: Route.ComponentProps) {
   const { user, base, userBase, vehicles, invite, rides } = loaderData;
-
-  console.log(rides)
 
   useEffect(() => {
     if (!actionData) return;

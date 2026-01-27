@@ -80,24 +80,27 @@ model Station {
 }
 
 model Request {
-  id           String    @id @default(uuid())
-  baseId       String?
-  userId       String?
-  driverId     String?
-  pickupId     String?
-  dropoffId    String?
-  status       String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  acceptedAt   DateTime?
-  pickedUpAt   DateTime?
-  droppedOffAt DateTime?
-  base         Base?     @relation("BaseRelation", fields: [baseId], references: [id])
-  driver       User?     @relation("DriverRelation", fields: [driverId], references: [id])
-  dropoff      Station?  @relation("DropoffStation", fields: [dropoffId], references: [id])
-  pickup       Station?  @relation("PickupStation", fields: [pickupId], references: [id])
-  user         User?     @relation("PassengerRelation", fields: [userId], references: [id])
+  id             String    @id @default(uuid())
+  baseId         String?
+  userId         String?
+  driverId       String?
+  pickupId       String?
+  dropoffId      String?
+  cancelledById  String[]
+  status         String?
+  cancelledAt    DateTime? 
+  acceptedAt     DateTime?
+  pickedUpAt     DateTime?
+  droppedOffAt   DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  base           Base?     @relation("BaseRelation", fields: [baseId], references: [id])
+  user           User?     @relation("PassengerRelation", fields: [userId], references: [id])
+  driver         User?     @relation("DriverRelation", fields: [driverId], references: [id])
+  pickup         Station?  @relation("PickupStation", fields: [pickupId], references: [id])
+  dropoff        Station?  @relation("DropoffStation", fields: [dropoffId], references: [id])
 }
+
 
 model Base {
   id           String    @id @default(uuid())

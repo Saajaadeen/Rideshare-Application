@@ -6,12 +6,12 @@ import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
 import LeftPanelDriverForm from "./LeftPanelDriverForm";
 import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
 import { LogoutIcon } from "../Icons/LogoutIcon";
-import LeftPanelScheduleForm from "./LeftPanelScheduleForm";
-import UserSettingsModal, { createTabs } from "../Modals/UserSettingsModal";
+import { createTabs } from "../Modals/UserSettingsModal";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 export default function LeftSideRidePanelForm({
   user,
+  userId,
   station,
   accepted,
   activeRequests,
@@ -190,16 +190,13 @@ export default function LeftSideRidePanelForm({
               )
             )}
 
-            {/* Spacer when expanded to push request panel to bottom */}
             {isSheetExpanded && <div className="flex-grow md:hidden" />}
-
-            {/* Mobile: Render request panels inside bottom sheet */}
             <div className={`md:hidden ${isSheetExpanded ? 'pt-6 pb-20' : 'mt-6'}`}>
               {!isDriverMode ? (
-                <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />
+                <LeftPanelPassengerRequestsForm requestInfo={requestInfo} user={user} />
               ) : (
                 user?.isDriver && (
-                  <LeftPanelDriverRequestForm accepted={accepted} />
+                  <LeftPanelDriverRequestForm accepted={accepted} user={user} userId={userId}/>
                 )
               )}
             </div>
@@ -210,12 +207,12 @@ export default function LeftSideRidePanelForm({
       {/* Desktop: Render request panels as floating panels */}
       {!isDriverMode ? (
         <div className="hidden md:block absolute bottom-0">
-          <LeftPanelPassengerRequestsForm requestInfo={requestInfo} />
+          <LeftPanelPassengerRequestsForm requestInfo={requestInfo} user={user}/>
         </div>
       ) : (
         user?.isDriver && (
           <div className="hidden md:block absolute bottom-0 w-screen">
-            <LeftPanelDriverRequestForm accepted={accepted} />
+            <LeftPanelDriverRequestForm accepted={accepted} user={user} userId={userId}/>
           </div>
         )
       )}
