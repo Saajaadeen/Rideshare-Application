@@ -14,10 +14,10 @@ function ridesToCSV(rides: any[]): string {
     "Date",
   ];
   const rows = rides.map((ride) => [
-    displayName(ride.user?.firstName, ride.user?.lastName),
-    ride.pickup?.name || "",
-    ride.dropoff?.name || "",
-    ride.driver ? displayName(ride.driver.firstName, ride.driver.lastName) : "",
+    displayName(ride?.user?.firstName, ride?.user?.lastName),
+    ride?.pickup?.name || "",
+    ride?.dropoff?.name || "",
+    ride.driver ? displayName(ride?.driver?.firstName, ride?.driver?.lastName) : "",
     ride.status || "",
     ride.createdAt ? new Date(ride.createdAt).toLocaleDateString() : "",
   ]);
@@ -178,12 +178,12 @@ export default function CreateRidesTable({
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
           {rides?.map((ride: any, index: number) => (
             <tr key={index}>
-              <td>{displayName(ride.user?.firstName, ride.user?.lastName)}</td>
-              <td>{ride.pickup.name}</td>
-              <td>{ride.dropoff.name}</td>
+              <td>{displayName(ride?.user?.firstName, ride?.user?.lastName)}</td>
+              <td>{ride?.pickup?.name}</td>
+              <td>{ride?.dropoff?.name}</td>
               <td>
                 {ride.driver
-                  ? displayName(ride.driver.firstName, ride.driver.lastName)
+                  ? displayName(ride?.driver?.firstName, ride?.driver?.lastName)
                   : ""}
               </td>
               <td
