@@ -8,7 +8,7 @@ console.log('🚀 Starting cleanup worker...');
 // Accounts expire after 2 hours of inactivity
 // Running cleanup every 15 min ensures accounts are deleted within 2h 15min max
 const cleanupJob = new CronJob(
-  '*/15 * * * *',  // Testing: every 1 minute | Production: '*/15 * * * *'
+  '*/15 * * * *',
   async () => {
     try {
       await AccountCleanup();
@@ -21,7 +21,7 @@ const cleanupJob = new CronJob(
   'UTC'
 );
 
-console.log('✅ Cleanup job scheduled'); // Update for production
+console.log('✅ Cleanup job scheduled');
 console.log('🔄 Running initial cleanup...');
 
 AccountCleanup().catch(console.error);

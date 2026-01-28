@@ -8,7 +8,7 @@ export async function AccountCleanup() {
   
   console.log(`[${new Date().toISOString()}] 🔍 Checking for expired accounts...`);
   
-  const result = await prisma.user.deleteMany({
+  const expiredCount = await prisma.user.count({
     where: {
       emailVerified: false,
       createdAt: { lt: expiryTime },
@@ -16,11 +16,19 @@ export async function AccountCleanup() {
     },
   });
   
-  if (result.count > 0) {
+  if (expiredCount > 0) {
+    const result = await prisma.user.deleteMany({
+      where: {
+        emailVerified: false,
+        createdAt: { lt: expiryTime },
+        updatedAt: { lt: expiryTime },
+      },
+    });
+    
     console.log(`[${new Date().toISOString()}] 🧹 Deleted ${result.count} expired accounts`);
+    return result.count;
   } else {
     console.log(`[${new Date().toISOString()}] ✅ No expired accounts found`);
+    return 0;
   }
-  
-  return result.count;
 }

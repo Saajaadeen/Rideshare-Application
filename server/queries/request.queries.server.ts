@@ -317,14 +317,34 @@ export async function getRidesByBase({ baseId, page = 1, pageSize = 25, search }
       select: {
         id: true,
         status: true,
-        dropoff: {
+        cancelledById: true,
+        cancelledAt: true,
+        acceptedAt: true,
+        pickedUpAt: true,
+        droppedOffAt: true,
+        createdAt: true,
+        base: {
           select: {
             name: true,
+            state: true,
+            long: true,
+            lat: true,
+          }
+        },
+        dropoff: {
+          select: {
+            id: true,
+            name: true,
+            longitude: true,
+            latitude: true,
           }
         },
         pickup: {
           select: {
+            id: true,
             name: true,
+            longitude: true,
+            latitude: true,
           }
         },
         user: {
