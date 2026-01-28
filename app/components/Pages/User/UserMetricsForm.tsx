@@ -143,9 +143,12 @@ export default function UserMetricsForm({ rides, user }: any) {
   const allRides = rides.request || [];
 
   const ridesTaken = allRides.filter((r: any) => r.userId === user.id);
-  const ridesGiven = allRides.filter((r: any) => r.driverId === user.id);
+  
+  const ridesGiven = allRides.filter((r: any) => 
+    r.driverId === user.id || 
+    (r.cancelledById && r.cancelledById.includes(user.id))
+  );
 
-  // Count ALL cancellation attempts by the user across all rides
   const ridesTakenCancellations = ridesTaken.reduce((total: number, ride: any) => {
     return total + countCancellations(ride.cancelledById, user.id);
   }, 0);
@@ -158,17 +161,22 @@ export default function UserMetricsForm({ rides, user }: any) {
   const ridesTakenPending = ridesTaken.filter((r: any) => r.status === "Pending").length;
   const ridesTakenInProgress = ridesTaken.filter((r: any) => r.status === "In-Progress").length;
 
-  const ridesGivenCompleted = ridesGiven.filter((r: any) => r.status === "Completed");
-  const ridesGivenPending = ridesGiven.filter((r: any) => r.status === "Pending").length;
-  const ridesGivenInProgress = ridesGiven.filter((r: any) => r.status === "In-Progress").length;
+  const ridesGivenCompleted = ridesGiven.filter((r: any) => r.status === "Completed" && r.driverId === user.id);
+  const ridesGivenPending = ridesGiven.filter((r: any) => r.status === "Pending" && r.driverId === user.id).length;
+  const ridesGivenInProgress = ridesGiven.filter((r: any) => r.status === "In-Progress" && r.driverId === user.id).length;
 
-  // Only calculate totals for completed rides
-  const calculateTotals = (rides: any[]) => {
+  const calculateTotals = (rides: any[], isPassenger: boolean) => {
     let totalDistance = 0;
     let totalCost = 0;
     let totalTime = 0;
 
-    const completedRides = rides.filter((r: any) => r.status === "Completed");
+    const completedRides = rides.filter((r: any) => {
+      if (isPassenger) {
+        return r.status === "Completed" && r.userId === user.id;
+      } else {
+        return r.status === "Completed" && r.driverId === user.id;
+      }
+    });
 
     completedRides.forEach((ride: any) => {
       if (ride.pickup && ride.dropoff) {
@@ -189,8 +197,8 @@ export default function UserMetricsForm({ rides, user }: any) {
     return { totalDistance, totalCost, totalTime };
   };
 
-  const ridesTakenTotals = calculateTotals(ridesTaken);
-  const ridesGivenTotals = calculateTotals(ridesGiven);
+  const ridesTakenTotals = calculateTotals(ridesTaken, true);
+  const ridesGivenTotals = calculateTotals(ridesGiven, false);
 
   const getStatusColor = (status: string) => {
     if (status.includes("Cancelled")) {
@@ -355,8 +363,12 @@ export default function UserMetricsForm({ rides, user }: any) {
                   let cost = 0;
                   let duration = 0;
                   
-                  // Only calculate metrics for completed rides
-                  if (ride.status === "Completed" && ride.pickup && ride.dropoff) {
+                  // Calculate metrics based on active tab
+                  const shouldCalculate = activeTab === "taken" 
+                    ? (ride.status === "Completed" && ride.userId === user.id)
+                    : (ride.status === "Completed" && ride.driverId === user.id);
+                  
+                  if (shouldCalculate && ride.pickup && ride.dropoff) {
                     distance = calculateDistance(
                       parseFloat(ride.pickup.latitude),
                       parseFloat(ride.pickup.longitude),

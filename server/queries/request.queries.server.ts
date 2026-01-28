@@ -411,7 +411,8 @@ export async function getRidesByUser(userId: string) {
     where: { 
       OR: [
         { userId }, // Rides as passenger
-        { driverId: userId } // Rides as driver
+        { driverId: userId }, // Rides as current/final driver
+        { cancelledById: { has: userId } } // Rides where user cancelled (was assigned as driver)
       ]
     },
     select: {
@@ -466,6 +467,7 @@ export async function getRidesByUser(userId: string) {
   });
   return { request }
 }
+
 interface GetRidesParams {
   baseId: string;
   page?: number;
