@@ -6,7 +6,6 @@ import { createUserSession } from "server/session.server";
 import { csrf } from "server/csrf.server";
 import { CSRFError } from "remix-utils/csrf/server";
 import { requireSameOrigin } from "server/session.server";
-import { sendWelcomeEmail } from "server/queries/verify.queries.server";
 
 export const action = async ({ request }: { request: Request }) => {
   requireSameOrigin(request);
@@ -45,7 +44,6 @@ export const action = async ({ request }: { request: Request }) => {
       return { error: result.error };
     }
     const { id } = (await getUserIdFromEmail(email))!;
-    await sendWelcomeEmail(id, email);
     
     return await createUserSession(id, "/login");
   }catch(error){

@@ -16,9 +16,9 @@ import { toast } from "react-toastify";
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
   await checkEmailVerification(userId, request);
-
   const user = await getUserInfo("verify", userId);
   return { userId, user, };
+  
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -49,6 +49,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const message = error instanceof Error ? error.message : String(error);
     return { success: false, message }
   }
+  // return await sendWelcomeEmail(userId, user?.email);
 }
 
 export default function Verify({ loaderData, actionData, }: Route.ComponentProps) {
