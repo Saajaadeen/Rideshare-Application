@@ -138,6 +138,7 @@ export async function updateUserInfo(
       "@uscg.mil",
       "@usmc.mil",
       "@spaceforce.mil",
+      "@health.mil"
     ];
     const emailLower = email.toLowerCase();
     const isMilitaryEmail = allowedDomains.some(domain => emailLower.endsWith(domain));

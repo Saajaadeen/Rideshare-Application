@@ -58,6 +58,7 @@ export async function registerUser(
           "@uscg.mil",
           "@usmc.mil",
           "@spaceforce.mil",
+          "@health.mil"
         ];
         const emailLower = email.toLowerCase();
         const isMilitaryEmail = allowedDomains.some((domain) =>
