@@ -261,7 +261,7 @@ export default function UserMetricsForm({ rides, user }: any) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-4">
           <p className="text-sm text-purple-600 font-medium">Total Distance</p>
-          <p className="text-3xl font-bold text-purple-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-purple-700 mt-1">
             {currentTotals.totalDistance.toFixed(1)}
           </p>
           <p className="text-xs text-purple-600 mt-1">miles</p>
@@ -269,7 +269,7 @@ export default function UserMetricsForm({ rides, user }: any) {
 
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-xl p-4">
           <p className="text-sm text-emerald-600 font-medium">Gas Cost</p>
-          <p className="text-3xl font-bold text-emerald-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-emerald-700 mt-1">
             ${currentTotals.totalCost.toFixed(2)}
           </p>
           <p className="text-xs text-emerald-600 mt-1">estimated total</p>
@@ -279,7 +279,7 @@ export default function UserMetricsForm({ rides, user }: any) {
           <p className="text-sm text-blue-600 font-medium">
             {activeTab === "taken" ? "Time Carpooling" : "Time Driving"}
           </p>
-          <p className="text-3xl font-bold text-blue-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-blue-700 mt-1">
             {formatDuration(currentTotals.totalTime)}
           </p>
           <p className="text-xs text-blue-600 mt-1">total ride time</p>
@@ -287,7 +287,7 @@ export default function UserMetricsForm({ rides, user }: any) {
 
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-xl p-4">
           <p className="text-sm text-orange-600 font-medium">Average Time</p>
-          <p className="text-3xl font-bold text-orange-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-orange-700 mt-1">
             {currentCompleted.length > 0
               ? formatDuration(currentTotals.totalTime / currentCompleted.length)
               : "0m"}
@@ -299,14 +299,14 @@ export default function UserMetricsForm({ rides, user }: any) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-green-50 border border-green-200 rounded-xl p-4">
           <p className="text-sm text-green-600 font-medium">Completed</p>
-          <p className="text-3xl font-bold text-green-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-green-700 mt-1">
             {currentCompleted.length}
           </p>
         </div>
 
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <p className="text-sm text-red-600 font-medium">Cancellations</p>
-          <p className="text-3xl font-bold text-red-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-red-700 mt-1">
             {activeTab === "taken" ? ridesTakenCancellations : ridesGivenCancellations}
           </p>
           <p className="text-xs text-red-600 mt-1">total cancel attempts</p>
@@ -314,21 +314,21 @@ export default function UserMetricsForm({ rides, user }: any) {
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
           <p className="text-sm text-yellow-600 font-medium">Pending</p>
-          <p className="text-3xl font-bold text-yellow-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-yellow-700 mt-1">
             {activeTab === "taken" ? ridesTakenPending : ridesGivenPending}
           </p>
         </div>
 
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-sm text-blue-600 font-medium">In Progress</p>
-          <p className="text-3xl font-bold text-blue-700 mt-1">
+          <p className="text-2xl md:text-3xl font-bold text-blue-700 mt-1">
             {activeTab === "taken" ? ridesTakenInProgress : ridesGivenInProgress}
           </p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-4 md:p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <h4 className="text-lg font-semibold text-gray-900">Ride History</h4>
             <p className="text-sm text-gray-500">
@@ -337,100 +337,177 @@ export default function UserMetricsForm({ rides, user }: any) {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          {sortedRides.length === 0 ? (
-            <p className="text-gray-500 text-sm text-center py-12">
-              No {activeTab === "taken" ? "rides taken" : "rides given"} yet.
-            </p>
-          ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    {activeTab === "taken" ? "Driver" : "Passenger"}
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Route</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Distance</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duration</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cost</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {sortedRides.map((ride: any) => {
-                  let distance = 0;
-                  let cost = 0;
-                  let duration = 0;
-                  
-                  // Calculate metrics based on active tab
-                  const shouldCalculate = activeTab === "taken" 
-                    ? (ride.status === "Completed" && ride.userId === user.id)
-                    : (ride.status === "Completed" && ride.driverId === user.id);
-                  
-                  if (shouldCalculate && ride.pickup && ride.dropoff) {
-                    distance = calculateDistance(
-                      parseFloat(ride.pickup.latitude),
-                      parseFloat(ride.pickup.longitude),
-                      parseFloat(ride.dropoff.latitude),
-                      parseFloat(ride.dropoff.longitude)
-                    );
-                    
-                    const state = ride.base?.state || "California";
-                    cost = calculateGasCost(distance, state, mpg);
-                    
-                    if (ride.createdAt && ride.droppedOffAt) {
-                      duration = calculateRideDuration(ride.createdAt, ride.droppedOffAt);
+        {sortedRides.length === 0 ? (
+          <p className="text-gray-500 text-sm text-center py-12">
+            No {activeTab === "taken" ? "rides taken" : "rides given"} yet.
+          </p>
+        ) : (
+          <>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      {activeTab === "taken" ? "Driver" : "Passenger"}
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Route</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Distance</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duration</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cost</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {sortedRides.map((ride: any) => {
+                    let distance = 0;
+                    let cost = 0;
+                    let duration = 0;
+
+                    const shouldCalculate = activeTab === "taken"
+                      ? (ride.status === "Completed" && ride.userId === user.id)
+                      : (ride.status === "Completed" && ride.driverId === user.id);
+
+                    if (shouldCalculate && ride.pickup && ride.dropoff) {
+                      distance = calculateDistance(
+                        parseFloat(ride.pickup.latitude),
+                        parseFloat(ride.pickup.longitude),
+                        parseFloat(ride.dropoff.latitude),
+                        parseFloat(ride.dropoff.longitude)
+                      );
+
+                      const state = ride.base?.state || "California";
+                      cost = calculateGasCost(distance, state, mpg);
+
+                      if (ride.createdAt && ride.droppedOffAt) {
+                        duration = calculateRideDuration(ride.createdAt, ride.droppedOffAt);
+                      }
                     }
-                  }
 
-                  const context = getCancellationContext(ride, user.id);
+                    const context = getCancellationContext(ride, user.id);
 
-                  return (
-                    <tr key={ride.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(context.statusLabel)}`}>
-                          {context.statusLabel}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-                        {new Date(ride.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {activeTab === "taken" && ride.driver ? (
-                          <div className="max-w-[180px]">
-                            <div className="font-medium truncate">{ride.driver.firstName} {ride.driver.lastName}</div>
-                            <div className="text-xs text-gray-500 truncate">{ride.driver.email}</div>
-                          </div>
-                        ) : activeTab === "given" && ride.user ? (
-                          <div className="max-w-[180px]">
-                            <div className="font-medium truncate">{ride.user.firstName} {ride.user.lastName}</div>
-                            <div className="text-xs text-gray-500 truncate">{ride.user.email}</div>
-                          </div>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        <div className="max-w-[200px] truncate">{ride.pickup?.name || "?"}</div>
-                        <div className="text-gray-500 max-w-[200px] truncate">→ {ride.dropoff?.name || "?"}</div>
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
-                        {distance > 0 ? `${distance.toFixed(1)} mi` : "N/A"}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
-                        {duration > 0 ? formatDuration(duration) : "N/A"}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-semibold text-emerald-600 whitespace-nowrap">
-                        {cost > 0 ? `$${cost.toFixed(2)}` : "N/A"}
-                      </td>
-                    </tr>
+                    return (
+                      <tr key={ride.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(context.statusLabel)}`}>
+                            {context.statusLabel}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
+                          {new Date(ride.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          {activeTab === "taken" && ride.driver ? (
+                            <div className="max-w-[180px]">
+                              <div className="font-medium truncate">{ride.driver.firstName} {ride.driver.lastName}</div>
+                              <div className="text-xs text-gray-500 truncate">{ride.driver.email}</div>
+                            </div>
+                          ) : activeTab === "given" && ride.user ? (
+                            <div className="max-w-[180px]">
+                              <div className="font-medium truncate">{ride.user.firstName} {ride.user.lastName}</div>
+                              <div className="text-xs text-gray-500 truncate">{ride.user.email}</div>
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          <div className="max-w-[200px] truncate">{ride.pickup?.name || "?"}</div>
+                          <div className="text-gray-500 max-w-[200px] truncate">→ {ride.dropoff?.name || "?"}</div>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          {distance > 0 ? `${distance.toFixed(1)} mi` : "N/A"}
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          {duration > 0 ? formatDuration(duration) : "N/A"}
+                        </td>
+                        <td className="px-4 py-3 text-sm font-semibold text-emerald-600 whitespace-nowrap">
+                          {cost > 0 ? `$${cost.toFixed(2)}` : "N/A"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {sortedRides.map((ride: any) => {
+                let distance = 0;
+                let cost = 0;
+                let duration = 0;
+
+                const shouldCalculate = activeTab === "taken"
+                  ? (ride.status === "Completed" && ride.userId === user.id)
+                  : (ride.status === "Completed" && ride.driverId === user.id);
+
+                if (shouldCalculate && ride.pickup && ride.dropoff) {
+                  distance = calculateDistance(
+                    parseFloat(ride.pickup.latitude),
+                    parseFloat(ride.pickup.longitude),
+                    parseFloat(ride.dropoff.latitude),
+                    parseFloat(ride.dropoff.longitude)
                   );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
+
+                  const state = ride.base?.state || "California";
+                  cost = calculateGasCost(distance, state, mpg);
+
+                  if (ride.createdAt && ride.droppedOffAt) {
+                    duration = calculateRideDuration(ride.createdAt, ride.droppedOffAt);
+                  }
+                }
+
+                const context = getCancellationContext(ride, user.id);
+                const otherParty = activeTab === "taken" ? ride.driver : ride.user;
+
+                return (
+                  <div key={ride.id} className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(context.statusLabel)}`}>
+                        {context.statusLabel}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {new Date(ride.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <div className="text-sm">
+                      <p className="text-gray-900">{ride.pickup?.name || "?"}</p>
+                      <p className="text-gray-500">→ {ride.dropoff?.name || "?"}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm">
+                      <div>
+                        <span className="text-xs text-gray-500 uppercase">{activeTab === "taken" ? "Driver" : "Passenger"}</span>
+                        {otherParty ? (
+                          <p className="font-medium text-gray-900">{otherParty.firstName} {otherParty.lastName}</p>
+                        ) : (
+                          <p className="text-gray-400">-</p>
+                        )}
+                      </div>
+                      <div className="flex gap-4 text-right">
+                        <div>
+                          <span className="text-xs text-gray-500 block">Dist</span>
+                          <span className="font-medium text-gray-900">{distance > 0 ? `${distance.toFixed(1)} mi` : "N/A"}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-500 block">Time</span>
+                          <span className="font-medium text-gray-900">{duration > 0 ? formatDuration(duration) : "N/A"}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-500 block">Cost</span>
+                          <span className="font-semibold text-emerald-600">{cost > 0 ? `$${cost.toFixed(2)}` : "N/A"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

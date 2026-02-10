@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { registerUser } from "server/queries/auth.queries.server";
 import { createBase, deleteBase, getBase, updateBase } from "server/queries/base.queries.server";
 import { createStop, deleteStop, getStop, updateStop } from "server/queries/station.queries.server";
-import { getAccounts, getUserInfo, updateUserInfoAdmin } from "server/queries/user.queries.server";
+import { getUserInfo, updateUserInfoAdmin } from "server/queries/user.queries.server";
 import { checkEmailVerification, requireAdminId, requireSameOrigin, requireUserId } from "server/session.server";
 import AdminSettingsModal from "~/components/Modals/AdminSettingsModal";
 import { ErrorBoundary } from "~/components/Utilities/ErrorBoundary";
@@ -24,9 +24,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if(selectedBase) {
     station  = await getStop(atob(selectedBase));
   }
-  const accounts = await getAccounts();
-
-  return { user, base, station, accounts };
+  return { user, base, station };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -114,7 +112,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AdminSettings({ loaderData, actionData}: Route.ComponentProps) {
     
-  const { user, base, accounts, station } = loaderData;
+  const { user, base, station } = loaderData;
   useEffect(() => {
     if (!actionData) return;
 
@@ -127,7 +125,7 @@ export default function AdminSettings({ loaderData, actionData}: Route.Component
     }
   }, [actionData]);
 
-    return <AdminSettingsModal user={user} base={base} station={station} accounts={accounts} actionData={actionData}/>
+    return <AdminSettingsModal user={user} base={base} station={station} actionData={actionData}/>
 }
 
 export { ErrorBoundary };

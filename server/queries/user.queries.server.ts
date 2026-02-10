@@ -296,6 +296,37 @@ export async function getAccounts() {
   return account
 }
 
+export async function searchAccounts(query: string, baseId?: string) {
+  const accounts = await prisma.user.findMany({
+    where: {
+      ...(baseId ? { baseId } : {}),
+      OR: [
+        { firstName: { contains: query, mode: "insensitive" } },
+        { lastName: { contains: query, mode: "insensitive" } },
+        { email: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      email: true,
+      isAdmin: true,
+      isDriver: true,
+      isPassenger: true,
+      isReset: true,
+      resetCode: true,
+      isInvite: true,
+      baseId: true,
+    },
+    take: 20,
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+  });
+
+  return accounts;
+}
+
 export async function getUserBase(userId: string) {
   const base = await prisma.user.findFirst({
     where: { id: userId },

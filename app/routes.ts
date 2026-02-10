@@ -10,6 +10,7 @@ export default [
     route("/send", "./routes/auth/send.tsx"),
     route("/verify", "./routes/auth/verify.tsx"),
     route("/broadcast/sse", "./routes/api/sse.ts"),
+    route("/api/search-users", "./routes/api/searchUsers.ts"),
     route("/dashboard", "./routes/dashboard/dashboard.tsx", [
         route("settings", "./routes/settings/usersettings.tsx"),
         route("admin", "./routes/settings/adminsettings.tsx", [

@@ -18,6 +18,7 @@ export default function LeftSideRidePanelForm({
   requestInfo,
   actionData,
   activePassengerRequests,
+  vehicles,
 }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -32,12 +33,14 @@ export default function LeftSideRidePanelForm({
     setIsDriverMode(!isDriverMode);
     setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
   };
-  const tabs = createTabs(user, true)
+  const tabs = createTabs({user, vehicles})
   useEffect(() => {
     if (!searchParams.get("mode")) {
       setSearchParams({ mode: "passenger" });
     }
   }, [searchParams, setSearchParams]);
+
+  console.log(user)
 
   return (
     <>

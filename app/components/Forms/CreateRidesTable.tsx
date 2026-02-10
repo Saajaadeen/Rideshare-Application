@@ -421,13 +421,13 @@ function StatCard({ label, value, sublabel, trend, isMoney }: StatCardProps) {
     : value;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">{label}</p>
-          <p className="text-3xl font-semibold text-gray-900 mt-2">{displayValue}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs md:text-sm font-medium text-gray-600 uppercase tracking-wide">{label}</p>
+          <p className="text-2xl md:text-3xl font-semibold text-gray-900 mt-2 truncate">{displayValue}</p>
           {sublabel && (
-            <p className="text-sm text-gray-500 mt-1">{sublabel}</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">{sublabel}</p>
           )}
         </div>
         {trend && (
@@ -580,25 +580,25 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-[1600px] mx-auto p-8 space-y-8">
-        
+      <div className="max-w-[1600px] mx-auto p-4 md:p-8 space-y-6 md:space-y-8">
+
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Ride Analytics Dashboard</h1>
-            <p className="text-gray-600 mt-1">Real-time operational metrics and cost savings insights</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Ride Analytics Dashboard</h1>
+            <p className="text-gray-600 mt-1 text-sm md:text-base">Real-time operational metrics and cost savings insights</p>
           </div>
           <button
             onClick={() => fetcher.submit({}, { method: "post" })}
             disabled={fetcher.state === "submitting"}
-            className="px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 transition-colors font-medium"
+            className="px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 transition-colors font-medium self-start sm:self-auto"
           >
             {fetcher.state === "submitting" ? "Exporting..." : "Export Data"}
           </button>
         </div>
 
         {/* MONEY SAVINGS METRICS - HERO SECTION */}
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-8">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 md:p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">💰 Cost Savings Impact</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white rounded-lg border border-green-200 p-6">
@@ -634,22 +634,24 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
 
         {/* MOST ACTIVE BASE */}
         {metrics.mostActiveBase && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">🏆 Most Active Base</h3>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <p className="text-2xl font-bold text-gray-900">{metrics.mostActiveBase.base}</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900">{metrics.mostActiveBase.base}</p>
                 <p className="text-sm text-gray-600 mt-1">{metrics.mostActiveBase.state}</p>
               </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-blue-600">{metrics.mostActiveBase.rides}</p>
-                <p className="text-sm text-gray-600 mt-1">rides completed</p>
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-green-600">
-                  ${metrics.mostActiveBase.totalSavings.toFixed(0)}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">total savings</p>
+              <div className="flex gap-6 sm:gap-8">
+                <div className="sm:text-right">
+                  <p className="text-2xl md:text-3xl font-bold text-blue-600">{metrics.mostActiveBase.rides}</p>
+                  <p className="text-sm text-gray-600 mt-1">rides completed</p>
+                </div>
+                <div className="sm:text-right">
+                  <p className="text-2xl md:text-3xl font-bold text-green-600">
+                    ${metrics.mostActiveBase.totalSavings.toFixed(0)}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">total savings</p>
+                </div>
               </div>
             </div>
           </div>
@@ -890,15 +892,15 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
         </div>
 
         {/* TREND ANALYSIS WITH TABS */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Ride Trends</h3>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               {(['daily', 'weekly', 'monthly', 'yearly'] as const).map((view) => (
                 <button
                   key={view}
                   onClick={() => setTrendView(view)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     trendView === view
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -1025,14 +1027,14 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
 
         {/* SEARCH */}
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <form onSubmit={handleSearch} className="flex gap-3">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <input
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
               placeholder="Search by passenger or driver name..."
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-500"
             />
-            <button 
+            <button
               type="submit"
               className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
             >
@@ -1041,8 +1043,8 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
           </form>
         </div>
 
-        {/* DATA TABLE */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        {/* DATA TABLE - Desktop */}
+        <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -1108,8 +1110,8 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
                         <StatusBadge status={ride.status} />
                       </td>
                       <td className="px-6 py-4 text-center text-sm text-gray-600">
-                        {new Date(ride.createdAt).toLocaleDateString('en-US', { 
-                          month: 'short', 
+                        {new Date(ride.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
                           day: 'numeric',
                           year: 'numeric'
                         })}
@@ -1122,25 +1124,76 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
           </div>
         </div>
 
+        {/* DATA CARDS - Mobile */}
+        <div className="md:hidden space-y-3">
+          {rides.length === 0 ? (
+            <div className="bg-white rounded-lg border border-gray-200 px-4 py-12 text-center text-gray-500">
+              No rides found
+            </div>
+          ) : (
+            rides.map((ride: Ride) => (
+              <div key={ride.id} className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-900">
+                    {displayName(ride.user?.firstName, ride.user?.lastName)}
+                  </span>
+                  <StatusBadge status={ride.status} />
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase">Pickup</p>
+                    <p className="text-gray-900">{ride.pickup?.name || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase">Dropoff</p>
+                    <p className="text-gray-900">{ride.dropoff?.name || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase">Driver</p>
+                    <p className="text-gray-900">
+                      {ride.driver
+                        ? displayName(ride.driver.firstName, ride.driver.lastName)
+                        : "Unassigned"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase">Date</p>
+                    <p className="text-gray-900">
+                      {new Date(ride.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+                {ride.base?.name && (
+                  <p className="text-xs text-gray-500">{ride.base.name}{ride.base.state ? `, ${ride.base.state}` : ""}</p>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white rounded-lg border border-gray-200 px-4 sm:px-6 py-4">
             <p className="text-sm text-gray-700">
               Showing <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>–
               <span className="font-medium">{Math.min(currentPage * ITEMS_PER_PAGE, totalCount)}</span> of{" "}
               <span className="font-medium">{totalCount}</span> results
             </p>
-            
+
             <div className="flex gap-2">
               <button
                 onClick={() => changePage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                className="px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
                 Previous
               </button>
-              
-              <div className="flex items-center gap-1">
+
+              <div className="hidden sm:flex items-center gap-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -1152,7 +1205,7 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
                   } else {
                     pageNum = currentPage - 2 + i;
                   }
-                  
+
                   return (
                     <button
                       key={pageNum}
@@ -1168,11 +1221,15 @@ export default function AdminRidesPage({ rides, totalCount, totalPages, currentP
                   );
                 })}
               </div>
-              
+
+              <span className="sm:hidden flex items-center px-2 text-sm text-gray-700 font-medium">
+                {currentPage} / {totalPages}
+              </span>
+
               <button
                 onClick={() => changePage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                className="px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
                 Next
               </button>

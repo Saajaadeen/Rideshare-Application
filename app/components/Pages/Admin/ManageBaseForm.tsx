@@ -97,7 +97,7 @@ export default function ManageBaseForm({ base, actionData }: any) {
   const canDelete = deleteConfirmed && deleteConfirmName === deletingBase?.name;
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+    <section className="bg-white rounded-2xl border border-gray-100 p-4 md:p-8 shadow-sm">
       <div className="mb-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-2">
           Manage Existing Bases

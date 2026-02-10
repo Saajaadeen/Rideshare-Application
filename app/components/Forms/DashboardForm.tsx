@@ -32,6 +32,7 @@ export default function Dashboard({
           activePassengerRequests={activePassengerRequests}
           actionData={actionData}
           requestInfo={requestInfo}
+          vehicles={vehicles}
           onLogout={() => navigate("/logout")}
         />
       </div>

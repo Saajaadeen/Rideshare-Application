@@ -14,7 +14,7 @@ import { VehicleIcon } from "../Icons/VehicleIcon";
 // import CreateRidesTable from "../Forms/CreateRidesTable";
 // import Rides from "~/routes/auth/rides";
 
-export default function AdminSettingsModal({ user, base, station, accounts, actionData }: any) {
+export default function AdminSettingsModal({ user, base, station, actionData }: any) {
   const location = useLocation();
   const navigate = useNavigate();
   const isRidesRoute = location.pathname.includes("/admin/rides");
@@ -89,7 +89,7 @@ export default function AdminSettingsModal({ user, base, station, accounts, acti
         return (
           <div className="space-y-8">
             <CreateUserForm />
-            <ManageUserForm accounts={accounts} base={base} user={user} actionData={actionData}/>
+            <ManageUserForm base={base} user={user} actionData={actionData}/>
           </div>
         );
       case "rides":
@@ -111,9 +111,42 @@ export default function AdminSettingsModal({ user, base, station, accounts, acti
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl shadow-2xl w-[50vw] h-[65vh] flex overflow-hidden">
-        <div className="w-90 bg-white border-r border-gray-200 flex flex-col shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm md:p-4">
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 w-full h-full md:rounded-3xl md:shadow-2xl md:w-[50vw] md:h-[65vh] flex flex-col md:flex-row overflow-hidden">
+        {/* Mobile header + tabs */}
+        <div className="md:hidden flex flex-col bg-white border-b border-gray-200">
+          <div className="flex items-center justify-between px-4 py-3">
+            <h2 className="text-lg font-bold text-gray-900">Admin Settings</h2>
+            <Link
+              to="/dashboard"
+              className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition"
+              aria-label="Close"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </Link>
+          </div>
+          <nav className="flex overflow-x-auto px-2 pb-2 gap-1">
+            {menuTabs.filter(tab => tab.enabled).map(item =>
+              <button
+                key={item.tab}
+                onClick={() => handleTabChange(item.tab)}
+                className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  activeTab === item.tab
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/30"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <item.Icon className="size-4" />
+                <span>{item.label}</span>
+              </button>
+            )}
+          </nav>
+        </div>
+
+        {/* Desktop sidebar */}
+        <div className="hidden md:flex w-90 bg-white border-r border-gray-200 flex-col shadow-lg">
           <div className="px-6 py-6 border-b border-gray-200">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-2xl font-bold text-gray-900">Admin Settings</h2>
@@ -131,8 +164,9 @@ export default function AdminSettingsModal({ user, base, station, accounts, acti
           </div>
 
           <nav className="flex-1 flex flex-col p-4 gap-2">
-            {menuTabs.filter(tab => tab.enabled).map(item => 
+            {menuTabs.filter(tab => tab.enabled).map(item =>
               <button
+                key={item.tab}
                 onClick={() => handleTabChange(item.tab)}
                 className={`flex items-center gap-3 text-left px-4 py-3.5 rounded-xl font-semibold transition-all ${
                 activeTab === item.tab
@@ -143,41 +177,6 @@ export default function AdminSettingsModal({ user, base, station, accounts, acti
                 <span>{item.label}</span>
               </button>
             )}
-            {/* <button
-              onClick={() => handleTabChange("bases")}
-              className={`flex items-center gap-3 text-left px-4 py-3.5 rounded-xl font-semibold transition-all ${
-                activeTab === "bases"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <AdminIcon className="size-6" />
-              <span>Manage Bases</span>
-            </button>
-
-            <button
-              onClick={() => handleTabChange("stops")}
-              className={`flex items-center gap-3 text-left px-4 py-3.5 rounded-xl font-semibold transition-all ${
-                activeTab === "stops"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <MapPinIcon className="size-6" />
-              <span>Manage Stops</span>
-            </button>
-
-            <button
-              onClick={() => handleTabChange("users")}
-              className={`flex items-center gap-3 text-left px-4 py-3.5 rounded-xl font-semibold transition-all ${
-                activeTab === "users"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <UserIcon className="size-6" />
-              <span>Manage Users</span>
-            </button> */}
           </nav>
 
           <div className="border-t border-gray-200 p-4 bg-gray-50">
@@ -194,7 +193,7 @@ export default function AdminSettingsModal({ user, base, station, accounts, acti
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8">
           {renderContent()}
         </div>
       </div>

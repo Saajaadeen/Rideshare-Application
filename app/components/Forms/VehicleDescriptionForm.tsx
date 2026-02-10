@@ -166,19 +166,12 @@ export default function VehicleDescriptionForm() {
           <span>{carColorLabel || "Color"}</span>
         </button>
 
-        <input
-          type="text"
-          name="plate"
-          maxLength={10}
-          placeholder="Plate"
-          required
-          className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
-        />
+        
 
         <input type="hidden" name="color" value={carColorHex} />
         
         {colorBox && (
-          <div className="col-span-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-4 gap-4 rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 transition-all duration-300">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 rounded-xl border-2 border-gray-200 p-3 text-gray-900 transition-all duration-300">
             {colors.map((c, index) => (
               <div
                 key={index}
@@ -224,6 +217,14 @@ export default function VehicleDescriptionForm() {
             </div>
           </div>
         )}
+        <input
+          type="text"
+          name="plate"
+          maxLength={10}
+          placeholder="Plate"
+          required
+          className="rounded-xl border-2 border-gray-200 px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300"
+        />
       </div>
 
       <button

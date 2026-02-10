@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Form } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Form, useFetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import ToggleSwitch from "~/components/Buttons/ToggleSwitch";
 import { WarningIcon } from "~/components/Icons/WarningIcon";
 
-export default function ManageUserForm({ accounts , base, user, actionData}: any) {
+export default function ManageUserForm({ base, user, actionData}: any) {
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -20,31 +20,63 @@ export default function ManageUserForm({ accounts , base, user, actionData}: any
     name: string;
   } | null>(null);
 
-  const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const userId = e.target.value;
-    setSelectedUserId(userId);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const comboboxRef = useRef<HTMLDivElement>(null);
+  const fetcher = useFetcher<{ users: any[] }>();
+  const users = fetcher.data?.users ?? [];
 
-    const user = accounts.find((u: any) => u.id === userId);
-
-    if (user) {
-      setFirstName(user.firstName || "");
-      setLastName(user.lastName || "");
-      setEmail(user.email || "");
-      setPhoneNumber(user.phoneNumber || "");
-      setIsAdmin(!!user.isAdmin);
-      setIsDriver(!!user.isDriver);
-      setIsPassenger(!!user.isPassenger);
-      setIsReset(!!user.isReset);
+  useEffect(() => {
+    if (searchQuery.length >= 1) {
+      const params = new URLSearchParams({ q: searchQuery });
+      if (selectedBase) {
+        params.set("baseId", selectedBase);
+        fetcher.load(`/api/search-users?${params}`);
+        setShowDropdown(true);
+      }
     } else {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhoneNumber("");
-      setIsAdmin(false);
-      setIsDriver(false);
-      setIsPassenger(false);
-      setIsReset(false);
+      setShowDropdown(false);
     }
+  }, [searchQuery, selectedBase]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (comboboxRef.current && !comboboxRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectUser = (user: any) => {
+    setSelectedUserId(user.id);
+    setSelectedUser(user);
+    setSearchQuery(`${user.firstName} ${user.lastName}`);
+    setShowDropdown(false);
+    setFirstName(user.firstName || "");
+    setLastName(user.lastName || "");
+    setEmail(user.email || "");
+    setPhoneNumber(user.phoneNumber || "");
+    setIsAdmin(!!user.isAdmin);
+    setIsDriver(!!user.isDriver);
+    setIsPassenger(!!user.isPassenger);
+    setIsReset(!!user.isReset);
+  };
+
+  const handleClearUser = () => {
+    setSelectedUserId("");
+    setSelectedUser(null);
+    setSearchQuery("");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhoneNumber("");
+    setIsAdmin(false);
+    setIsDriver(false);
+    setIsPassenger(false);
+    setIsReset(false);
   };
 
   useEffect(() => {
@@ -55,40 +87,34 @@ export default function ManageUserForm({ accounts , base, user, actionData}: any
 
   return (
     <>
-      <section className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+      <section className="bg-white rounded-2xl border border-gray-100 p-4 md:p-8 shadow-sm">
         <div className="mb-6">
-        <div className="inline-flex w-full items-center justify-between">
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900">
             Manage Users
           </h3>
-          <select className="rounded-lg p-2 -mt-3 mr-2 border border-gray-200 text-black w-[300px]" onChange={(e) => setSelectedBase(e.currentTarget.value)}>
+          <select className="rounded-lg p-2 border border-gray-200 text-black w-full sm:w-[300px]" onChange={(e) => setSelectedBase(e.currentTarget.value)}>
             <option value="">-- Select a base --</option>
            {base.map(b => <option value={b.id}>{b.name}</option>)}
           </select>
         </div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mt-2">
             Select an existing user to view or modify their details.
           </p>
         </div>
 
-        {selectedUserId &&
-          (() => {
-            const user = accounts.find((u: any) => u.id === selectedUserId);
-            if (user?.resetCode) {
-              return (
-                <div className="mt-2 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md">
-                  <p className="text-sm text-yellow-800">
-                    <span className="font-semibold">Reset Code:</span>{" "}
-                    {user.resetCode}
-                  </p>
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Provide this code to the user so they can log in with the
-                    new password.
-                  </p>
-                </div>
-              );
-            }
-          })()}
+        {selectedUser?.resetCode && (
+          <div className="mt-2 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md">
+            <p className="text-sm text-yellow-800">
+              <span className="font-semibold">Reset Code:</span>{" "}
+              {selectedUser.resetCode}
+            </p>
+            <p className="text-xs text-yellow-700 mt-1">
+              Provide this code to the user so they can log in with the
+              new password.
+            </p>
+          </div>
+        )}
 
         <div className="mt-5">
           <Form method="post" action="/dashboard/admin?page=users"
@@ -98,25 +124,60 @@ export default function ManageUserForm({ accounts , base, user, actionData}: any
             <input type="hidden" name="intent" value="updateUser" />
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Select User
+                Search User
               </label>
-              <select
-                required
-                name="userId"
-                value={selectedUserId}
-                onChange={handleUserChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
-              >
-                <option value="">-- Choose a user --</option>
-                {accounts.filter(a => a.baseId === selectedBase).map((user: any) => (
-                  <option key={user.id} value={user.id}>
-                    {user.firstName} {user.lastName}
-                  </option>
-                ))}
-              </select>
+              <input type="hidden" name="userId" value={selectedUserId} />
+              <div ref={comboboxRef} className="relative">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      if (selectedUserId) handleClearUser();
+                    }}
+                    onFocus={() => {
+                      if (searchQuery.length >= 1 && users.length > 0) setShowDropdown(true);
+                    }}
+                    placeholder="Type to search users..."
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
+                  />
+                  {selectedUserId && (
+                    <button
+                      type="button"
+                      onClick={handleClearUser}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                {showDropdown && (
+                  <ul className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+                    {fetcher.state === "loading" ? (
+                      <li className="px-4 py-3 text-sm text-gray-500">Searching...</li>
+                    ) : users.length > 0 ? (
+                      users.map((u: any) => (
+                        <li
+                          key={u.id}
+                          onClick={() => handleSelectUser(u)}
+                          className="cursor-pointer px-4 py-3 text-sm text-gray-900 hover:bg-indigo-50 transition"
+                        >
+                          <span className="font-medium">{u.firstName} {u.lastName}</span>
+                          {u.email && <span className="ml-2 text-gray-500">({u.email})</span>}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="px-4 py-3 text-sm text-gray-500">No users found</li>
+                    )}
+                  </ul>
+                )}
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   First Name
@@ -178,23 +239,14 @@ export default function ManageUserForm({ accounts , base, user, actionData}: any
             </div>
 
             <div className="flex flex-wrap items-center gap-6 mt-2">
-              {selectedUserId &&
-                (() => {
-                  const selectedUser = accounts.find(
-                    (u: any) => u.id === selectedUserId
-                  );
-                  if (selectedUser && !selectedUser.isInvite) {
-                    return (
-                      <ToggleSwitch
-                        label="Administrator"
-                        name="isAdmin"
-                        checked={isAdmin}
-                        onChange={setIsAdmin}
-                      />
-                    );
-                  }
-                  return null;
-                })()}
+              {selectedUser && !selectedUser.isInvite && (
+                <ToggleSwitch
+                  label="Administrator"
+                  name="isAdmin"
+                  checked={isAdmin}
+                  onChange={setIsAdmin}
+                />
+              )}
               <ToggleSwitch
                 label="Driver"
                 name="isDriver"

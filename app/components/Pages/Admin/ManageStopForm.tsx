@@ -57,7 +57,7 @@ export default function ManageStopForm({ base, station, actionData }: any) {
   const canDelete = deleteConfirmed && deleteConfirmName === deletingStop?.name;
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+    <section className="bg-white rounded-2xl border border-gray-100 p-4 md:p-8 shadow-sm">
       <div className="mb-8">
         <div className="inline-flex w-full items-center justify-between">
           <h3 className="text-2xl font-bold text-gray-900 mb-2">

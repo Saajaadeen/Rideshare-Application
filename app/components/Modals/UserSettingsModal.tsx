@@ -15,13 +15,23 @@ import UserInviteForm from "../Pages/User/UserInviteForm";
 import { KeyIcon } from "../Icons/KeyIcon";
 import { MetricsIcon } from "../Icons/MetricsIcon";
 import UserMetricsForm from "../Pages/User/UserMetricsForm";
+import { SettingsIcon } from "../Icons/SettingsIcon";
 
-export const createTabs = ({user, userBase, vehicles}: any) => [
+export const createTabs = ({user, vehicles}: any) => {
+  console.log(user)
+  return [
   {
     label: "Profile",
     name: "profile",
     to: 'settings?tab=profile',
     icon: <UserIcon className="size-6" />,
+  },
+  {
+    label: "Admin",
+    name: "admin",
+    to: 'admin?mode=passenger',
+    icon: <SettingsIcon className="size-6"/>,
+    hide: !user?.isAdmin,
   },
   {
     label: "Permissions",
@@ -34,7 +44,7 @@ export const createTabs = ({user, userBase, vehicles}: any) => [
     name: "base", 
     to: 'settings?tab=base',
     icon: <BaseIcon className="size-6" />,
-    badge: !userBase?.base
+    badge: !user?.base
   },
   {
     label: "Vehicles",
@@ -70,7 +80,9 @@ export const createTabs = ({user, userBase, vehicles}: any) => [
   //   to: 'settings?tab=deactivation',
   //   icon: <WarningIcon className="size-6" />,
   // },
-].filter((tab) => !tab.hide);
+].filter((tab) => !tab.hide)
+
+};
 
 
 
