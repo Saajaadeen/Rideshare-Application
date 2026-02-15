@@ -18,7 +18,6 @@ import UserMetricsForm from "../Pages/User/UserMetricsForm";
 import { SettingsIcon } from "../Icons/SettingsIcon";
 
 export const createTabs = ({user, vehicles}: any) => {
-  console.log(user)
   return [
   {
     label: "Profile",
@@ -31,7 +30,7 @@ export const createTabs = ({user, vehicles}: any) => {
     name: "admin",
     to: 'admin?mode=passenger',
     icon: <SettingsIcon className="size-6"/>,
-    hide: !user?.isAdmin,
+    hide: !user?.isAdmin || window.location.pathname.includes("settings"),
   },
   {
     label: "Permissions",
