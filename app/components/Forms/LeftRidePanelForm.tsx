@@ -22,7 +22,6 @@ export default function LeftSideRidePanelForm({
 }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
   const [isDriverMode, setIsDriverMode] = useState(
     mode === "driver" ? true : false
@@ -64,29 +63,33 @@ export default function LeftSideRidePanelForm({
       )}
 
       {showMain && (
-        <div className={`fixed md:absolute bottom-0 md:top-8 left-0 md:left-8 right-0 md:right-auto w-full md:w-96 ${isSheetExpanded ? 'h-[92vh]' : 'h-[60vh]'} md:h-fit md:rounded-2xl z-50 bg-white shadow-2xl md:border border-gray-100 overflow-y-auto transition-[height] duration-500 ease-out`}>
-          {/* Mobile drag handle */}
-          {!isSheetExpanded && <div
-            className={`md:hidden flex justify-center py-2 rounded-t-4xl bg-gradient-to-br from-blue-600 to-indigo-700 cursor-pointer active:bg-indigo-800 transition-transform duration-500 ease-out translate-y-0`}
-            onClick={() => setIsSheetExpanded(true)}
-          >
-            <div className="w-12 h-1.5 bg-white/30 rounded-full" />
-          </div>}
-
+        <div className={`fixed md:absolute top-0 md:top-8 left-0 md:left-8 right-0 md:right-auto w-full md:w-96 h-full md:h-fit md:rounded-2xl z-50 bg-white shadow-2xl md:border border-gray-100 overflow-y-auto`}>
           <div
-            className="sticky top-0 z-10 bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white flex items-center justify-between gap-3 md:cursor-default cursor-pointer active:bg-indigo-800"
-            onClick={() => setIsSheetExpanded(false)}
+            className="sticky top-0 z-10 bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white flex items-center justify-between gap-3"
           >
             <div className="flex items-center gap-3">
+              <button
+                  type="button"
+                  className="block md:hidden"
+                 onClick={(e) => {
+                    e.stopPropagation();
+                    setShowMobileMenu(!showMobileMenu);
+                  }}>
+                  <svg className="w-6 h-6 " fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+              </button>
               <div className="relative">
+                
                 <div
-                  className="p-3.5 md:p-2.5 bg-white/20 backdrop-blur-sm rounded-xl md:cursor-default cursor-pointer"
+                  className="p-3.5 hidden md:block md:p-2.5 bg-white/20 backdrop-blur-sm rounded-xl md:cursor-default cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowMobileMenu(!showMobileMenu);
                   }}
                 >
-                  <BaseBoundIcon className="w-6 h-6" />
+                  
+                    <BaseBoundIcon className="w-6 h-6 " />
                 </div>
 
                 {showMobileMenu && (
@@ -96,7 +99,7 @@ export default function LeftSideRidePanelForm({
                       onClick={() => setShowMobileMenu(false)}
                     />
 
-                    <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 md:hidden">
+                    <div className="fixed left-4 top-20 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 md:hidden">
                       <div className="p-4 bg-gray-50 border-b border-gray-200">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {user?.email}
@@ -173,7 +176,7 @@ export default function LeftSideRidePanelForm({
             )}
           </div>
 
-          <div className={`p-6 bg-white ${isSheetExpanded ? 'flex flex-col min-h-[calc(100vh-5rem)]' : ''}`}>
+          <div className="p-6 bg-white">
             {!isDriverMode ? (
               <>
                 <LeftPanelPassengerForm
@@ -193,8 +196,7 @@ export default function LeftSideRidePanelForm({
               )
             )}
 
-            {isSheetExpanded && <div className="flex-grow md:hidden" />}
-            <div className={`md:hidden ${isSheetExpanded ? 'pt-6 pb-20' : 'mt-6'}`}>
+            <div className="md:hidden mt-6">
               {!isDriverMode ? (
                 <LeftPanelPassengerRequestsForm requestInfo={requestInfo} user={user} />
               ) : (

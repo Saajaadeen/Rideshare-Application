@@ -62,7 +62,7 @@ export default function LeftPanelRequestsForm({ requestInfo, user }: any) {
 
   return (
     <>
-      <div className="md:fixed md:bottom-10 md:left-8 md:z-40 md:w-96 w-full bg-white rounded-2xl overflow-hidden">
+      <div className="md:fixed md:bottom-10 md:left-8 md:z-40 md:w-96 w-full bg-white rounded-2xl overflow-hidden shadow-md">
         <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-4 text-white flex justify-between items-center">
           <h3 className="text-lg font-semibold">Request</h3>
           {request && (

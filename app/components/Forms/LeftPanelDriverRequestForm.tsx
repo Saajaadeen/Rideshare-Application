@@ -20,7 +20,7 @@ export default function LeftPanelDriverRequestForm({ accepted, userId }: any) {
   };
 
   return (
-    <div className="md:fixed md:bottom-10 md:left-8 md:z-40 md:w-96 w-full bg-white rounded-2xl md:shadow-xl overflow-hidden">
+    <div className="md:fixed md:bottom-10 md:left-8 md:z-40 md:w-96 w-full bg-white rounded-2xl shadow-md overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-br from-indigo-600 to-purple-700 px-4 py-3 text-white">
         <div className="flex items-center justify-between">
