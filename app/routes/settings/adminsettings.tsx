@@ -51,6 +51,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const longitude     = formData.get("longitude") as string;
   const latitude      = formData.get("latitude") as string;
   const description   = formData.get("description") as string;
+  const buildingNumber = formData.get("buildingNumber") as string;
 
   const userId        = formData.get("userId") as string;
   const inviteCode    = formData.get("inviteCode") as string;
@@ -78,11 +79,11 @@ export async function action({ request }: ActionFunctionArgs) {
       return { success: true, message: "Base deleted!", intent} 
     }
     if (intent === "createStop") {
-      return await createStop(baseId, name, longitude, latitude, description)
+      return await createStop(baseId, name, longitude, latitude, description, buildingNumber)
       // return { success: true, message: "New stop added!", intent} 
     }
     if (intent === "updateStop") {
-      await updateStop(id, baseId, name, longitude, latitude, description)
+      await updateStop(id, baseId, name, longitude, latitude, description, buildingNumber)
       return { success: true, message: "Stop updated!", intent} 
     }
     if (intent === "deleteStop") {

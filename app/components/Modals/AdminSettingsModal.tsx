@@ -112,7 +112,7 @@ export default function AdminSettingsModal({ user, base, station, actionData }: 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm md:p-4">
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 w-full h-full md:rounded-3xl md:shadow-2xl md:w-[50vw] md:h-[65vh] flex flex-col md:flex-row overflow-hidden">
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 w-full h-full md:rounded-3xl md:shadow-2xl md:w-[1100px] md:h-[700px] flex flex-col md:flex-row overflow-hidden">
         {/* Mobile header + tabs */}
         <div className="md:hidden flex flex-col bg-white border-b border-gray-200">
           <div className="flex items-center justify-between px-4 py-3">

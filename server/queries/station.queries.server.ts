@@ -5,7 +5,8 @@ export async function createStop(
   name: string,
   longitude: string,
   latitude: string,
-  description?: string
+  description: string,
+  buildingNumber: string,
 ) {
   const existing = await prisma.station.findFirst({
     where: {
@@ -30,6 +31,7 @@ export async function createStop(
       longitude,
       latitude,
       description,
+      buildingNumber: +buildingNumber,
     },
   });
 
@@ -52,6 +54,7 @@ export async function getStop(baseId: string) {
       longitude: true,
       latitude: true,
       description: true,
+      buildingNumber: true,
       base: {
         select: {
           name: true,
@@ -69,7 +72,8 @@ export async function updateStop(
   name: string,
   longitude: string,
   latitude: string,
-  description: string
+  description: string,
+  buildingNumber: string,
 ) {
   const stop = await prisma.station.update({
     where: { id },
@@ -79,6 +83,7 @@ export async function updateStop(
       longitude,
       latitude,
       description,
+      buildingNumber: +buildingNumber
     },
   });
 

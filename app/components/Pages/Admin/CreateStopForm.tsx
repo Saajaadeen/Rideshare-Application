@@ -8,6 +8,7 @@ export default function CreateStopForm({ base }: any) {
   const [description, setDescription] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
+  const [buildingNumber, setBuildingNumber] = useState(null)
 
   const hasBases = Array.isArray(base) && base.length > 0;
 
@@ -104,6 +105,19 @@ export default function CreateStopForm({ base }: any) {
               placeholder="e.g., Front gate entrance"
               className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Building Number
+            </label>
+            <input 
+              type="number"
+              name="buildingNumber"
+              value={buildingNumber}
+              onChange={(e) => setBuildingNumber(e.target.value)}
+              placeholder="e.g., 241"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition outline-none"
             />
           </div>
 

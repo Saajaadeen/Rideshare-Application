@@ -1,16 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import { MapPinIcon } from "../Icons/MapPinIcon";
 import { NavigationIcon } from "../Icons/NavigationIcon";
 import LeftPanelRequestsForm from "./LeftPanelRequestsForm";
-import { MagnifyIcon } from "../Icons/MagnifyIcon";
 import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import SearchableCombobox from "../Input/SearchableCombobox";
 
 export default function LeftSideRidePanelForm({ user, station, requestInfo, activeRequests }: any) {
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
   const haveActiveRequests = activeRequests.filter(r => r.user.id === user.id && (r.status === "Pending" || r.status === "Accepted"))
+
+  // Clear dropoff if it matches the new pickup
+  useEffect(() => {
+    if (fromLocation && toLocation && fromLocation === toLocation) {
+      setToLocation("");
+    }
+  }, [fromLocation]);
 
   const isButtonEnabled =
     !user?.isReset &&
@@ -30,48 +37,11 @@ export default function LeftSideRidePanelForm({ user, station, requestInfo, acti
     return "";
   };
 
-  const LocationSelect = ({
-    label,
-    value,
-    onChange,
-    excludeId,
-    icon: Icon,
-    name,
-  }: any) => (
-    <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
-      <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <Icon className="w-5 h-5" />
-        </div>
-        <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" onClick={() => setShowMain(false)}>
-          <MagnifyIcon className="w-5 h-5" />
-        </div>
-        <select
-          name={name}
-          value={value}
-          onChange={onChange}
-          className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none cursor-pointer hover:bg-gray-100"
-        >
-          <option value="">Select {label.toLowerCase()}...</option>
-          {station
-            .filter((s: any) => s.id !== excludeId)
-            .map((s: any) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-        </select>
-      </div>
-    </div>
-  );
   const [showMain, setShowMain] = useState(true)
 
   return (
     <>
-    {!showMain && 
+    {!showMain &&
       <div className="absolute top-7 left-6 rounded-xl">
         <div className="bg-linear-to-br from-blue-600 to-indigo-700 text-white flex rounded-xl items-center gap-3">
           <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl" onClick={() => setShowMain(true)}>
@@ -98,21 +68,22 @@ export default function LeftSideRidePanelForm({ user, station, requestInfo, acti
             <input type="hidden" name="userId" value={user?.id} />
 
             <div className="space-y-4 mb-6 text-gray-700">
-              <LocationSelect
+              <SearchableCombobox
                 label="Pickup Location"
-                value={fromLocation}
-                onChange={(e: any) => setFromLocation(e.target.value)}
-                excludeId=""
-                icon={MapPinIcon}
                 name="pickupId"
+                value={fromLocation}
+                onChange={setFromLocation}
+                options={station}
+                icon={MapPinIcon}
               />
-              <LocationSelect
+              <SearchableCombobox
                 label="Dropoff Location"
+                name="dropoffId"
                 value={toLocation}
-                onChange={(e: any) => setToLocation(e.target.value)}
+                onChange={setToLocation}
+                options={station}
                 excludeId={fromLocation}
                 icon={NavigationIcon}
-                name="dropoffId"
               />
             </div>
 

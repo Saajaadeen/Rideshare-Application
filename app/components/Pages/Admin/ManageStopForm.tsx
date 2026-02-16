@@ -132,6 +132,18 @@ export default function ManageStopForm({ base, station, actionData }: any) {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Building Number
+                        </label>
+                        <input
+                          type="number"
+                          name="buildingNumber"
+                          defaultValue={s.buildingNumber}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
                           Latitude
                         </label>
                         <input
@@ -193,10 +205,10 @@ export default function ManageStopForm({ base, station, actionData }: any) {
 
                       <div>
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                          Base Name
+                          Building #
                         </p>
                         <p className="text-base text-black">
-                          {s.base?.name || "-"}
+                          {s.buildingNumber || "-"}
                         </p>
                       </div>
 
