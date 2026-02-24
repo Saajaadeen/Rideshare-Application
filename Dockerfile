@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Database URL for Prisma generation
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV DATABASE_URL=postgresql://neondb_owner:npg_QKk0LgpA4yht@ep-blue-sunset-airzug7o-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 
 # Generate Prisma client and build
 RUN npx prisma generate
