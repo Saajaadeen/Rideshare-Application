@@ -18,6 +18,8 @@ ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholde
 
 # Generate Prisma client and build
 RUN npx prisma generate
+RUN npx prisma migrate deploy
+RUN npx prisma db seed
 RUN npm run build
 
 # Set permissions
