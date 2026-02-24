@@ -1,5 +1,6 @@
 import { prisma } from "../db.server";
 import { eventBus } from "./eventBus.server";
+import { sendPushToDriversAtBase } from "../push.server";
 
 export async function broadcastNewRequest(
   requestId: string,
@@ -28,6 +29,12 @@ export async function broadcastNewRequest(
     eventBus.notifyDriversAtBase(baseId, {
       type: "new_request",
       payload: { request },
+    });
+
+    await sendPushToDriversAtBase(baseId, {
+      title: "New Ride Request",
+      body: `${request.user?.firstName ?? "Passenger"} needs a ride from ${request.pickup?.name ?? "pickup"} to ${request.dropoff?.name ?? "dropoff"}`,
+      url: "/dashboard",
     });
   }
 }

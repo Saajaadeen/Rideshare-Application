@@ -1,6 +1,7 @@
 import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
+  useRouteLoaderData,
 } from "react-router";
 import { toast } from "react-toastify";
 import {
@@ -36,6 +37,7 @@ import {
 } from "server/events/requestEvents.server";
 import { prisma } from "server/db.server";
 import { broadcastSSE, type SSEData } from "~/hooks/broadcast.sse";
+import { usePushNotifications } from "~/hooks/usePushNotifications";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -163,6 +165,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
   const { user, userId, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests } = loaderData;
+  const rootData = useRouteLoaderData("root") as { vapidPublicKey?: string } | undefined;
+
+  usePushNotifications({
+    isDriver: user?.isDriver,
+    vapidPublicKey: rootData?.vapidPublicKey,
+  });
 
   broadcastSSE({
     onNewRequest: (data: SSEData) => {

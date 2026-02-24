@@ -31,6 +31,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     {
       nonce,
       csrf: token,
+      vapidPublicKey: process.env.VITE_VAPID_PUBLIC_KEY ?? "",
     },
     { headers }
   );
@@ -49,7 +50,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://tile.openstreetmap.org",
       // Allow WebSocket from any origin for network IP access
-      "connect-src 'self' ws: wss: https://tile.openstreetmap.org",
+      "connect-src 'self' ws: wss: https://tile.openstreetmap.org https://*.push.services.mozilla.com https://fcm.googleapis.com",
       "worker-src 'self' blob:",
       "frame-src https://challenges.cloudflare.com",
       "frame-ancestors 'none'",
@@ -79,6 +80,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 export const links: Route.LinksFunction = () => [
+  { rel: "manifest", href: "/manifest.json" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",
