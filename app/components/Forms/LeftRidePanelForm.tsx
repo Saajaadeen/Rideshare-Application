@@ -30,7 +30,7 @@ export default function LeftSideRidePanelForm({
   const navigate = useNavigate();
   const showMain = !searchParams.get("showmap");
   const rootData = useRouteLoaderData("root") as { vapidPublicKey?: string } | undefined;
-  const { subscribe, unsubscribe } = usePushNotifications(rootData?.vapidPublicKey);
+  const { subscribe, unsubscribe, needsInstall } = usePushNotifications(rootData?.vapidPublicKey);
   const tabs = createTabs({user, vehicles});
 
   const toggleMode = async () => {
@@ -178,6 +178,17 @@ export default function LeftSideRidePanelForm({
               </div>
             )}
           </div>
+
+          {user?.isDriver && needsInstall && (
+            <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex gap-3 items-start">
+              <span className="text-amber-500 text-lg leading-none mt-0.5">&#x26A0;&#xFE0F;</span>
+              <p className="text-sm text-amber-800">
+                <span className="font-semibold">iPhone users:</span> To receive ride notifications, tap the{" "}
+                <span className="font-semibold">Share</span> button in Safari, then choose{" "}
+                <span className="font-semibold">Add to Home Screen</span>. Open the app from your Home Screen to enable notifications.
+              </p>
+            </div>
+          )}
 
           <div className="p-6 bg-white">
             {!isDriverMode ? (

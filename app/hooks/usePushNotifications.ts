@@ -1,7 +1,17 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 
 export function usePushNotifications(vapidPublicKey: string | undefined) {
   const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
+
+  // iOS only supports push in standalone (Home Screen) mode
+  const needsInstall = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true;
+    return isIOS && !isStandalone;
+  }, []);
 
   // Register the service worker once on mount — always needed regardless of mode
   useEffect(() => {
