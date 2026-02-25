@@ -32,19 +32,20 @@ export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  
+  const rememberMe = formData.get("remember") === "on";
+
   try{
 
     if (!email || !password) {
       return { error: "Email and password are required" };
     }
-    
+
     const user = await authenticateUser(email, password);
     if (!user) {
       return { error: "Invalid credentials" };
     }
-    
-    return await createUserSession(user.id, "/dashboard");
+
+    return await createUserSession(user.id, "/dashboard", rememberMe);
   }catch(error){
     const message = error instanceof Error ? error.message : String(error);
     return { success: false, message }
