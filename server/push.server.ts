@@ -66,3 +66,21 @@ export async function sendPushToDriversAtBase(
     subscriptions.map((sub) => sendPushNotification(sub, payload))
   );
 }
+
+export async function getActiveDrivers(userId: string){
+  const available = await prisma.pushSubscription.findFirst({
+    where: {
+      userId
+    },
+    select:{
+      id: true,
+    }
+  });
+
+  const driverCount = await prisma.pushSubscription.count({});
+  
+  return {
+    isAvailable: !!available,
+    driverCount
+  }
+}

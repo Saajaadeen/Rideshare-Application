@@ -9,6 +9,7 @@ export type SSEEventType =
   | "request_cancelled_passenger"
   | "request_pickup"
   | "request_complete"
+  | "driver_count_updated"
   | "connected"
   | "heartbeat";
 
@@ -33,6 +34,7 @@ interface SSEOptions {
   onRequestCancelled?: (data: SSEData) => void;
   onRequestPickup?: (data: SSEData) => void;
   onRequestComplete?: (data: SSEData) => void;
+  onDriverCountUpdated?: (count: number) => void;
   onConnected?: (data: SSEData) => void;
   autoRevalidate?: boolean;
 }
@@ -168,6 +170,12 @@ export function broadcastSSE(options: SSEOptions = {}) {
         if (autoRevalidateRef.current) {
           revalidatorRef.current.revalidate();
         }
+      });
+
+      eventSource.addEventListener("driver_count_updated", (e) => {
+        const data = JSON.parse(e.data);
+        setState((prev) => ({ ...prev, lastEventTime: Date.now() }));
+        optionsRef.current.onDriverCountUpdated?.(data.count);
       });
 
       eventSource.addEventListener("heartbeat", () => {

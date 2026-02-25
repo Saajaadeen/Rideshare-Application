@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs } from "react-router";
 import { requireUserId } from "server/session.server";
 import { prisma } from "server/db.server";
+import { eventBus } from "server/events/eventBus.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== "POST") {
@@ -44,6 +45,9 @@ export async function action({ request }: ActionFunctionArgs) {
       auth: keys.auth,
     },
   });
+
+  const count = await prisma.pushSubscription.count();
+  eventBus.broadcastAll({ type: "driver_count_updated", payload: { count } });
 
   return Response.json({ success: true });
 }

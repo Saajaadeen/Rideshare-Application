@@ -1,65 +1,64 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
-interface UsePushNotificationsOptions {
-  isDriver: boolean | undefined;
-  vapidPublicKey: string | undefined;
-}
+export function usePushNotifications(vapidPublicKey: string | undefined) {
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
 
-export function usePushNotifications({ isDriver, vapidPublicKey }: UsePushNotificationsOptions) {
-  const endpointRef = useRef<string | null>(null);
-
+  // Register the service worker once on mount — always needed regardless of mode
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!isDriver) return;
-    if (!vapidPublicKey) return;
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+    if (!("serviceWorker" in navigator)) return;
 
-    let registration: ServiceWorkerRegistration;
+    navigator.serviceWorker.register("/sw.js").then((reg) => {
+      registrationRef.current = reg;
+    }).catch(() => {});
+  }, []);
 
-    async function setup() {
-      registration = await navigator.serviceWorker.register("/sw.js");
-      await navigator.serviceWorker.ready;
+  const subscribe = useCallback(async () => {
+    if (!vapidPublicKey || !("PushManager" in window)) return;
 
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") return;
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
 
-      const existing = await registration.pushManager.getSubscription();
-      const subscription =
-        existing ??
-        (await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: vapidPublicKey,
-        }));
+    await navigator.serviceWorker.ready;
+    const reg = registrationRef.current ?? await navigator.serviceWorker.ready;
+    registrationRef.current = reg;
 
-      const json = subscription.toJSON();
-      endpointRef.current = json.endpoint ?? null;
+    const existing = await reg.pushManager.getSubscription();
+    const subscription = existing ?? await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: vapidPublicKey,
+    });
 
-      await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          endpoint: json.endpoint,
-          keys: {
-            p256dh: json.keys?.p256dh,
-            auth: json.keys?.auth,
-          },
-        }),
-      });
-    }
+    const json = subscription.toJSON();
+    await fetch("/api/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        endpoint: json.endpoint,
+        keys: { p256dh: json.keys?.p256dh, auth: json.keys?.auth },
+      }),
+    }).catch(() => {});
+  }, [vapidPublicKey]);
 
-    setup().catch(() => {});
+  const unsubscribe = useCallback(async () => {
+    const reg = registrationRef.current;
+    if (!reg) return;
 
-    return () => {
-      if (endpointRef.current) {
-        fetch("/api/push/unsubscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ endpoint: endpointRef.current }),
-          keepalive: true,
-        }).catch(() => {});
-      }
-    };
-  }, [isDriver, vapidPublicKey]);
+    const subscription = await reg.pushManager.getSubscription();
+    if (!subscription) return;
+
+    const endpoint = subscription.endpoint;
+    await subscription.unsubscribe();
+
+    await fetch("/api/push/unsubscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ endpoint }),
+      keepalive: true,
+    }).catch(() => {});
+  }, []);
+
+  return { subscribe, unsubscribe };
 }
