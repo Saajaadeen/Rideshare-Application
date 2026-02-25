@@ -70,5 +70,5 @@ export function usePushNotifications(vapidPublicKey: string | undefined) {
     }).catch(() => {});
   }, []);
 
-  return { subscribe, unsubscribe };
+  return { subscribe, unsubscribe, needsInstall };
 }
