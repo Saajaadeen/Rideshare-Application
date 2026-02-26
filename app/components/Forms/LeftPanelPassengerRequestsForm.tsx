@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { UserIcon } from "../Icons/UserIcon";
 import { ClockIcon } from "../Icons/ClockIcon";
 import { Form } from "react-router";
@@ -197,7 +198,7 @@ export default function LeftPanelRequestsForm({ requestInfo, user }: any) {
         </div>
       </div>
 
-      {showCancelModal && request?.driver && (
+      {showCancelModal && request?.driver && typeof document !== "undefined" && createPortal(
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-5">
             <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
@@ -294,7 +295,8 @@ export default function LeftPanelRequestsForm({ requestInfo, user }: any) {
               </Form>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
