@@ -1,3 +1,6 @@
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
+
 // Required for PWA installability - Chrome needs a fetch handler present
 self.addEventListener('fetch', (event) => {
   event.respondWith(fetch(event.request));
@@ -17,7 +20,6 @@ self.addEventListener('push', (event) => {
     icon: '/favicon.ico',
     badge: '/favicon.ico',
     data: { url: data.url || '/dashboard' },
-    requireInteraction: true,
     tag: 'ride-request',
   };
 
