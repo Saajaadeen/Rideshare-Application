@@ -34,9 +34,13 @@ export async function sendPushNotification(
       JSON.stringify(payload)
     );
   } catch (error: unknown) {
-    const statusCode = (error as { statusCode?: number }).statusCode;
-    if (statusCode === 410 || statusCode === 404) {
-      // Subscription is expired or invalid — remove it
+    const err = error as { statusCode?: number; body?: string; headers?: unknown };
+    console.error('[push] send failed:', {
+      statusCode: err.statusCode,
+      body: err.body,
+      endpoint: subscription.endpoint.slice(0, 60) + '...',
+    });
+    if (err.statusCode === 410 || err.statusCode === 404) {
       await prisma.pushSubscription.deleteMany({
         where: { endpoint: subscription.endpoint },
       });
