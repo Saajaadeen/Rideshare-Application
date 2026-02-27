@@ -3,6 +3,16 @@ import { randomInt } from 'crypto';
 import { prisma } from '../server/db.server';
 import bcrypt from 'bcryptjs';
 
+type Users = {
+  firstName: string,
+  lastName: string,
+  email: string,
+  phoneNumber: string,
+  password: string,
+  emailVerified: boolean,
+  userId: string,
+}
+
 // Base IDs
 const BASES = {
   TRAVIS: '8b3084e4-abd4-4b68-90c8-98c603b4a3ed',
@@ -33,7 +43,7 @@ async function createStations(stations: any[]) {
   console.log('✅ Stations created successfully');
 }
 
-async function createUsers(users: any[]) {
+async function createUsers(users: Users[]) {
   console.log(`👤 Creating ${users.length} users...`);
   for (const user of users) {
     await prisma.user.upsert({
@@ -44,6 +54,7 @@ async function createUsers(users: any[]) {
         phoneNumber: user.phoneNumber,
         password: user.password,
         emailVerified: true,
+        userId: crypto.randomUUID(),
       },
       create: {
         firstName: user.firstName,
@@ -52,6 +63,7 @@ async function createUsers(users: any[]) {
         phoneNumber: user.phoneNumber,
         password: user.password,
         emailVerified: true,
+        userId: crypto.randomUUID(),
       },
     });
   }

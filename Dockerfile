@@ -19,7 +19,7 @@ ENV DATABASE_URL=postgresql://neondb_owner:npg_QKk0LgpA4yht@ep-blue-sunset-airzu
 # Generate Prisma client and build
 RUN npx prisma generate
 RUN npx prisma migrate deploy
-RUN npx prisma db seed
+# RUN npx prisma db seed
 RUN npm run build
 
 # Set permissions
