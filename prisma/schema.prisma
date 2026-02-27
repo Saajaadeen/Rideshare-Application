@@ -38,7 +38,6 @@ model User {
   emailVerificationAttempts       Int                @default(0)
   emailVerificationCodeSendLimit  DateTime?
   pushSubscriptions               PushSubscription[]
-  userId                          String    @unique
   // isDeleted                       Boolean   @default(false)
 }
 
