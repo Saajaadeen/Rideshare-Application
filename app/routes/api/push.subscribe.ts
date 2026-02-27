@@ -31,20 +31,12 @@ export async function action({ request }: ActionFunctionArgs) {
     return Response.json({ error: "Missing subscription fields" }, { status: 400 });
   }
 
-  await prisma.pushSubscription.upsert({
-    where: { endpoint },
-    create: {
-      userId,
-      endpoint,
-      p256dh: keys.p256dh,
-      auth: keys.auth,
-    },
-    update: {
-      userId,
-      p256dh: keys.p256dh,
-      auth: keys.auth,
-    },
-  });
+  await prisma.$transaction([
+    prisma.pushSubscription.deleteMany({ where: { userId } }),
+    prisma.pushSubscription.create({
+      data: { userId, endpoint, p256dh: keys.p256dh, auth: keys.auth },
+    }),
+  ]);
 
   const count = await prisma.pushSubscription.count();
   eventBus.broadcastAll({ type: "driver_count_updated", payload: { count } });
