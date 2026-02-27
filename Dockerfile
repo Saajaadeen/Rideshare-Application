@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Database URL for Prisma generation
-ENV DATABASE_URL=postgresql://postgres:postgres@db:5432/rideshare?schema=public&sslmode=disable
+ENV DATABASE_URL=postgresql://postgres:supersecret@localhost:5432/rideshare
 
 # Generate Prisma client and build
 RUN npx prisma generate
