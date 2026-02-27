@@ -25,12 +25,11 @@ RUN npm run build
 # Set permissions
 
 
-RUN chown -R nodejs:nodejs /app
-USER nodejs
-
-EXPOSE 3000
-# CMD ["npm", "run", "start:prod"]
+# Set permissions
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+EXPOSE 3000
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT ["./entrypoint.sh"]
