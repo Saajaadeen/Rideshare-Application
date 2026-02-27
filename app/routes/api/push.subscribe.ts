@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   await prisma.pushSubscription.upsert({
-    where: { endpoint },
+    where: { userId },
     create: {
       userId,
       endpoint,
@@ -40,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
       auth: keys.auth,
     },
     update: {
-      userId,
+      endpoint,
       p256dh: keys.p256dh,
       auth: keys.auth,
     },
