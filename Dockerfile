@@ -14,17 +14,23 @@ RUN npm ci
 COPY . .
 
 # Database URL for Prisma generation
-ENV DATABASE_URL=postgresql://postgres:supersecret@localhost:5432/rideshare
+ENV DATABASE_URL=postgresql://postgres:supersecret@db:5432/rideshare
 
 # Generate Prisma client and build
 RUN npx prisma generate
-RUN npx prisma migrate deploy
+#RUN npx prisma migrate deploy
 # RUN npx prisma db seed
 RUN npm run build
 
 # Set permissions
+
+
 RUN chown -R nodejs:nodejs /app
 USER nodejs
 
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+# CMD ["npm", "run", "start:prod"]
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT [ "./entrypoint.sh" ]
