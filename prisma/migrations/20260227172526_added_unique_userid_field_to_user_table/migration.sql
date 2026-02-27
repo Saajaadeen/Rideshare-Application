@@ -6,7 +6,12 @@
 
 */
 -- AlterTable
-ALTER TABLE "User" ADD COLUMN     "userId" TEXT NOT NULL;
+-- Add as nullable first
+ALTER TABLE "User" ADD COLUMN "userId" TEXT;
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_userId_key" ON "User"("userId");
+-- Backfill existing rows with a unique value
+UPDATE "User" SET "userId" = gen_random_uuid()::TEXT WHERE "userId" IS NULL;
+
+-- Now make it NOT NULL and unique
+ALTER TABLE "User" ALTER COLUMN "userId" SET NOT NULL;
+ALTER TABLE "User" ADD CONSTRAINT "User_userId_key" UNIQUE ("userId");
