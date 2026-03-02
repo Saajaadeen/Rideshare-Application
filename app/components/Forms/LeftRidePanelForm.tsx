@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Form, Link, useNavigate, useSearchParams } from "react-router";
+import { useState } from "react";
+import { Form, Link, useNavigate, useRouteLoaderData, useSearchParams } from "react-router";
 import { BaseBoundIcon } from "../Icons/BaseBoundIcon";
 import LeftPanelPassengerRequestsForm from "./LeftPanelPassengerRequestsForm";
 import LeftPanelPassengerForm from "./LeftPanelPassengerForm";
@@ -8,6 +8,7 @@ import LeftPanelDriverRequestForm from "./LeftPanelDriverRequestForm";
 import { LogoutIcon } from "../Icons/LogoutIcon";
 import { createTabs } from "../Modals/UserSettingsModal";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { usePushNotifications } from "~/hooks/usePushNotifications";
 
 export default function LeftSideRidePanelForm({
   user,
@@ -19,27 +20,29 @@ export default function LeftSideRidePanelForm({
   actionData,
   activePassengerRequests,
   vehicles,
+  isAvailable,
+  driverCount,
 }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mode = searchParams.get("mode") || "passenger";
-  const [isDriverMode, setIsDriverMode] = useState(
-    mode === "driver" ? true : false
-  );
+  const [isDriverMode, setIsDriverMode] = useState(isAvailable);
   const navigate = useNavigate();
   const showMain = !searchParams.get("showmap");
-  const toggleMode = () => {
-    setIsDriverMode(!isDriverMode);
-    setSearchParams({ mode: isDriverMode ? "passenger" : "driver" });
-  };
-  const tabs = createTabs({user, vehicles})
-  useEffect(() => {
-    if (!searchParams.get("mode")) {
-      setSearchParams({ mode: "passenger" });
-    }
-  }, [searchParams, setSearchParams]);
+  const rootData = useRouteLoaderData("root") as { vapidPublicKey?: string } | undefined;
+  const { subscribe, unsubscribe, needsInstall } = usePushNotifications(rootData?.vapidPublicKey);
+  const tabs = createTabs({user, vehicles});
 
-  console.log(user)
+  const toggleMode = async () => {
+    const nextMode = !isDriverMode;
+    setIsDriverMode(nextMode);
+    setSearchParams({ mode: nextMode ? "driver" : "passenger" });
+    if (nextMode) {
+      await subscribe();
+    } else {
+      await unsubscribe();
+    }
+  };
 
   return (
     <>
@@ -176,6 +179,17 @@ export default function LeftSideRidePanelForm({
             )}
           </div>
 
+          {user?.isDriver && needsInstall && (
+            <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex gap-3 items-start">
+              <span className="text-amber-500 text-lg leading-none mt-0.5">&#x26A0;&#xFE0F;</span>
+              <p className="text-sm text-amber-800">
+                <span className="font-semibold">iPhone users:</span> To receive ride notifications, tap the{" "}
+                <span className="font-semibold">Share</span> button in Safari, then choose{" "}
+                <span className="font-semibold">Add to Home Screen</span>. Open the app from your Home Screen to enable notifications.
+              </p>
+            </div>
+          )}
+
           <div className="p-6 bg-white">
             {!isDriverMode ? (
               <>
@@ -185,6 +199,7 @@ export default function LeftSideRidePanelForm({
                   params={searchParams}
                   activePassengerRequests={activePassengerRequests}
                   actionData={actionData}
+                  driverCount={driverCount}
                 />
               </>
             ) : (

@@ -25,12 +25,14 @@ export async function getSession(request: Request) {
 }
 
 // Store userId in session and redirect
-export async function createUserSession(userId: string, redirectTo: string) {
+export async function createUserSession(userId: string, redirectTo: string, rememberMe = false) {
   const session = await storage.getSession();
   session.set("userId", userId);
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await storage.commitSession(session),
+      "Set-Cookie": await storage.commitSession(session, {
+        maxAge: rememberMe ? 60 * 60 * 24 * 30 : undefined, // 30 days or session cookie
+      }),
     },
   });
 }

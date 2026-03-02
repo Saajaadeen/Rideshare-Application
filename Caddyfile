@@ -1,0 +1,10 @@
+{
+  admin off
+  default_sni 10.0.30.204
+}
+
+https://10.0.30.204 {
+  tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
+  reverse_proxy host.docker.internal:3000
+}
+

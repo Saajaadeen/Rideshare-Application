@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BaseBoundIcon } from '../Icons/BaseBoundIcon';
 import { Link } from 'react-router';
+import InstallBanner from '../InstallBanner';
 
 const features = [
   { icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z", title: "Always Free", desc: "Zero fees. Zero subscriptions. Zero hidden costs. Just service members helping each other.", color: "blue-600", span: "md:col-span-2 lg:row-span-2", large: true },
@@ -332,6 +333,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <InstallBanner />
 
       <footer className="bg-gray-900 text-gray-400 py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
@@ -36,6 +37,7 @@ import {
 } from "server/events/requestEvents.server";
 import { prisma } from "server/db.server";
 import { broadcastSSE, type SSEData } from "~/hooks/broadcast.sse";
+import { getActiveDrivers } from "server/push.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -49,7 +51,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const activePassengerRequests = await getActivePassengerRequest(userId);
   const bases = await getBase();
 
-  return { user, userId, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases, activePassengerRequests };
+  const {isAvailable, driverCount} = await getActiveDrivers(userId);
+
+  return { user, userId, verified, station, accepted, activeRequests, vehicles, requestInfo: passenger, bases, activePassengerRequests, isAvailable, driverCount };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -162,7 +166,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Dashboard({ loaderData, actionData }: Route.ComponentProps) {
-  const { user, userId, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests } = loaderData;
+  const { user, userId, station, accepted, activeRequests, vehicles, requestInfo, bases, activePassengerRequests, isAvailable, driverCount } = loaderData;
+  const [liveDriverCount, setLiveDriverCount] = useState(driverCount);
 
   broadcastSSE({
     onNewRequest: (data: SSEData) => {
@@ -202,6 +207,9 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
     onRequestComplete: (data: SSEData) => {
       setTimeout(() => toast.success("Ride completed. Thank you!"), 0);
     },
+    onDriverCountUpdated: (count) => {
+      setLiveDriverCount(count);
+    },
     autoRevalidate: true,
   });
 
@@ -219,6 +227,8 @@ export default function Dashboard({ loaderData, actionData }: Route.ComponentPro
         requestInfo={requestInfo}
         bases={bases}
         actionData={actionData}
+        isAvailable={isAvailable}
+        driverCount={liveDriverCount}
       />
     </div>
   );

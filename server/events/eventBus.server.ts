@@ -6,6 +6,7 @@ export type SSEEventType =
   | "request_cancelled_passenger"
   | "request_pickup"
   | "request_complete"
+  | "driver_count_updated"
   | "connected"
   | "heartbeat";
 

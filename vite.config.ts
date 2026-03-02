@@ -9,6 +9,10 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
   ],
+  server: {
+    // Allow requests proxied through Caddy (host.docker.internal)
+    allowedHosts: true,
+  },
   build: {
     minify: 'terser',
     terserOptions: {

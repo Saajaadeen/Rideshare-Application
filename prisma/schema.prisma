@@ -32,11 +32,12 @@ model User {
   base                            Base?     @relation(fields: [baseId], references: [id])
   invite                          Invite?   @relation("UserInviteRelation", fields: [inviteId], references: [id])
   vehicles                        Vehicle?
-  emailVerified                   Boolean   @default(false)
+  emailVerified                   Boolean            @default(false)
   emailVerificationCode           String?
   emailVerificationCodeExpiration DateTime?
-  emailVerificationAttempts       Int       @default(0)
+  emailVerificationAttempts       Int                @default(0)
   emailVerificationCodeSendLimit  DateTime?
+  pushSubscriptions               PushSubscription[]
   // isDeleted                       Boolean   @default(false)
 }
 
@@ -126,4 +127,15 @@ model Reset {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   user         User?      @relation("ResetLinks", fields: [userId], references: [id])
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

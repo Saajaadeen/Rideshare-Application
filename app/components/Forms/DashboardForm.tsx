@@ -14,7 +14,9 @@ export default function Dashboard({
   requestInfo,
   bases,
   actionData,
-  activePassengerRequests
+  activePassengerRequests,
+  isAvailable,
+  driverCount,
 }: any) {
   const navigate = useNavigate();
   return (
@@ -33,6 +35,8 @@ export default function Dashboard({
           actionData={actionData}
           requestInfo={requestInfo}
           vehicles={vehicles}
+          isAvailable={isAvailable}
+          driverCount={driverCount}
           onLogout={() => navigate("/logout")}
         />
       </div>

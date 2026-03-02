@@ -8,6 +8,7 @@ import {
   useLoaderData,
   type HeadersFunction,
 } from "react-router";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 import { csrf } from "server/csrf.server";
@@ -31,6 +32,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     {
       nonce,
       csrf: token,
+      vapidPublicKey: process.env.VITE_VAPID_PUBLIC_KEY ?? "",
     },
     { headers }
   );
@@ -49,7 +51,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://tile.openstreetmap.org",
       // Allow WebSocket from any origin for network IP access
-      "connect-src 'self' ws: wss: https://tile.openstreetmap.org",
+      "connect-src 'self' ws: wss: https://tile.openstreetmap.org https://*.push.services.mozilla.com https://fcm.googleapis.com",
       "worker-src 'self' blob:",
       "frame-src https://challenges.cloudflare.com",
       "frame-ancestors 'none'",
@@ -79,6 +81,8 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 export const links: Route.LinksFunction = () => [
+  { rel: "manifest", href: "/manifest.json" },
+  { rel: "apple-touch-icon", href: "/phoenix-spark.jpeg" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",
@@ -110,6 +114,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Rideshare" />
         <script type="text/javascript" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
         <Meta />
         <Links />
@@ -129,6 +136,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { csrf } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
 
   return (
     <AuthenticityTokenProvider token={csrf}>

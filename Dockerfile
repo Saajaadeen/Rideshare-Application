@@ -14,16 +14,17 @@ RUN npm ci
 COPY . .
 
 # Database URL for Prisma generation
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
 
 # Generate Prisma client and build
 RUN npx prisma generate
 RUN npm run build
 
 # Set permissions
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 RUN chown -R nodejs:nodejs /app
-
 USER nodejs
-
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+
+ENTRYPOINT ["./entrypoint.sh"]
